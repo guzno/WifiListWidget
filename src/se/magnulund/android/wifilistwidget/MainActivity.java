@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.widget.ListAdapter;
@@ -16,7 +17,7 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     private ListView wifiList;
-    List<ScanResult> scanResults;
+    List<WifiConfiguration> wifiConfigurations;
     ListAdapter listAdapter;
     private WifiManager wifiManager;
 
@@ -33,17 +34,47 @@ public class MainActivity extends Activity {
 
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
-        Intent i = registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        wifiConfigurations = wifiManager.getConfiguredNetworks();
 
+        Intent intent = registerReceiver(wifiStateReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
+        if (wifiManager.isWifiEnabled()) {
+            Intent i = registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        }
     }
 
-    private BroadcastReceiver wifiScanReceiver = new BroadcastReceiver(){
+    private void updateWifiList ( List<ScanResult> scanResults ) {
+        // Kanske ska göra lite skit här......
+    }
+
+    private BroadcastReceiver wifiScanReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            scanResults = wifiManager.getScanResults();
+            updateWifiList(wifiManager.getScanResults());
+        }
+    };
+
+
+    private BroadcastReceiver wifiStateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+
+            switch (wifiState) {
+                case WifiManager.WIFI_STATE_ENABLING:
+                    Intent i = registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                    break;
+                case WifiManager.WIFI_STATE_DISABLING:
+                    unregisterReceiver(wifiScanReceiver);
+                    break;
+                default:
+                    break;
+
+            }
         }
     };
 }
