@@ -12,14 +12,19 @@ import android.os.Bundle;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.text.BreakIterator;
 import java.util.List;
 
 public class MainActivity extends Activity {
 
     private ListView wifiList;
-    List<WifiConfiguration> wifiConfigurations;
+    private List<WifiConfiguration> wifiConfigurations;
     ListAdapter listAdapter;
     private WifiManager wifiManager;
+    private static Boolean WIFI_SCAN_RECEIVER_ACTIVE = false;
+
+    WifiScanReceiver wifiScanReceiver;
+    WifiStateReceiver wifiStateReceiver;
 
     /**
      * Called when the activity is first created.
@@ -36,46 +41,47 @@ public class MainActivity extends Activity {
 
         wifiConfigurations = wifiManager.getConfiguredNetworks();
 
-        Intent intent = registerReceiver(wifiStateReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+        wifiStateReceiver = new WifiStateReceiver();
+        registerReceiver(wifiStateReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
         if (wifiManager.isWifiEnabled()) {
-            Intent i = registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            wifiScanReceiver = new WifiScanReceiver();
+            registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            WIFI_SCAN_RECEIVER_ACTIVE = true;
         }
     }
 
-    private void updateWifiList ( ) {
+    public void updateWifiList ( ) {
         List<ScanResult> scanResults = wifiManager.getScanResults();
         // Kanske ska göra lite skit här......
     }
 
-    private BroadcastReceiver wifiScanReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            updateWifiList();
+    public void toggleWifiReceiver(int wifiState){
+        switch (wifiState) {
+            case WifiManager.WIFI_STATE_ENABLED:
+                if ( wifiScanReceiver == null) {
+                    wifiScanReceiver = new WifiScanReceiver();
+                }
+                registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                WIFI_SCAN_RECEIVER_ACTIVE = true;
+                break;
+            case WifiManager.WIFI_STATE_DISABLED:
+                unregisterReceiver(wifiScanReceiver);
+                WIFI_SCAN_RECEIVER_ACTIVE = false;
+                break;
+            default:
+                break;
         }
-    };
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
 
-    private BroadcastReceiver wifiStateReceiver = new BroadcastReceiver() {
+        unregisterReceiver(wifiStateReceiver);
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
-
-            switch (wifiState) {
-                case WifiManager.WIFI_STATE_ENABLING:
-                    Intent i = registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-                    break;
-                case WifiManager.WIFI_STATE_DISABLING:
-                    unregisterReceiver(wifiScanReceiver);
-                    break;
-                default:
-                    break;
-
-            }
+        if (WIFI_SCAN_RECEIVER_ACTIVE) {
+            unregisterReceiver(wifiScanReceiver);
         }
-    };
+    }
 }
