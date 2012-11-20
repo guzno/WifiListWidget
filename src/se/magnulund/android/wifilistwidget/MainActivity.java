@@ -43,7 +43,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void updateWifiList ( List<ScanResult> scanResults ) {
+    private void updateWifiList ( ) {
+        List<ScanResult> scanResults = wifiManager.getScanResults();
         // Kanske ska göra lite skit här......
     }
 
@@ -52,7 +53,7 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            updateWifiList(wifiManager.getScanResults());
+            updateWifiList();
         }
     };
 
