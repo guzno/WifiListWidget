@@ -3,7 +3,6 @@ package se.magnulund.android.wifilistwidget;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -47,6 +46,7 @@ public class WifiScanService extends IntentService {
 
         ContentValues values = new ContentValues();
         ScanResult scanResult;
+
         Iterator<ScanResult> iterator = scanResults.iterator();
         while ( iterator.hasNext() ) {
             scanResult = iterator.next();
