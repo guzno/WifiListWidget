@@ -3,8 +3,8 @@ package se.magnulund.android.wifilistwidget;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,5 +17,13 @@ public class WifiStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+
+        Intent i = new Intent(context, WifiStateService.class);
+        Bundle extras = new Bundle();
+        extras.putInt("wifi_state", wifiState);
+        i.putExtras(extras);
+        context.startService(i);
     }
+
+
 }

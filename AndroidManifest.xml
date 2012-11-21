@@ -25,6 +25,7 @@
                 <action android:name="android.net.wifi.STATE_CHANGE"></action>
             </intent-filter>
         </receiver>
-
+        <service android:name=".WifiStateService"></service>
+        <service android:name=".WifiScanService"></service>
     </application>
 </manifest>
