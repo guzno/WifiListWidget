@@ -17,8 +17,5 @@ public class WifiStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
-
-        MainActivity c = (MainActivity) context;
-        c.toggleWifiReceiver(wifiState);
     }
 }

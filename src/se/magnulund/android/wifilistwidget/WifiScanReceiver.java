@@ -14,7 +14,5 @@ import android.content.Intent;
 public class WifiScanReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        MainActivity c  = (MainActivity) context;
-        c.updateWifiList();
     }
 }
