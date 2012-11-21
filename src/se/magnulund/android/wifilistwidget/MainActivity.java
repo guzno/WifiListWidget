@@ -91,6 +91,9 @@ public class MainActivity extends Activity {
     public void toggleWifiReceiver(int wifiState){
         switch (wifiState) {
             case WifiManager.WIFI_STATE_ENABLED:
+                addItem("Scan Receiver active!");
+                break;
+            case WifiManager.WIFI_STATE_ENABLING:
                 /*
                 if ( wifiScanReceiver == null) {
                     wifiScanReceiver = new WifiScanReceiver();
@@ -98,12 +101,15 @@ public class MainActivity extends Activity {
                 */
                 registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
                 WIFI_SCAN_RECEIVER_ACTIVE = true;
-                addItem("State Receiver active!");
+                addItem("Scan Receiver activating!");
                 break;
-            case WifiManager.WIFI_STATE_DISABLED:
+            case WifiManager.WIFI_STATE_DISABLING:
                 unregisterReceiver(wifiScanReceiver);
                 WIFI_SCAN_RECEIVER_ACTIVE = false;
-                addItem("State Receiver inactive!");
+                addItem("Scan Receiver inactivating!");
+                break;
+            case WifiManager.WIFI_STATE_DISABLED:
+                addItem("Scan Receiver inactive!");
                 break;
             default:
                 break;
