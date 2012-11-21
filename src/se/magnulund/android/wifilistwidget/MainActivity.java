@@ -1,12 +1,11 @@
 package se.magnulund.android.wifilistwidget;
 
 import android.app.Activity;
-import android.content.*;
+import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-
 import android.widget.ListView;
 
 import java.util.ArrayList;

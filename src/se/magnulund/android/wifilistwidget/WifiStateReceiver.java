@@ -18,11 +18,10 @@ public class WifiStateReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
 
-        Intent i = new Intent(context, WifiStateService.class);
-        Bundle extras = new Bundle();
-        extras.putInt("wifi_state", wifiState);
-        i.putExtras(extras);
-        context.startService(i);
+        intent.setClass(context, WifiStateService.class);
+        intent.putExtra("wifi_state", wifiState);
+
+        context.startService(intent);
     }
 
 
