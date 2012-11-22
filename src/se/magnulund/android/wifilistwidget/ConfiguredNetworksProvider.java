@@ -13,49 +13,54 @@ import android.util.Log;
 /**
  * Created with IntelliJ IDEA.
  * User: Gustav
- * Date: 21/11/2012
- * Time: 22:39
+ * Date: 22/11/2012
+ * Time: 12:30
  * To change this template use File | Settings | File Templates.
  */
-public class ScanDataProvider extends ContentProvider {
+public class ConfiguredNetworksProvider extends ContentProvider {
 
-
-    public static final String TAG = "ScanDataProvider";
+    public static final String TAG = "ConfiguredNetworksProvider";
 
     public static final String PROVIDER_NAME =
-            "se.magnulund.provider.ScanData";
+            "se.magnulund.provider.ConfiguredNetworks";
 
     public static final Uri CONTENT_URI =
-            Uri.parse("content://"+ PROVIDER_NAME + "/wifi_networks");
+            Uri.parse("content://"+ PROVIDER_NAME + "/configured_networks");
+
+
     /*
-
-   ScanResult:
-       public String	BSSID	The address of the access point.
-       public String	SSID	The network name.
-       public String	capabilities	Describes the authentication, key management, and encryption schemes supported by the access point.
-       public int	frequency	The frequency in MHz of the channel over which the client is communicating with the access point.
-       public int	level	The detected signal level in dBm.
+   WifiConfiguration:  Skit i dom inom parentes?
+       public String	BSSID	When set, this network configuration entry should only be used when associating with the AP having the specified BSSID.
+       public String	SSID	The network's SSID.
+       (public BitSet	allowedAuthAlgorithms	The set of authentication protocols supported by this configuration.)
+       (public BitSet	allowedGroupCiphers	The set of group ciphers supported by this configuration.)
+       (public BitSet	allowedKeyManagement	The set of key management protocols supported by this configuration.)
+       (public BitSet	allowedPairwiseCiphers	The set of pairwise ciphers for WPA supported by this configuration.)
+       (public BitSet	allowedProtocols	The set of security protocols supported by this configuration.)
+       (public boolean	hiddenSSID	This is a network that does not broadcast its SSID, so an SSID-specific probe request must be used for scans.)
+       public int	networkId	The ID number that the supplicant uses to identify this network configuration entry.
+       (public String	preSharedKey	Pre-shared key for use with WPA-PSK.)
+       (public int	priority	Priority determines the preference given to a network by wpa_supplicant when choosing an access point with which to associate.)
+       (public int	status	The current status of this network configuration entry.)
+       (public String[]	wepKeys	Up to four WEP keys.)
+       (public int	wepTxKeyIndex	Default WEP key index, ranging from 0 to 3.)
     */
-
     public static final String _ID = "_id";
     public static final String BSSID = "bssid";
     public static final String SSID = "ssid";
-    public static final String CAPABILITIES = "capabilities";
-    public static final String FREQUENCY = "frequency";
-    public static final String LEVEL = "level";
+    public static final String NETWORK_ID = "network_id";
 
 
     //---for database use---
-    private SQLiteDatabase scanDataDB;
+    private SQLiteDatabase wifiConfigDB;
     private static final String DATABASE_NAME = "WifiData";
-    private static final String DATABASE_TABLE = "wifi_scan_data";
+    private static final String DATABASE_TABLE = "wifi_config";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_CREATE =
             "create table " + DATABASE_TABLE +
                     " (_id integer primary key autoincrement, "
                     + "bssid text not null, ssid text not null, "
-                    + "capabilities text not null, frequency int not null, "
-                    + "level int not null);";
+                    + "network_id int not null);";
 
     private static class DatabaseHelper extends SQLiteOpenHelper
     {
@@ -81,22 +86,22 @@ public class ScanDataProvider extends ContentProvider {
         }
     }
 
-    private static final int WIFI_NETWORKS = 1;
+    private static final int WIFI_CONFIGS = 1;
     private static final int WIFI_ID = 2;
 
     private static final UriMatcher uriMatcher;
     static{
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER_NAME, "wifi_networks", WIFI_NETWORKS);
-        uriMatcher.addURI(PROVIDER_NAME, "wifi_clients/#", WIFI_ID);
+        uriMatcher.addURI(PROVIDER_NAME, "configured_networks", WIFI_CONFIGS);
+        uriMatcher.addURI(PROVIDER_NAME, "configured_networks/#", WIFI_ID);
     }
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
-        scanDataDB = dbHelper.getWritableDatabase();
-        return (scanDataDB != null);
+        wifiConfigDB = dbHelper.getWritableDatabase();
+        return (wifiConfigDB != null);
     }
 
     @Override
@@ -112,10 +117,10 @@ public class ScanDataProvider extends ContentProvider {
                     _ID + " = " + uri.getPathSegments().get(1));
 
         if (sortOrder==null || sortOrder.equals(""))
-            sortOrder = LEVEL;
+            sortOrder = NETWORK_ID;
 
         Cursor cursor = sqlBuilder.query(
-                scanDataDB,
+                wifiConfigDB,
                 projection,
                 selection,
                 selectionArgs,
@@ -132,7 +137,7 @@ public class ScanDataProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (uriMatcher.match(uri)){
             //---get all books---
-            case WIFI_NETWORKS:
+            case WIFI_CONFIGS:
                 return "vnd.android.cursor.dir/vnd.magnulund.ScanData ";
             //---get a particular book---
             case WIFI_ID:
@@ -145,7 +150,7 @@ public class ScanDataProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
         //---add a new wifi---
-        long rowID = scanDataDB.insert(
+        long rowID = wifiConfigDB.insert(
                 DATABASE_TABLE, "", contentValues);
 
         //---if added successfully---
@@ -165,15 +170,15 @@ public class ScanDataProvider extends ContentProvider {
         // arg2 = selectionArgs
         int count=0;
         switch (uriMatcher.match(arg0)){
-            case WIFI_NETWORKS:
-                count = scanDataDB.delete(
+            case WIFI_CONFIGS:
+                count = wifiConfigDB.delete(
                         DATABASE_TABLE,
                         arg1,
                         arg2);
                 break;
             case WIFI_ID:
                 String id = arg0.getPathSegments().get(1);
-                count = scanDataDB.delete(
+                count = wifiConfigDB.delete(
                         DATABASE_TABLE,
                         _ID + " = " + id +
                                 (!TextUtils.isEmpty(arg1) ? " AND (" +
@@ -192,15 +197,15 @@ public class ScanDataProvider extends ContentProvider {
     {
         int count = 0;
         switch (uriMatcher.match(uri)){
-            case WIFI_NETWORKS:
-                count = scanDataDB.update(
+            case WIFI_CONFIGS:
+                count = wifiConfigDB.update(
                         DATABASE_TABLE,
                         values,
                         selection,
                         selectionArgs);
                 break;
             case WIFI_ID:
-                count = scanDataDB.update(
+                count = wifiConfigDB.update(
                         DATABASE_TABLE,
                         values,
                         _ID + " = " + uri.getPathSegments().get(1) +

@@ -28,43 +28,58 @@ public class WifiStateService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         // hittade på: http://stackoverflow.com/questions/6529276/android-how-to-unregister-a-receiver-created-in-the-manifest
         Context context = getApplicationContext();
-        if (intent.getBooleanExtra("stop_service", false)) {
-            ComponentName wifiScanReceiver = new ComponentName(context, WifiScanReceiver.class);
-            context.getPackageManager().setComponentEnabledSetting(wifiScanReceiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            ComponentName wifiStateReceiver = new ComponentName(context, WifiStateReceiver.class);
-            context.getPackageManager().setComponentEnabledSetting(wifiStateReceiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+        ComponentName wifiScanReceiver = new ComponentName(context, WifiScanReceiver.class);
+        int wifiScanStatus = context.getPackageManager().getComponentEnabledSetting(wifiScanReceiver);
+
+        ComponentName wifiConfigReceiver = new ComponentName(context, WifiNetworkConfigReceiver.class);
+        int wifiConfigStatus = context.getPackageManager().getComponentEnabledSetting(wifiConfigReceiver);
+
+        if (intent.getBooleanExtra("stop_services", false)) {
+            disableComponent(context, wifiScanStatus, wifiScanReceiver);
+            disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
         } else {
+
             int wifiState = intent.getIntExtra("wifi_state", -1);
-            ComponentName component = new ComponentName(context, WifiScanReceiver.class);
-            int status = context.getPackageManager().getComponentEnabledSetting(component);
+
             switch (wifiState) {
                 case WifiManager.WIFI_STATE_ENABLED:
                     Log.e(TAG, "WIFI_STATE_ENABLED");
-                    if (status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-                        context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-                        Log.e(TAG, "Enabling WifiScanReceiver");
-                    }
+                    enableComponent(context, wifiScanStatus, wifiScanReceiver);
+                    enableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:
-                    context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                    enableComponent(context, wifiScanStatus, wifiScanReceiver);
+                    enableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     Log.e(TAG, "WIFI_STATE_ENABLING");
-                    Log.e(TAG, "Enabling WifiScanReceiver");
                     break;
                 case WifiManager.WIFI_STATE_DISABLING:
-                    context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
                     Log.e(TAG, "WIFI_STATE_DISABLING");
-                    Log.e(TAG, "Disabling WifiScanReceiver");
+                    disableComponent(context, wifiScanStatus, wifiScanReceiver);
+                    disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 case WifiManager.WIFI_STATE_DISABLED:
                     Log.e(TAG, "WIFI_STATE_DISABLED");
-                    if (status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-                        context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-                        Log.e(TAG, "Disabling WifiScanReceiver");
-                    }
+                    disableComponent(context, wifiScanStatus, wifiScanReceiver);
+                    disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 default:
                     break;
             }
+        }
+    }
+
+    private void enableComponent(Context context, int status, ComponentName component){
+        if (status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+            context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            Log.e(TAG, "Enabling "+component.getClassName());
+        }
+    }
+
+    private void disableComponent(Context context, int status, ComponentName component){
+        if (status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+            context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            Log.e(TAG, "Disabling "+component.getClassName());
         }
     }
 

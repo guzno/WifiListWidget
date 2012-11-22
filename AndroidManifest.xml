@@ -17,17 +17,21 @@
         </activity>
         <receiver android:name=".WifiScanReceiver">
             <intent-filter>
-                <action android:name="android.net.wifi.SCAN_RESULTS"></action>
+                <action android:name="android.net.wifi.SCAN_RESULTS"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".WifiStateReceiver">
             <intent-filter>
-                <action android:name="android.net.wifi.STATE_CHANGE"></action>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>
         </receiver>
-        <service android:name=".WifiStateService"></service>
-        <service android:name=".WifiScanService"></service>
+        <service android:name=".WifiStateService"/>
+        <service android:name=".WifiScanService"/>
+        <service android:name=".WifiNetworkConfigService"/>
+
         <provider android:name="ScanDataProvider"
                   android:authorities="se.magnulund.provider.ScanData" />
+        <provider android:name="ConfiguredNetworksProvider"
+                  android:authorities="se.magnulund.provider.ConfiguredNetworks"/>
     </application>
 </manifest>
