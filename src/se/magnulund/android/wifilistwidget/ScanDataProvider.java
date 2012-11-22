@@ -23,10 +23,10 @@ public class ScanDataProvider extends ContentProvider {
     public static final String TAG = "ScanDataProvider";
 
     public static final String PROVIDER_NAME =
-            "se.magnulund.android.provider.ScanData";
+            "se.magnulund.provider.ScanData";
 
     public static final Uri CONTENT_URI =
-            Uri.parse("content://"+ PROVIDER_NAME + "/scandata");
+            Uri.parse("content://"+ PROVIDER_NAME + "/wifi_clients");
     /*
 
    ScanResult:

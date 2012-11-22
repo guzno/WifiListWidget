@@ -27,5 +27,7 @@
         </receiver>
         <service android:name=".WifiStateService"></service>
         <service android:name=".WifiScanService"></service>
+        <provider android:name="ScanDataProvider"
+                  android:authorities="se.magnulund.provider.ScanData" />
     </application>
 </manifest>

@@ -15,7 +15,7 @@ public class WifiScanReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        intent.setClass(context, WifiStateService.class);
+        intent.setClass(context, WifiScanService.class);
 
         context.startService(intent);
     }
