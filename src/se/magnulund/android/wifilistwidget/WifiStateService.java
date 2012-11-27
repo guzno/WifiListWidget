@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ComponentInfo;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -43,10 +44,13 @@ public class WifiStateService extends IntentService {
             disableComponent(context, wifiScanStatus, wifiScanReceiver);
             disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
         } else {
+            if (wifiStateStatus == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT){
+                context.getPackageManager().setComponentEnabledSetting(wifiStateReceiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                Log.e(TAG, "Enabling "+wifiStateReceiver.getClassName() + " state: "+context.getPackageManager().getComponentEnabledSetting(wifiStateReceiver));
+            }
+
 
             int wifiState = intent.getIntExtra("wifi_state", -1);
-
-            enableComponent(context, wifiStateStatus, wifiStateReceiver);
 
             switch (wifiState) {
                 case WifiManager.WIFI_STATE_ENABLED:
@@ -76,16 +80,16 @@ public class WifiStateService extends IntentService {
     }
 
     private void enableComponent(Context context, int status, ComponentName component){
-        Log.e(TAG, " Check if Enabling "+component.getClassName());
-        if (status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+        Log.e(TAG, " Check if Enabling "+component.getClassName()+" : "+(status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED));
+        if (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             Log.e(TAG, "Enabling "+component.getClassName());
         }
     }
 
     private void disableComponent(Context context, int status, ComponentName component){
-        Log.e(TAG, " Check if Disabling "+component.getClassName());
-        if (status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+        Log.e(TAG, " Check if Disabling "+component.getClassName()+" : "+(status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED));
+        if (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             Log.e(TAG, "Disabling "+component.getClassName());
         }
