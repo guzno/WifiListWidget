@@ -42,11 +42,11 @@ public class WifiScanService extends IntentService {
         Iterator<ScanResult> iterator = scanResults.iterator();
         while (iterator.hasNext()) {
             scanResult = iterator.next();
-            values.put(ScanDataProvider.BSSID, scanResult.BSSID);
-            values.put(ScanDataProvider.SSID, scanResult.SSID);
-            values.put(ScanDataProvider.CAPABILITIES, scanResult.capabilities);
-            values.put(ScanDataProvider.FREQUENCY, scanResult.frequency);
-            values.put(ScanDataProvider.LEVEL, scanResult.level);
+            values.put(DatabaseHelper.BSSID, scanResult.BSSID);
+            values.put(DatabaseHelper.SSID, scanResult.SSID);
+            values.put(DatabaseHelper.CAPABILITIES, scanResult.capabilities);
+            values.put(DatabaseHelper.FREQUENCY, scanResult.frequency);
+            values.put(DatabaseHelper.LEVEL, scanResult.level);
             getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
         }
 

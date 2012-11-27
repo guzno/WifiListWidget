@@ -18,7 +18,7 @@ public class ConfiguredNetworksProvider extends ContentProvider {
             "se.magnulund.provider.ConfiguredNetworks";
 
     public static final Uri CONTENT_URI =
-            Uri.parse("content://"+ PROVIDER_NAME + "/configured_networks");
+            Uri.parse("content://" + PROVIDER_NAME + "/configured_networks");
 
 
     /*
@@ -51,19 +51,17 @@ public class ConfiguredNetworksProvider extends ContentProvider {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_CREATE =
             "create table " + DATABASE_TABLE +
-                    " ("+_ID+" integer primary key autoincrement, "
-                    +BSSID+" text not null, "+SSID+" text not null, "
-                    +NETWORK_ID+" int not null);";
+                    " (" + _ID + " integer primary key autoincrement, "
+                    + BSSID + " text not null, " + SSID + " text not null, "
+                    + NETWORK_ID + " int not null);";
 
-    private static class DatabaseHelper extends SQLiteOpenHelper
-    {
+    private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db)
-        {
+        public void onCreate(SQLiteDatabase db) {
             db.execSQL(DATABASE_CREATE);
         }
 
@@ -83,7 +81,8 @@ public class ConfiguredNetworksProvider extends ContentProvider {
     private static final int WIFI_ID = 2;
 
     private static final UriMatcher uriMatcher;
-    static{
+
+    static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "configured_networks", WIFI_CONFIGS);
         uriMatcher.addURI(PROVIDER_NAME, "configured_networks/#", WIFI_ID);
@@ -109,7 +108,7 @@ public class ConfiguredNetworksProvider extends ContentProvider {
             sqlBuilder.appendWhere(
                     _ID + " = " + uri.getPathSegments().get(1));
 
-        if (sortOrder==null || sortOrder.equals(""))
+        if (sortOrder == null || sortOrder.equals(""))
             sortOrder = NETWORK_ID;
 
         Cursor cursor = sqlBuilder.query(
@@ -128,7 +127,7 @@ public class ConfiguredNetworksProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             //---get all books---
             case WIFI_CONFIGS:
                 return "vnd.android.cursor.dir/vnd.magnulund.ScanData ";
@@ -147,8 +146,7 @@ public class ConfiguredNetworksProvider extends ContentProvider {
                 DATABASE_TABLE, "", contentValues);
 
         //---if added successfully---
-        if (rowID>0)
-        {
+        if (rowID > 0) {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
             getContext().getContentResolver().notifyChange(_uri, null);
             return _uri;
@@ -161,8 +159,8 @@ public class ConfiguredNetworksProvider extends ContentProvider {
         // arg0 = uri
         // arg1 = selection
         // arg2 = selectionArgs
-        int count=0;
-        switch (uriMatcher.match(arg0)){
+        int count = 0;
+        switch (uriMatcher.match(arg0)) {
             case WIFI_CONFIGS:
                 count = wifiConfigDB.delete(
                         DATABASE_TABLE,
@@ -178,18 +176,18 @@ public class ConfiguredNetworksProvider extends ContentProvider {
                                         arg1 + ')' : ""),
                         arg2);
                 break;
-            default: throw new IllegalArgumentException(
-                    "Unknown URI " + arg0);
+            default:
+                throw new IllegalArgumentException(
+                        "Unknown URI " + arg0);
         }
         getContext().getContentResolver().notifyChange(arg0, null);
         return count;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
-    {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count = 0;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case WIFI_CONFIGS:
                 count = wifiConfigDB.update(
                         DATABASE_TABLE,
@@ -206,8 +204,9 @@ public class ConfiguredNetworksProvider extends ContentProvider {
                                         selection + ')' : ""),
                         selectionArgs);
                 break;
-            default: throw new IllegalArgumentException(
-                    "Unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException(
+                        "Unknown URI " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return count;

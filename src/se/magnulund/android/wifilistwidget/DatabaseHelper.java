@@ -39,19 +39,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_TABLE = "wifiscan";
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_CREATE =
-            "create table if not exists " + DATABASE_TABLE +
-                    " ("+_ID+" integer primary key autoincrement, "
-                    +BSSID+" text not null, "+SSID+" text not null, "
-                    +CAPABILITIES+" text not null, "+FREQUENCY+" int not null, "
-                    +LEVEL+" int not null);";
+            "create table " + DATABASE_TABLE +
+                    " (" + _ID + " integer primary key autoincrement, "
+                    + BSSID + " text not null, " + SSID + " text not null, "
+                    + CAPABILITIES + " text not null, " + FREQUENCY + " int not null, "
+                    + LEVEL + " int not null);";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db)
-    {
+    public void onCreate(SQLiteDatabase db) {
         Log.e(TAG, "DBHELPER onCreate");
         db.execSQL(DATABASE_CREATE);
     }
@@ -63,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " +
                         oldVersion + " to " + newVersion +
                         ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS "+DATABASE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
         onCreate(db);
     }
 }

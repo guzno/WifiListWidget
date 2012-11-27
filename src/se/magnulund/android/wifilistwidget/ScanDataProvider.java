@@ -18,13 +18,14 @@ public class ScanDataProvider extends ContentProvider {
             "se.magnulund.provider.ScanData";
 
     public static final Uri CONTENT_URI =
-            Uri.parse("content://"+ PROVIDER_NAME + "/wifi_networks");
+            Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks");
 
     private static final int WIFI_NETWORKS = 1;
     private static final int WIFI_ID = 2;
 
     private static final UriMatcher uriMatcher;
-    static{
+
+    static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks", WIFI_NETWORKS);
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks/#", WIFI_ID);
@@ -34,7 +35,7 @@ public class ScanDataProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        Context context = getContext().getApplicationContext();
+        Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         scanDataDB = dbHelper.getWritableDatabase();
         Log.e(TAG, "onCreate");
@@ -54,7 +55,7 @@ public class ScanDataProvider extends ContentProvider {
             sqlBuilder.appendWhere(
                     DatabaseHelper._ID + " = " + uri.getPathSegments().get(1));
 
-        if (sortOrder==null || sortOrder.equals(""))
+        if (sortOrder == null || sortOrder.equals(""))
             sortOrder = DatabaseHelper.LEVEL;
 
         Cursor cursor = sqlBuilder.query(
@@ -73,7 +74,7 @@ public class ScanDataProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             //---get all books---
             case WIFI_NETWORKS:
                 return "vnd.android.cursor.dir/vnd.magnulund.ScanData ";
@@ -93,8 +94,7 @@ public class ScanDataProvider extends ContentProvider {
                 DatabaseHelper.DATABASE_TABLE, "", contentValues);
 
         //---if added successfully---
-        if (rowID>0)
-        {
+        if (rowID > 0) {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
             getContext().getContentResolver().notifyChange(_uri, null);
             return _uri;
@@ -107,10 +107,10 @@ public class ScanDataProvider extends ContentProvider {
         // arg0 = uri
         // arg1 = selection
         // arg2 = selectionArgs
-        int count=0;
+        int count = 0;
         //checkIfTableExistsAndCreateTable();
 
-        switch (uriMatcher.match(arg0)){
+        switch (uriMatcher.match(arg0)) {
             case WIFI_NETWORKS:
                 count = scanDataDB.delete(
                         DatabaseHelper.DATABASE_TABLE,
@@ -126,18 +126,18 @@ public class ScanDataProvider extends ContentProvider {
                                         arg1 + ')' : ""),
                         arg2);
                 break;
-            default: throw new IllegalArgumentException(
-                    "Unknown URI " + arg0);
+            default:
+                throw new IllegalArgumentException(
+                        "Unknown URI " + arg0);
         }
         getContext().getContentResolver().notifyChange(arg0, null);
         return count;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
-    {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count = 0;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case WIFI_NETWORKS:
                 count = scanDataDB.update(
                         DatabaseHelper.DATABASE_TABLE,
@@ -154,15 +154,11 @@ public class ScanDataProvider extends ContentProvider {
                                         selection + ')' : ""),
                         selectionArgs);
                 break;
-            default: throw new IllegalArgumentException(
-                    "Unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException(
+                        "Unknown URI " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-    }
-
-    private void checkIfTableExistsAndCreateTable(){
-        scanDataDB.rawQuery(DatabaseHelper.DATABASE_CREATE, null );
-        Log.e(TAG, "tried to create table");
     }
 }

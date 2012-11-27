@@ -26,10 +26,10 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     SimpleCursorAdapter wifiAdapter;
     private WifiManager wifiManager;
 
-    static final String[] WIFI_NETWORKS_SSID_PROJECTION = new String[] {
-        ScanDataProvider._ID,
-        ScanDataProvider.SSID,
-        ScanDataProvider.LEVEL
+    static final String[] WIFI_NETWORKS_SSID_PROJECTION = new String[]{
+            DatabaseHelper._ID,
+            DatabaseHelper.SSID,
+            DatabaseHelper.LEVEL
     };
 
     @Override
@@ -38,14 +38,14 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         setContentView(R.layout.main);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
-
+        /*
         getLoaderManager().initLoader(0, null, this);
         wifiAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, null,
-                new String[] { ScanDataProvider.SSID, ScanDataProvider.LEVEL },
-                new int[] { android.R.id.text1, android.R.id.text2 }, 0);
+                new String[]{DatabaseHelper.SSID, DatabaseHelper.LEVEL},
+                new int[]{android.R.id.text1, android.R.id.text2}, 0);
         wifiList.setAdapter(wifiAdapter);
-
+        */
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
         //wifiConfigurations = wifiManager.getConfiguredNetworks();
@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
         Uri uri = ScanDataProvider.CONTENT_URI;
-        return new CursorLoader(this, uri, WIFI_NETWORKS_SSID_PROJECTION, null, null, ScanDataProvider.LEVEL + " DESC"  );
+        return new CursorLoader(this, uri, WIFI_NETWORKS_SSID_PROJECTION, null, null, DatabaseHelper.LEVEL + " DESC");
     }
 
     @Override
