@@ -41,10 +41,10 @@ public class ScanDataProvider extends ContentProvider {
     //---for database use---
     private SQLiteDatabase scanDataDB;
     private static final String DATABASE_NAME = "WifiListWidgetDB";
-    private static final String DATABASE_TABLE = "wifi_scan_data";
+    private static final String DATABASE_TABLE = "wifi_scan";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_CREATE =
-            "create table " + DATABASE_TABLE +
+            "create table if not exists " + DATABASE_TABLE +
                     " (_id integer primary key autoincrement, "
                     + "bssid text not null, ssid text not null, "
                     + "capabilities text not null, frequency int not null, "
@@ -54,13 +54,13 @@ public class ScanDataProvider extends ContentProvider {
     {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            Log.e(TAG, "DBHELP constructed");
+            Log.e(TAG, "DBHELPER constructed");
         }
 
         @Override
         public void onCreate(SQLiteDatabase db)
         {
-            Log.e(TAG, "DBHELP create method");
+            Log.e(TAG, "DBHELPER onCreate");
             db.execSQL(DATABASE_CREATE);
         }
 
@@ -71,9 +71,11 @@ public class ScanDataProvider extends ContentProvider {
                     "Upgrading database from version " +
                             oldVersion + " to " + newVersion +
                             ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS wifi_scan_data");
+            db.execSQL("DROP TABLE IF EXISTS "+DATABASE_TABLE);
             onCreate(db);
         }
+
+
     }
 
     private static final int WIFI_NETWORKS = 1;
@@ -91,7 +93,7 @@ public class ScanDataProvider extends ContentProvider {
         Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         scanDataDB = dbHelper.getWritableDatabase();
-        Log.e(TAG, "Created = "+(scanDataDB != null));
+        Log.e(TAG, "onCreate");
         return (scanDataDB != null);
     }
 
@@ -100,6 +102,7 @@ public class ScanDataProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
 
         SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
+        checkIfTableExistsAndCreateTable();
         sqlBuilder.setTables(DATABASE_TABLE);
 
         if (uriMatcher.match(uri) == WIFI_ID)
@@ -141,6 +144,7 @@ public class ScanDataProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
         //---add a new wifi---
+        checkIfTableExistsAndCreateTable();
         long rowID = scanDataDB.insert(
                 DATABASE_TABLE, "", contentValues);
 
@@ -160,6 +164,8 @@ public class ScanDataProvider extends ContentProvider {
         // arg1 = selection
         // arg2 = selectionArgs
         int count=0;
+        checkIfTableExistsAndCreateTable();
+
         switch (uriMatcher.match(arg0)){
             case WIFI_NETWORKS:
                 count = scanDataDB.delete(
@@ -209,5 +215,10 @@ public class ScanDataProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
+    }
+
+    private void checkIfTableExistsAndCreateTable(){
+        scanDataDB.rawQuery(DATABASE_CREATE, null );
+        Log.e(TAG, "tried to create table");
     }
 }
