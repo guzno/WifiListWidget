@@ -12,6 +12,8 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -44,8 +46,32 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 android.R.layout.simple_list_item_2, null,
                 new String[]{DatabaseHelper.SSID, DatabaseHelper.LEVEL},
                 new int[]{android.R.id.text1, android.R.id.text2}, 0);
+
         wifiList.setAdapter(wifiAdapter);
 
+        wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Cursor o = (Cursor)adapterView.getItemAtPosition(i);
+                Log.e(TAG, "o.getClass()" + o.getClass());
+
+                String networkSSID = o.getString(o.getColumnIndex(DatabaseHelper.SSID));
+
+                List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
+                for( WifiConfiguration wifiConfiguration : wifiConfigurationList ) {
+                    Log.e(TAG, "komperin: " + wifiConfiguration.SSID + " " + networkSSID);
+                    if(wifiConfiguration.SSID != null && wifiConfiguration.SSID.equals("\"" + networkSSID + "\"")) {
+
+                        wifiManager.disconnect();
+                        wifiManager.enableNetwork(wifiConfiguration.networkId, true);
+                        wifiManager.reconnect();
+
+                        break;
+                    }
+                }
+
+            }
+        });
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
         //wifiConfigurations = wifiManager.getConfiguredNetworks();
