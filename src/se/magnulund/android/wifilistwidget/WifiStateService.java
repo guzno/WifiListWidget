@@ -29,6 +29,9 @@ public class WifiStateService extends IntentService {
         // hittade på: http://stackoverflow.com/questions/6529276/android-how-to-unregister-a-receiver-created-in-the-manifest
         Context context = getApplicationContext();
 
+        ComponentName wifiStateReceiver = new ComponentName(context, WifiStateReceiver.class);
+        int wifiStateStatus = context.getPackageManager().getComponentEnabledSetting(wifiStateReceiver);
+
         ComponentName wifiScanReceiver = new ComponentName(context, WifiScanReceiver.class);
         int wifiScanStatus = context.getPackageManager().getComponentEnabledSetting(wifiScanReceiver);
 
@@ -36,11 +39,14 @@ public class WifiStateService extends IntentService {
         int wifiConfigStatus = context.getPackageManager().getComponentEnabledSetting(wifiConfigReceiver);
 
         if (intent.getBooleanExtra("stop_services", false)) {
+            disableComponent(context, wifiStateStatus, wifiStateReceiver);
             disableComponent(context, wifiScanStatus, wifiScanReceiver);
             disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
         } else {
 
             int wifiState = intent.getIntExtra("wifi_state", -1);
+
+            enableComponent(context, wifiStateStatus, wifiStateReceiver);
 
             switch (wifiState) {
                 case WifiManager.WIFI_STATE_ENABLED:

@@ -10,13 +10,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Gustav
- * Date: 21/11/2012
- * Time: 22:39
- * To change this template use File | Settings | File Templates.
- */
 public class ScanDataProvider extends ContentProvider {
 
 
@@ -47,7 +40,7 @@ public class ScanDataProvider extends ContentProvider {
 
     //---for database use---
     private SQLiteDatabase scanDataDB;
-    private static final String DATABASE_NAME = "WifiData";
+    private static final String DATABASE_NAME = "WifiListWidgetDB";
     private static final String DATABASE_TABLE = "wifi_scan_data";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_CREATE =
@@ -61,11 +54,13 @@ public class ScanDataProvider extends ContentProvider {
     {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            Log.e(TAG, "DBHELP constructed");
         }
 
         @Override
         public void onCreate(SQLiteDatabase db)
         {
+            Log.e(TAG, "DBHELP create method");
             db.execSQL(DATABASE_CREATE);
         }
 
@@ -76,7 +71,7 @@ public class ScanDataProvider extends ContentProvider {
                     "Upgrading database from version " +
                             oldVersion + " to " + newVersion +
                             ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS titles");
+            db.execSQL("DROP TABLE IF EXISTS wifi_scan_data");
             onCreate(db);
         }
     }
@@ -88,7 +83,7 @@ public class ScanDataProvider extends ContentProvider {
     static{
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks", WIFI_NETWORKS);
-        uriMatcher.addURI(PROVIDER_NAME, "wifi_clients/#", WIFI_ID);
+        uriMatcher.addURI(PROVIDER_NAME, "wifi_networks/#", WIFI_ID);
     }
 
     @Override
@@ -96,6 +91,7 @@ public class ScanDataProvider extends ContentProvider {
         Context context = getContext();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         scanDataDB = dbHelper.getWritableDatabase();
+        Log.e(TAG, "Created = "+(scanDataDB != null));
         return (scanDataDB != null);
     }
 

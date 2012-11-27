@@ -10,13 +10,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Gustav
- * Date: 22/11/2012
- * Time: 12:30
- * To change this template use File | Settings | File Templates.
- */
 public class ConfiguredNetworksProvider extends ContentProvider {
 
     public static final String TAG = "ConfiguredNetworksProvider";
@@ -53,7 +46,7 @@ public class ConfiguredNetworksProvider extends ContentProvider {
 
     //---for database use---
     private SQLiteDatabase wifiConfigDB;
-    private static final String DATABASE_NAME = "WifiData";
+    private static final String DATABASE_NAME = "WifiListWidgetDB";
     private static final String DATABASE_TABLE = "wifi_config";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_CREATE =
@@ -81,7 +74,7 @@ public class ConfiguredNetworksProvider extends ContentProvider {
                     "Upgrading database from version " +
                             oldVersion + " to " + newVersion +
                             ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS titles");
+            db.execSQL("DROP TABLE IF EXISTS wifi_config");
             onCreate(db);
         }
     }

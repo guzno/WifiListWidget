@@ -6,17 +6,9 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Gustav
- * Date: 21/11/2012
- * Time: 11:15
- * To change this template use File | Settings | File Templates.
- */
 public class WifiScanService extends IntentService {
 
     private static final String TAG = "WifiScanService";
@@ -48,7 +40,7 @@ public class WifiScanService extends IntentService {
         ScanResult scanResult;
 
         Iterator<ScanResult> iterator = scanResults.iterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             scanResult = iterator.next();
             values.put(ScanDataProvider.BSSID, scanResult.BSSID);
             values.put(ScanDataProvider.SSID, scanResult.SSID);

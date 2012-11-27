@@ -6,17 +6,15 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.StaticLayout;
-import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -41,13 +39,14 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
 
-
+        /*
         getLoaderManager().initLoader(0, null, this);
         wifiAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, null,
                 new String[] { ScanDataProvider.SSID, ScanDataProvider.LEVEL },
                 new int[] { android.R.id.text1, android.R.id.text2 }, 0);
         wifiList.setAdapter(wifiAdapter);
+        */
 
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
@@ -89,4 +88,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public void onLoaderReset(Loader<Cursor> loader) {
         wifiAdapter.swapCursor(null);
     }
+
+
 }
