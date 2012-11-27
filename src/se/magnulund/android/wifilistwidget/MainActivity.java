@@ -53,10 +53,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Cursor o = (Cursor)adapterView.getItemAtPosition(i);
-                Log.e(TAG, "o.getClass()" + o.getClass());
 
-                String networkSSID = o.getString(o.getColumnIndex(DatabaseHelper.SSID));
+                int networkId = o.getInt(o.getColumnIndex(DatabaseHelper.NETWORK_ID));
 
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(networkId, true);
+                wifiManager.reconnect();
+                /*
                 List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
                 for( WifiConfiguration wifiConfiguration : wifiConfigurationList ) {
                     Log.e(TAG, "komperin: " + wifiConfiguration.SSID + " " + networkSSID);
@@ -69,7 +72,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                         break;
                     }
                 }
-
+                */
             }
         });
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
