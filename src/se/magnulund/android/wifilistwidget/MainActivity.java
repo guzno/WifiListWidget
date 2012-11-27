@@ -31,7 +31,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     static final String[] WIFI_NETWORKS_SSID_PROJECTION = new String[]{
             DatabaseHelper._ID,
             DatabaseHelper.SSID,
-            DatabaseHelper.LEVEL
+            DatabaseHelper.LEVEL,
+            DatabaseHelper.NETWORK_ID
     };
 
     @Override
