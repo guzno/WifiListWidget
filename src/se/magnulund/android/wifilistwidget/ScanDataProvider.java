@@ -31,15 +31,14 @@ public class ScanDataProvider extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks/#", WIFI_ID);
     }
 
-    private SQLiteDatabase scanDataDB;
+    private DatabaseHelper dbHelper;
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        scanDataDB = dbHelper.getWritableDatabase();
+        dbHelper = new DatabaseHelper(context);
         Log.e(TAG, "onCreate");
-        return (scanDataDB != null);
+        return (dbHelper != null);
     }
 
     @Override
@@ -57,6 +56,8 @@ public class ScanDataProvider extends ContentProvider {
 
         if (sortOrder == null || sortOrder.equals(""))
             sortOrder = DatabaseHelper.LEVEL;
+
+        SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
 
         Cursor cursor = sqlBuilder.query(
                 scanDataDB,
@@ -88,8 +89,9 @@ public class ScanDataProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+        SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
+
         //---add a new wifi---
-        //checkIfTableExistsAndCreateTable();
         long rowID = scanDataDB.insert(
                 DatabaseHelper.DATABASE_TABLE, "", contentValues);
 
@@ -104,6 +106,8 @@ public class ScanDataProvider extends ContentProvider {
 
     @Override
     public int delete(Uri arg0, String arg1, String[] arg2) {
+        SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
+
         // arg0 = uri
         // arg1 = selection
         // arg2 = selectionArgs
@@ -136,6 +140,8 @@ public class ScanDataProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
+
         int count = 0;
         switch (uriMatcher.match(uri)) {
             case WIFI_NETWORKS:

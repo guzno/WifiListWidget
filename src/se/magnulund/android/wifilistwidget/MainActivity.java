@@ -38,14 +38,14 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         setContentView(R.layout.main);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
-        /*
+
         getLoaderManager().initLoader(0, null, this);
         wifiAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, null,
                 new String[]{DatabaseHelper.SSID, DatabaseHelper.LEVEL},
                 new int[]{android.R.id.text1, android.R.id.text2}, 0);
         wifiList.setAdapter(wifiAdapter);
-        */
+
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
         //wifiConfigurations = wifiManager.getConfiguredNetworks();

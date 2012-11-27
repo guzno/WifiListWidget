@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     //---for database use---
-    private static final String DATABASE_NAME = "WifiListWidgetDB";
+    private static final String DATABASE_NAME = "wifiListWidgetDB";
     public static final String DATABASE_TABLE = "wifiscan";
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_CREATE =
