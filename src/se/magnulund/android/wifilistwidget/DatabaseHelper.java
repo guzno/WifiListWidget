@@ -29,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String _ID = "_id";
     public static final String BSSID = "bssid";
     public static final String SSID = "ssid";
+    public static final String NETWORK_ID = "network_id";
     public static final String CAPABILITIES = "capabilities";
     public static final String FREQUENCY = "frequency";
     public static final String LEVEL = "level";
@@ -41,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_CREATE =
             "create table " + DATABASE_TABLE +
                     " (" + _ID + " integer primary key autoincrement, "
-                    + BSSID + " text not null, " + SSID + " text not null, "
+                    + BSSID + " text not null, " + SSID + " text not null, " + NETWORK_ID + " text not null, "
                     + CAPABILITIES + " text not null, " + FREQUENCY + " int not null, "
                     + LEVEL + " int not null);";
 

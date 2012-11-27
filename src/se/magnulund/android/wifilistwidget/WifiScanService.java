@@ -4,8 +4,11 @@ import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,15 +42,24 @@ public class WifiScanService extends IntentService {
         ContentValues values = new ContentValues();
         ScanResult scanResult;
 
+        HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
+        for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
+            wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
+        }
         Iterator<ScanResult> iterator = scanResults.iterator();
         while (iterator.hasNext()) {
             scanResult = iterator.next();
-            values.put(DatabaseHelper.BSSID, scanResult.BSSID);
-            values.put(DatabaseHelper.SSID, scanResult.SSID);
-            values.put(DatabaseHelper.CAPABILITIES, scanResult.capabilities);
-            values.put(DatabaseHelper.FREQUENCY, scanResult.frequency);
-            values.put(DatabaseHelper.LEVEL, scanResult.level);
-            getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
+            WifiConfiguration wifiConfiguration = wifiConfigurations.get(scanResult.SSID);
+            if (wifiConfiguration != null) {
+                values.put(DatabaseHelper.BSSID, scanResult.BSSID);
+                values.put(DatabaseHelper.SSID, scanResult.SSID);
+                values.put(DatabaseHelper.NETWORK_ID, wifiConfiguration.networkId);
+                values.put(DatabaseHelper.CAPABILITIES, scanResult.capabilities);
+                values.put(DatabaseHelper.FREQUENCY, scanResult.frequency);
+                values.put(DatabaseHelper.LEVEL, scanResult.level);
+                getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
+
+            }
         }
 
         Log.e(TAG, "new wifi scan results");
@@ -58,4 +70,6 @@ public class WifiScanService extends IntentService {
         super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
         Log.e(TAG, "stopped");
     }
+
+
 }

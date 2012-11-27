@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -100,4 +103,6 @@ public class WifiStateService extends IntentService {
         super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
         Log.e(TAG, "stopped");
     }
+
+
 }
