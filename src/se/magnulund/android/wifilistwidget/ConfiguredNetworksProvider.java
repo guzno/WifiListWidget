@@ -51,9 +51,9 @@ public class ConfiguredNetworksProvider extends ContentProvider {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_CREATE =
             "create table " + DATABASE_TABLE +
-                    " (_id integer primary key autoincrement, "
-                    + "bssid text not null, ssid text not null, "
-                    + "network_id int not null);";
+                    " ("+_ID+" integer primary key autoincrement, "
+                    +BSSID+" text not null, "+SSID+" text not null, "
+                    +NETWORK_ID+" int not null);";
 
     private static class DatabaseHelper extends SQLiteOpenHelper
     {
