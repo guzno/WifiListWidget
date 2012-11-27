@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_CREATE =
             "create table " + DATABASE_TABLE +
                     " (" + _ID + " integer primary key autoincrement, "
-                    + BSSID + " text not null, " + SSID + " text not null, " + NETWORK_ID + " text not null, "
+                    + BSSID + " text not null, " + SSID + " text not null, " + NETWORK_ID + " int not null, "
                     + CAPABILITIES + " text not null, " + FREQUENCY + " int not null, "
                     + LEVEL + " int not null);";
 
