@@ -6,17 +6,15 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -35,6 +33,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             DatabaseHelper.NETWORK_ID
     };
 
+    private TextView headerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +48,19 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 new String[]{DatabaseHelper.SSID, DatabaseHelper.LEVEL},
                 new int[]{android.R.id.text1, android.R.id.text2}, 0);
 
+        if (headerView == null) {
+            headerView = new TextView(MainActivity.this);
+            int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+            headerView.setPadding(padding, padding, padding, padding);
+            wifiList.addHeaderView(headerView);
+        }
+
         wifiList.setAdapter(wifiAdapter);
 
         wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Cursor o = (Cursor)adapterView.getItemAtPosition(i);
+                Cursor o = (Cursor) adapterView.getItemAtPosition(i);
 
                 int networkId = o.getInt(o.getColumnIndex(DatabaseHelper.NETWORK_ID));
 
@@ -107,15 +114,16 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         return new CursorLoader(this, uri, WIFI_NETWORKS_SSID_PROJECTION, null, null, DatabaseHelper.LEVEL + " DESC");
     }
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         wifiAdapter.swapCursor(data);
+
+        headerView.setText("Lest sken: " + new Date().toString());
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         wifiAdapter.swapCursor(null);
     }
-
-
 }

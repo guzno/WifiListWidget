@@ -50,7 +50,7 @@ public class WifiScanService extends IntentService {
         while (iterator.hasNext()) {
             scanResult = iterator.next();
             WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
-            Log.e(TAG, scanResult.SSID+" configured: " + (wifiConfiguration != null));
+            Log.e(TAG, scanResult.SSID + " configured: " + (wifiConfiguration != null));
             if (wifiConfiguration != null) {
                 values.put(DatabaseHelper.BSSID, scanResult.BSSID);
                 values.put(DatabaseHelper.SSID, scanResult.SSID);

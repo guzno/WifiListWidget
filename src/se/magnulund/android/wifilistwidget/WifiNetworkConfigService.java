@@ -3,7 +3,6 @@ package se.magnulund.android.wifilistwidget;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -39,7 +38,7 @@ public class WifiNetworkConfigService extends IntentService {
         WifiConfiguration wifiConfig;
 
         Iterator<WifiConfiguration> iterator = wifiConfigs.iterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             wifiConfig = iterator.next();
             values.put(ConfiguredNetworksProvider.BSSID, wifiConfig.BSSID);
             values.put(ConfiguredNetworksProvider.SSID, wifiConfig.SSID);
