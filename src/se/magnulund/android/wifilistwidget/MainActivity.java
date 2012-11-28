@@ -5,11 +5,15 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.*;
@@ -35,6 +39,12 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     private TextView headerView;
 
+    private Boolean hasMobileNetwork = false;
+
+    private Boolean mobileHotSpotActive = false;
+
+    private SharedPreferences preferences;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +58,26 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 new String[]{DatabaseHelper.SSID, DatabaseHelper.LEVEL},
                 new int[]{android.R.id.text1, android.R.id.text2}, 0);
 
+        preferences = getSharedPreferences("wifi_list_widget_settings", 0);
+
         if (headerView == null) {
             headerView = new TextView(MainActivity.this);
             int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
             headerView.setPadding(padding, padding, padding, padding);
             wifiList.addHeaderView(headerView);
+        }
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        for ( NetworkInfo networkInfo : connectivityManager.getAllNetworkInfo()) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE){
+                hasMobileNetwork = true;
+                Log.e(TAG, "This device has a mobile connection");
+                break;
+            }
+        }
+
+        if ( hasMobileNetwork == false ) {
+            Log.e(TAG, "This device has NO mobile connection");
         }
 
         wifiList.setAdapter(wifiAdapter);

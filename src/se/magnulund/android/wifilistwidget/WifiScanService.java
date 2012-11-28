@@ -40,43 +40,45 @@ public class WifiScanService extends IntentService {
 
         getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
 
-        ContentValues values = new ContentValues();
+        if (intent.getBooleanExtra("new_scan_results", false)) {
+            ContentValues values = new ContentValues();
 
-        HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
-        for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
-            wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
-        }
+            HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
+            for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
+                wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
+            }
 
-        Boolean mergeAPs = false; // måste skriva nått för att sätta och plocka det här värdet sen...
+            Boolean mergeAPs = false; // måste skriva nått för att sätta och plocka det här värdet sen...
 
-        if (mergeAPs) {
-            HashMap<String, ScanResult> SSIDs;
-            SSIDs = new HashMap<String, ScanResult>();
-            for (ScanResult scanResult : scanResults) {
-                ScanResult otherAP = SSIDs.get(scanResult.SSID);
-                if ( otherAP == null || scanResult.level > otherAP.level ) {
+            if (mergeAPs) {
+                HashMap<String, ScanResult> SSIDs;
+                SSIDs = new HashMap<String, ScanResult>();
+                for (ScanResult scanResult : scanResults) {
+                    ScanResult otherAP = SSIDs.get(scanResult.SSID);
+                    if (otherAP == null || scanResult.level > otherAP.level) {
                         SSIDs.put(scanResult.SSID, scanResult);
+                    }
+                }
+                scanResults = new ArrayList<ScanResult>(SSIDs.values());
+            }
+
+            for (ScanResult scanResult : scanResults) {
+                WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
+                //Log.e(TAG, scanResult.SSID + " configured: " + (wifiConfiguration != null));
+                if (wifiConfiguration != null) {
+                    values.put(DatabaseHelper.BSSID, scanResult.BSSID);
+                    values.put(DatabaseHelper.SSID, scanResult.SSID);
+                    values.put(DatabaseHelper.NETWORK_ID, wifiConfiguration.networkId);
+                    values.put(DatabaseHelper.CAPABILITIES, scanResult.capabilities);
+                    values.put(DatabaseHelper.FREQUENCY, scanResult.frequency);
+                    values.put(DatabaseHelper.LEVEL, scanResult.level);
+                    getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
+
                 }
             }
-            scanResults = new ArrayList<ScanResult>(SSIDs.values());
+
+            Log.e(TAG, "new wifi scan results");
         }
-
-        for ( ScanResult scanResult : scanResults ) {
-            WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
-            Log.e(TAG, scanResult.SSID + " configured: " + (wifiConfiguration != null));
-            if (wifiConfiguration != null) {
-                values.put(DatabaseHelper.BSSID, scanResult.BSSID);
-                values.put(DatabaseHelper.SSID, scanResult.SSID);
-                values.put(DatabaseHelper.NETWORK_ID, wifiConfiguration.networkId);
-                values.put(DatabaseHelper.CAPABILITIES, scanResult.capabilities);
-                values.put(DatabaseHelper.FREQUENCY, scanResult.frequency);
-                values.put(DatabaseHelper.LEVEL, scanResult.level);
-                getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
-
-            }
-        }
-
-        Log.e(TAG, "new wifi scan results");
     }
 
     @Override
