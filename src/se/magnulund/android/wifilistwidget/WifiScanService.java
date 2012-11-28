@@ -8,6 +8,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,15 +41,27 @@ public class WifiScanService extends IntentService {
         getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
 
         ContentValues values = new ContentValues();
-        ScanResult scanResult;
 
         HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
         for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
             wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
         }
-        Iterator<ScanResult> iterator = scanResults.iterator();
-        while (iterator.hasNext()) {
-            scanResult = iterator.next();
+
+        Boolean mergeAPs = false; // måste skriva nått för att sätta och plocka det här värdet sen...
+
+        if (mergeAPs) {
+            HashMap<String, ScanResult> SSIDs;
+            SSIDs = new HashMap<String, ScanResult>();
+            for (ScanResult scanResult : scanResults) {
+                ScanResult otherAP = SSIDs.get(scanResult.SSID);
+                if ( otherAP == null || scanResult.level > otherAP.level ) {
+                        SSIDs.put(scanResult.SSID, scanResult);
+                }
+            }
+            scanResults = new ArrayList<ScanResult>(SSIDs.values());
+        }
+
+        for ( ScanResult scanResult : scanResults ) {
             WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
             Log.e(TAG, scanResult.SSID + " configured: " + (wifiConfiguration != null));
             if (wifiConfiguration != null) {
