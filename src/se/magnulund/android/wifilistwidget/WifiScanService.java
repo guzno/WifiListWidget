@@ -3,6 +3,7 @@ package se.magnulund.android.wifilistwidget;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -48,7 +49,8 @@ public class WifiScanService extends IntentService {
                 wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
             }
 
-            Boolean mergeAPs = false; // måste skriva nått för att sätta och plocka det här värdet sen...
+            SharedPreferences preferences = getApplicationContext().getSharedPreferences(MainActivity.PREFERENCES_NAME, 0);
+            Boolean mergeAPs = preferences.getBoolean(MainActivity.PREFS_MERGE_APS, false);
 
             if (mergeAPs) {
                 HashMap<String, ScanResult> SSIDs;

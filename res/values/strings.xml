@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Wifi List Widget</string>
+    <string name="hotspot_active">Hotspot On</string>
+    <string name="hotspot_inactive">Hotspot Off</string>
+    <string name="merge_access_points">Merge Access Points</string>
+    <string name="menu_settings">Settings</string>
 </resources>
