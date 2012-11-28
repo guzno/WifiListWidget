@@ -6,14 +6,22 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +49,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         setContentView(R.layout.main);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
-        Button button = (Button) findViewById(R.id.cakeface);
+        /*Button button = (Button) findViewById(R.id.cakeface);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +61,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 }
             }
         });
+        */
 
         getLoaderManager().initLoader(0, null, this);
         wifiAdapter = new SimpleCursorAdapter(this,
@@ -76,7 +85,14 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
                 int networkId = o.getInt(o.getColumnIndex(DatabaseHelper.NETWORK_ID));
 
-                wifiManager.setWifiEnabled(true);
+                WifiApManager wifiApManager = new WifiApManager(MainActivity.this);
+                if (wifiApManager.isWifiApEnabled() == true) {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
+                }
+
+                if (wifiManager.isWifiEnabled() == false) {
+                    wifiManager.setWifiEnabled(true);
+                }
 
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(networkId, true);
@@ -139,5 +155,53 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         wifiAdapter.swapCursor(null);
+    }
+
+
+    private Boolean isMobileDataEnabled() {
+        Object connectivityService = getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) connectivityService;
+
+        try {
+            Class<?> c = Class.forName(cm.getClass().getName());
+            Method m = c.getDeclaredMethod("getMobileDataEnabled");
+            m.setAccessible(true);
+            return (Boolean) m.invoke(cm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_menu, menu);
+
+        if (1 == 2) {
+            MenuItem menuItem = menu.findItem(R.id.menu_hotspot);
+            menuItem.setVisible(false);
+            menuItem.setEnabled(false);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_hotspot: {
+                WifiApManager wifiApManager = new WifiApManager(MainActivity.this);
+
+                if (wifiApManager.isWifiApEnabled() == false) {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
+                } else {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
+                }
+            }
+            default: {
+                return super.onMenuItemSelected(featureId, item);
+            }
+        }
     }
 }
