@@ -35,13 +35,9 @@ public class WifiStateService extends IntentService {
         ComponentName wifiScanReceiver = new ComponentName(context, WifiScanReceiver.class);
         int wifiScanStatus = context.getPackageManager().getComponentEnabledSetting(wifiScanReceiver);
 
-        ComponentName wifiConfigReceiver = new ComponentName(context, WifiNetworkConfigReceiver.class);
-        int wifiConfigStatus = context.getPackageManager().getComponentEnabledSetting(wifiConfigReceiver);
-
         if (intent.getBooleanExtra("stop_services", false)) {
             disableComponent(context, wifiStateStatus, wifiStateReceiver);
             disableComponent(context, wifiScanStatus, wifiScanReceiver);
-            disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
         } else {
             if (wifiStateStatus == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) {
                 context.getPackageManager().setComponentEnabledSetting(wifiStateReceiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
@@ -55,22 +51,18 @@ public class WifiStateService extends IntentService {
                 case WifiManager.WIFI_STATE_ENABLED:
                     Log.e(TAG, "WIFI_STATE_ENABLED");
                     enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    enableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:
                     enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    enableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     Log.e(TAG, "WIFI_STATE_ENABLING");
                     break;
                 case WifiManager.WIFI_STATE_DISABLING:
                     Log.e(TAG, "WIFI_STATE_DISABLING");
                     disableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 case WifiManager.WIFI_STATE_DISABLED:
                     Log.e(TAG, "WIFI_STATE_DISABLED");
                     disableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 default:
                     break;

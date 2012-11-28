@@ -25,21 +25,12 @@
                 <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".WifiNetworkConfigReceiver">
-            <intent-filter>
-                <action android:name="android.net.wifi.NETWORK_IDS_CHANGED"/>
-            </intent-filter>
-        </receiver>
         <service android:name=".WifiStateService"
                  android:enabled="true"/>
         <service android:name=".WifiScanService"
                  android:enabled="true"/>
-        <service android:name=".WifiNetworkConfigService"
-                 android:enabled="true"/>
 
         <provider android:name="ScanDataProvider"
                   android:authorities="se.magnulund.provider.ScanData"/>
-        <provider android:name="ConfiguredNetworksProvider"
-                  android:authorities="se.magnulund.provider.ConfiguredNetworks"/>
     </application>
 </manifest>
