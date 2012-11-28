@@ -41,6 +41,18 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         setContentView(R.layout.main);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
+        Button button = (Button) findViewById(R.id.cakeface);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WifiApManager wifiApManager = new WifiApManager(MainActivity.this);
+                if (wifiApManager.isWifiApEnabled() == false) {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
+                } else {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
+                }
+            }
+        });
 
         getLoaderManager().initLoader(0, null, this);
         wifiAdapter = new SimpleCursorAdapter(this,
@@ -50,7 +62,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         if (headerView == null) {
             headerView = new TextView(MainActivity.this);
-            int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
             headerView.setPadding(padding, padding, padding, padding);
             wifiList.addHeaderView(headerView);
         }
@@ -63,6 +75,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 Cursor o = (Cursor) adapterView.getItemAtPosition(i);
 
                 int networkId = o.getInt(o.getColumnIndex(DatabaseHelper.NETWORK_ID));
+
+                wifiManager.setWifiEnabled(true);
 
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(networkId, true);
