@@ -16,7 +16,7 @@ public class WifiScanReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         intent.setClass(context, WifiScanService.class);
-
+        intent.putExtra("new_scan_results", true);
         context.startService(intent);
     }
 }

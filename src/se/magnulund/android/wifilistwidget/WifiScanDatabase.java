@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.HashMap;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Gustav
@@ -12,9 +14,9 @@ import android.util.Log;
  * Time: 22:40
  * To change this template use File | Settings | File Templates.
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class WifiScanDatabase extends SQLiteOpenHelper {
 
-    private static final String TAG = "DatabaseHelper";
+    private static final String TAG = "WifiScanDatabase";
 
     /*
 
@@ -33,6 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CAPABILITIES = "capabilities";
     public static final String FREQUENCY = "frequency";
     public static final String LEVEL = "level";
+    public static final String SIGNALSTRENGTH = "signal_strength";
+    public static final String CONNECTED = "connected";
 
 
     //---for database use---
@@ -44,9 +48,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     " (" + _ID + " integer primary key autoincrement, "
                     + BSSID + " text not null, " + SSID + " text not null, " + NETWORK_ID + " int not null, "
                     + CAPABILITIES + " text not null, " + FREQUENCY + " int not null, "
-                    + LEVEL + " int not null);";
+                    + LEVEL + " int not null, " + SIGNALSTRENGTH + " int not null, "
+                    + CONNECTED + " text not null );";
 
-    public DatabaseHelper(Context context) {
+    public WifiScanDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

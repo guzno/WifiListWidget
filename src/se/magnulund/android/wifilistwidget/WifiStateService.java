@@ -35,17 +35,13 @@ public class WifiStateService extends IntentService {
         ComponentName wifiScanReceiver = new ComponentName(context, WifiScanReceiver.class);
         int wifiScanStatus = context.getPackageManager().getComponentEnabledSetting(wifiScanReceiver);
 
-        ComponentName wifiConfigReceiver = new ComponentName(context, WifiNetworkConfigReceiver.class);
-        int wifiConfigStatus = context.getPackageManager().getComponentEnabledSetting(wifiConfigReceiver);
-
         if (intent.getBooleanExtra("stop_services", false)) {
             disableComponent(context, wifiStateStatus, wifiStateReceiver);
             disableComponent(context, wifiScanStatus, wifiScanReceiver);
-            disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
         } else {
-            if (wifiStateStatus == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) {
+            if (wifiStateStatus != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
                 context.getPackageManager().setComponentEnabledSetting(wifiStateReceiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-                Log.e(TAG, "Enabling " + wifiStateReceiver.getClassName() + " state: " + context.getPackageManager().getComponentEnabledSetting(wifiStateReceiver));
+                Log.e(TAG, "Enabling " + wifiStateReceiver.getShortClassName());
             }
 
 
@@ -55,22 +51,24 @@ public class WifiStateService extends IntentService {
                 case WifiManager.WIFI_STATE_ENABLED:
                     Log.e(TAG, "WIFI_STATE_ENABLED");
                     enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    enableComponent(context, wifiConfigStatus, wifiConfigReceiver);
+                    WifiManager wifiManager = ( WifiManager )getSystemService(WIFI_SERVICE);
+                    wifiManager.startScan();
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:
                     enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    enableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     Log.e(TAG, "WIFI_STATE_ENABLING");
                     break;
                 case WifiManager.WIFI_STATE_DISABLING:
                     Log.e(TAG, "WIFI_STATE_DISABLING");
                     disableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
                     break;
                 case WifiManager.WIFI_STATE_DISABLED:
                     Log.e(TAG, "WIFI_STATE_DISABLED");
                     disableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    disableComponent(context, wifiConfigStatus, wifiConfigReceiver);
+
+                    // Clear list of APs
+                    intent.setClass(context, WifiScanService.class);
+                    context.startService(intent);
                     break;
                 default:
                     break;
@@ -79,18 +77,18 @@ public class WifiStateService extends IntentService {
     }
 
     private void enableComponent(Context context, int status, ComponentName component) {
-        Log.e(TAG, " Check if Enabling " + component.getClassName() + " : " + (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED));
+        //Log.e(TAG, " Check if Enabling " + component.getClassName() + " : " + (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED));
         if (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-            Log.e(TAG, "Enabling " + component.getClassName());
+            Log.e(TAG, "Enabling " + component.getShortClassName());
         }
     }
 
     private void disableComponent(Context context, int status, ComponentName component) {
-        Log.e(TAG, " Check if Disabling " + component.getClassName() + " : " + (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED));
+        //Log.e(TAG, " Check if Disabling " + component.getClassName() + " : " + (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED));
         if (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            Log.e(TAG, "Disabling " + component.getClassName());
+            Log.e(TAG, "Disabling " + component.getShortClassName());
         }
     }
 
