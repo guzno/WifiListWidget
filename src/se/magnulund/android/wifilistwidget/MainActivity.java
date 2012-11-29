@@ -195,6 +195,16 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             case R.id.hotspot_toggle: {
                 Log.e(TAG, "If someone knew how to commit, things would happen now!!!");
                 Boolean hotSpotActive = !item.isChecked();
+
+                WifiApManager wifiApManager = new WifiApManager(MainActivity.this);
+
+                if (hotSpotActive) { //wifiApManager.isWifiApEnabled() == false) {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
+                } else {
+                    wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
+                    wifiApManager.setWifiEnabled(true);
+                }
+
                 item.setChecked(hotSpotActive);
                 item.setIcon((hotSpotActive) ? R.drawable.hotspot_active : R.drawable.hotspot_inactive);
                 item.setTitle((hotSpotActive) ? R.string.hotspot_active : R.string.hotspot_inactive);

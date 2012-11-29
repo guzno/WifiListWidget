@@ -31,7 +31,7 @@ public class WifiApManager {
 	public boolean setWifiApEnabled(WifiConfiguration wifiConfig, boolean enabled) {
 		try {
 			if (enabled) { // disable WiFi in any case
-				mWifiManager.setWifiEnabled(false);
+				setWifiEnabled(false);
 			}
 
 			Method method = mWifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
@@ -155,4 +155,8 @@ public class WifiApManager {
 
 		return result;
 	}
+
+    public void setWifiEnabled(boolean enabled) {
+        mWifiManager.setWifiEnabled(enabled);
+    }
 }

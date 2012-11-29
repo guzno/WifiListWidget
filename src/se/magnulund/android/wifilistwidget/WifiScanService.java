@@ -48,6 +48,11 @@ public class WifiScanService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        if (wifiManager == null) {
+            // once when enabling hotspot we received a null wifimanager - should handle more gracefully.
+            Log.e(TAG, "once when enabling hotspot we received a null wifimanager - should handle more gracefully.", new Exception("null wifimanager"));
+            return;
+        }
 
         List<ScanResult> scanResults = wifiManager.getScanResults();
 
