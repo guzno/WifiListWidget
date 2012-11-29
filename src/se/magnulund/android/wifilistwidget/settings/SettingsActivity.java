@@ -2,6 +2,7 @@ package se.magnulund.android.wifilistwidget.settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import se.magnulund.android.wifilistwidget.MainActivity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,8 +15,10 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        SettingsFragment settingsFragment = SettingsFragment.newInstance(extras.getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK));
         getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
+                .replace(android.R.id.content, settingsFragment)
                 .commit();
     }
 }

@@ -1,7 +1,10 @@
 package se.magnulund.android.wifilistwidget.settings;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
 
 /**
@@ -16,5 +19,20 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        if ( getArguments().getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK) == false) {
+            Preference hotSpotToggle = findPreference(MainActivity.PREFS_SHOW_HOTSPOT_TOGGLE);
+            hotSpotToggle.setEnabled(false);
+        }
+
+    }
+
+    public static SettingsFragment newInstance(Boolean hasMobileNetworks) {
+        SettingsFragment settingsFragment = new SettingsFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetworks);
+        settingsFragment.setArguments(args);
+
+        return settingsFragment;
     }
 }
