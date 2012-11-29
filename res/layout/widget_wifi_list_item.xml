@@ -42,7 +42,7 @@
             android:textSize="8dp"
             android:text="@string/wifi_list_item_level_label"/>
     <TextView
-            android:id="@+id/level"
+            android:id="@+id/widget_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_signal_strength"

@@ -59,6 +59,8 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_wifi_list_item);
         rv.setTextViewText(R.id.widget_ssid, ssid);
 
+        rv.setTextViewText(R.id.widget_level, ""+level+"");
+
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
         final Bundle extras = new Bundle();
