@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+import se.magnulund.android.wifilistwidget.R;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 
 import java.util.Random;
@@ -71,7 +72,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 @Override
                 public void run() {
                     final ContentResolver r = context.getContentResolver();
-                    final Cursor c = r.query(WeatherDataProvider.CONTENT_URI, null, null, null,
+                    final Cursor c = r.query(ScanDataProvider.CONTENT_URI, null, null, null,
                             null);
                     final int count = c.getCount();
                     final int maxDegrees = 96;
@@ -80,17 +81,17 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     // will trigger an onChange() in our data observer.
                     r.unregisterContentObserver(sDataObserver);
                     for (int i = 0; i < count; ++i) {
-                        final Uri uri = ContentUris.withAppendedId(WeatherDataProvider.CONTENT_URI, i);
+                        final Uri uri = ContentUris.withAppendedId(ScanDataProvider.CONTENT_URI, i);
                         final ContentValues values = new ContentValues();
                         values.put(WeatherDataProvider.Columns.TEMPERATURE,
                                 new Random().nextInt(maxDegrees));
                         r.update(uri, values, null, null);
                     }
-                    r.registerContentObserver(WeatherDataProvider.CONTENT_URI, true, sDataObserver);
+                    r.registerContentObserver(ScanDataProvider.CONTENT_URI, true, sDataObserver);
 
                     final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-                    final ComponentName cn = new ComponentName(context, WeatherWidgetProvider.class);
-                    mgr.notifyAppWidgetViewDataChanged(mgr.getAppWidgetIds(cn), R.id.weather_list);
+                    final ComponentName cn = new ComponentName(context, WifiWidgetProvider.class);
+                    mgr.notifyAppWidgetViewDataChanged(mgr.getAppWidgetIds(cn), R.id.widget_listview);
                 }
             });
         } else if (action.equals(CLICK_ACTION)) {
@@ -111,11 +112,11 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Specify the service to provide data for the collection widget.  Note that we need to
             // embed the appWidgetId via the data otherwise it will be ignored.
-            final Intent intent = new Intent(context, WeatherWidgetService.class);
+            final Intent intent = new Intent(context, WifiWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-            rv.setRemoteAdapter(appWidgetIds[i], R.id.weather_list, intent);
+            final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
+            rv.setRemoteAdapter(appWidgetIds[i], R.id.widget_listview, intent);
 
             // Set the empty view to be displayed if the collection is empty.  It must be a sibling
             // view of the collection view.

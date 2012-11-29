@@ -31,5 +31,13 @@
                 android:layout_below="@id/title_image"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"/>
+        <TextView android:id="@+id/empty_view"
+                  android:layout_height="match_parent"
+                  android:layout_width="match_parent"
+                  android:gravity="center"
+                  android:visibility="gone"
+                  android:textColor="#ffffff"
+                  android:text="No configured networks in range"
+                  android:textSize="20dp" />
     </RelativeLayout>
 </LinearLayout>
