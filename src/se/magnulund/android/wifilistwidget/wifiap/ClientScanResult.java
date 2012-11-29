@@ -1,4 +1,4 @@
-package se.magnulund.android.wifilistwidget;
+package se.magnulund.android.wifilistwidget.wifiap;
 
 public class ClientScanResult {
 	private String IpAddr;

@@ -1,4 +1,4 @@
-package se.magnulund.android.wifilistwidget;
+package se.magnulund.android.wifilistwidget.wifistate;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package se.magnulund.android.wifilistwidget;
+package se.magnulund.android.wifilistwidget.wifiscan;
 
 import android.content.*;
 import android.database.Cursor;

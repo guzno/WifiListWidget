@@ -1,4 +1,4 @@
-package se.magnulund.android.wifilistwidget;
+package se.magnulund.android.wifilistwidget.wifistate;
 
 import android.app.IntentService;
 import android.content.ComponentName;
@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import se.magnulund.android.wifilistwidget.wifiscan.WifiScanReceiver;
+import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 
 /**
  * Created with IntelliJ IDEA.

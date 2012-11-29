@@ -14,7 +14,6 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
+import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
+import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
+import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
+import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package se.magnulund.android.wifilistwidget;
+package se.magnulund.android.wifilistwidget.wifiap;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
