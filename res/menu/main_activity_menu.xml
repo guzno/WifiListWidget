@@ -5,7 +5,7 @@
           android:icon="@drawable/hotspot_icon"
           android:title="Toggle Hotspot"
           android:checkable="true"
-          android:showAsAction="withText|ifRoom"/>
+          android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menu_settings"
           android:title="@string/menu_settings"
           android:icon="@drawable/menu_settings"

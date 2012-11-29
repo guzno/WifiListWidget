@@ -31,12 +31,12 @@ public class ScanDataProvider extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks/#", WIFI_ID);
     }
 
-    private DatabaseHelper dbHelper;
+    private WifiScanDatabase dbHelper;
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        dbHelper = new DatabaseHelper(context);
+        dbHelper = new WifiScanDatabase(context);
         Log.e(TAG, "onCreate");
         return (dbHelper != null);
     }
@@ -47,15 +47,15 @@ public class ScanDataProvider extends ContentProvider {
 
         SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
         //checkIfTableExistsAndCreateTable();
-        sqlBuilder.setTables(DatabaseHelper.DATABASE_TABLE);
+        sqlBuilder.setTables(WifiScanDatabase.DATABASE_TABLE);
 
         if (uriMatcher.match(uri) == WIFI_ID)
             //---if getting a particular wifi---
             sqlBuilder.appendWhere(
-                    DatabaseHelper._ID + " = " + uri.getPathSegments().get(1));
+                    WifiScanDatabase._ID + " = " + uri.getPathSegments().get(1));
 
         if (sortOrder == null || sortOrder.equals(""))
-            sortOrder = DatabaseHelper.LEVEL;
+            sortOrder = WifiScanDatabase.LEVEL;
 
         SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
 
@@ -93,7 +93,7 @@ public class ScanDataProvider extends ContentProvider {
 
         //---add a new wifi---
         long rowID = scanDataDB.insert(
-                DatabaseHelper.DATABASE_TABLE, "", contentValues);
+                WifiScanDatabase.DATABASE_TABLE, "", contentValues);
 
         //---if added successfully---
         if (rowID > 0) {
@@ -117,15 +117,15 @@ public class ScanDataProvider extends ContentProvider {
         switch (uriMatcher.match(arg0)) {
             case WIFI_NETWORKS:
                 count = scanDataDB.delete(
-                        DatabaseHelper.DATABASE_TABLE,
+                        WifiScanDatabase.DATABASE_TABLE,
                         arg1,
                         arg2);
                 break;
             case WIFI_ID:
                 String id = arg0.getPathSegments().get(1);
                 count = scanDataDB.delete(
-                        DatabaseHelper.DATABASE_TABLE,
-                        DatabaseHelper._ID + " = " + id +
+                        WifiScanDatabase.DATABASE_TABLE,
+                        WifiScanDatabase._ID + " = " + id +
                                 (!TextUtils.isEmpty(arg1) ? " AND (" +
                                         arg1 + ')' : ""),
                         arg2);
@@ -146,16 +146,16 @@ public class ScanDataProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case WIFI_NETWORKS:
                 count = scanDataDB.update(
-                        DatabaseHelper.DATABASE_TABLE,
+                        WifiScanDatabase.DATABASE_TABLE,
                         values,
                         selection,
                         selectionArgs);
                 break;
             case WIFI_ID:
                 count = scanDataDB.update(
-                        DatabaseHelper.DATABASE_TABLE,
+                        WifiScanDatabase.DATABASE_TABLE,
                         values,
-                        DatabaseHelper._ID + " = " + uri.getPathSegments().get(1) +
+                        WifiScanDatabase._ID + " = " + uri.getPathSegments().get(1) +
                                 (!TextUtils.isEmpty(selection) ? " AND (" +
                                         selection + ')' : ""),
                         selectionArgs);
