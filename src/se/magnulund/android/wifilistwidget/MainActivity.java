@@ -79,10 +79,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 R.layout.wifi_list_item, null,
                 new String[]{WifiScanDatabase.SSID, WifiScanDatabase.BSSID, WifiScanDatabase.SIGNALSTRENGTH, WifiScanDatabase.LEVEL},
                 new int[]{R.id.ssid, R.id.bssid, R.id.signal_strength, R.id.level}, 0);
-        /*wifiAdapter = new SimpleCursorAdapter(this,
-                R.layout.wifi_list_item, null,
-                new String[]{WifiScanDatabase.SSID, WifiScanDatabase.CONNECTED, WifiScanDatabase.LEVEL, WifiScanDatabase.BSSID},
-                new int[]{R.id.ssid, R.id.connected, R.id.level, R.id.bssid}, 0);*/
 
         if (headerView == null) {
             headerView = new TextView(MainActivity.this);
@@ -113,24 +109,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     wifiManager.enableNetwork(networkId, true);
                     wifiManager.reconnect();
                 }
-                /*if (l == -1) { // naive header-check.
-                    if (wifiManager.isWifiEnabled()) {
-                        Toast.makeText(MainActivity.this, "with wifi enabled mabye we want to rescan here?", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "enabled wifi", Toast.LENGTH_SHORT).show();
-                        wifiManager.setWifiEnabled(true);
-                    }
-                } else {
-
-                    Cursor o = (Cursor) adapterView.getItemAtPosition(i);
-                    if (o != null) {
-                        int networkId = o.getInt(o.getColumnIndex(WifiScanDatabase.NETWORK_ID));
-
-                        wifiManager.disconnect();
-                        wifiManager.enableNetwork(networkId, true);
-                        wifiManager.reconnect();
-                    }
-                }*/
             }
         });
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
@@ -220,7 +198,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 return true;
             }
             case R.id.rescan: {
-                if (!mobileHotSpotActive) {
+                if (!mobileHotSpotActive && wifiManager.isWifiEnabled()) {
                     wifiManager.startScan();
                     headerView.setText("Scanning...");
                     return true;

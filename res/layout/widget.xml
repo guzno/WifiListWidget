@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:layout_marginTop="@dimen/widget_margin_top"
+              android:layout_marginBottom="@dimen/widget_margin_bottom"
+              android:layout_marginLeft="@dimen/widget_margin_left"
+              android:layout_marginRight="@dimen/widget_margin_right">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/title_image"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_signal_strength_best"
+                android:layout_alignParentLeft="true"/>
+        <TextView android:id="@+id/widget_title"
+                  android:layout_height="wrap_content"
+                  android:layout_width="wrap_content"
+                  android:layout_toRightOf="@id/title_image"
+                  android:paddingTop="6dp"
+                  android:paddingLeft="8dp"
+                  android:textSize="16dp"
+                  android:text="Wifi Networks"/>
+        <ListView  android:id="@+id/widget_listview"
+                android:layout_below="@id/title_image"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
+    </RelativeLayout>
+</LinearLayout>
