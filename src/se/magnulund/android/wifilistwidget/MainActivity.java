@@ -98,27 +98,39 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Cursor o = (Cursor) adapterView.getItemAtPosition(i);
 
-                int networkId = o.getInt(o.getColumnIndex(WifiScanDatabase.NETWORK_ID));
+                if (l == -1) { // naive header-check.
+                    if (wifiManager.isWifiEnabled()) {
+                        Toast.makeText(MainActivity.this, "with wifi enabled mabye we want to rescan here?", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "enabled wifi", Toast.LENGTH_SHORT).show();
+                        wifiManager.setWifiEnabled(true);
+                    }
+                } else {
 
-                wifiManager.disconnect();
-                wifiManager.enableNetwork(networkId, true);
-                wifiManager.reconnect();
-                /*
-                List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
-                for( WifiConfiguration wifiConfiguration : wifiConfigurationList ) {
-                    Log.e(TAG, "komperin: " + wifiConfiguration.SSID + " " + networkSSID);
-                    if(wifiConfiguration.SSID != null && wifiConfiguration.SSID.equals("\"" + networkSSID + "\"")) {
+                    Cursor o = (Cursor) adapterView.getItemAtPosition(i);
+                    if (o != null) {
+                        int networkId = o.getInt(o.getColumnIndex(WifiScanDatabase.NETWORK_ID));
 
                         wifiManager.disconnect();
-                        wifiManager.enableNetwork(wifiConfiguration.networkId, true);
+                        wifiManager.enableNetwork(networkId, true);
                         wifiManager.reconnect();
+                        /*
+                        List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
+                        for( WifiConfiguration wifiConfiguration : wifiConfigurationList ) {
+                            Log.e(TAG, "komperin: " + wifiConfiguration.SSID + " " + networkSSID);
+                            if(wifiConfiguration.SSID != null && wifiConfiguration.SSID.equals("\"" + networkSSID + "\"")) {
 
-                        break;
+                                wifiManager.disconnect();
+                                wifiManager.enableNetwork(wifiConfiguration.networkId, true);
+                                wifiManager.reconnect();
+
+                                break;
+                            }
+                        }
+                        */
                     }
                 }
-                */
             }
         });
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
