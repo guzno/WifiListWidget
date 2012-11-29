@@ -23,15 +23,6 @@
             android:src="@drawable/ic_signal_strength_ok"
             android:contentDescription="@string/wifi_list_item_signal_strength_desc"/>
     <TextView
-            android:id="@+id/connected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12dp"
-            android:layout_toLeftOf="@id/signal_strength"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
-            android:text="@string/wifi_list_item_connected"/>
-    <TextView
             android:id="@+id/bssid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

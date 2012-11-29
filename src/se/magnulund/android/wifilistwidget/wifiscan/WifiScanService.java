@@ -21,14 +21,14 @@ public class WifiScanService extends IntentService {
 
     public static final String KEY_PREF_MERGE_ACCESS_POINTS = "merge_access_points";
 
-    private static final int WIFI_SIGNAL_THRESHOLD_BEST = -50;
-    private static final int WIFI_SIGNAL_THRESHOLD_GOOD = -65;
-    private static final int WIFI_SIGNAL_THRESHOLD_OK = -75;
+    public static final int WIFI_SIGNAL_THRESHOLD_BEST = -50;
+    public static final int WIFI_SIGNAL_THRESHOLD_GOOD = -65;
+    public static final int WIFI_SIGNAL_THRESHOLD_OK = -75;
 
-    private static final int WIFI_SIGNAL_BEST = 4;
-    private static final int WIFI_SIGNAL_GOOD = 3;
-    private static final int WIFI_SIGNAL_OK = 2;
-    private static final int WIFI_SIGNAL_POOR = 1;
+    public static final int WIFI_SIGNAL_BEST = 4;
+    public static final int WIFI_SIGNAL_GOOD = 3;
+    public static final int WIFI_SIGNAL_OK = 2;
+    public static final int WIFI_SIGNAL_POOR = 1;
 
     public WifiScanService() {
         super("WifiListWidget_WifiScanService");
@@ -87,7 +87,7 @@ public class WifiScanService extends IntentService {
                 scanResults = new ArrayList<ScanResult>(SSIDs.values());
             }
 
-            String connected = "";
+            int connected = 0;
 
             for (ScanResult scanResult : scanResults) {
                 WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
@@ -101,11 +101,7 @@ public class WifiScanService extends IntentService {
                     values.put(WifiScanDatabase.LEVEL, scanResult.level);
                     values.put(WifiScanDatabase.SIGNALSTRENGTH, getSignalStrength(scanResult.level));
                     // DET HÄR BORDE JU VARA EN BOOL.... MEN DÅ MÅSTE JAG IN OCH RÅNKA I CURSORADAPTERN.....
-                    if ( currentBSSID.equals(scanResult.BSSID) ) {
-                        connected = "Connected";
-                    } else {
-                        connected = "";
-                    }
+                    connected = ( currentBSSID.equals(scanResult.BSSID) ) ? 1 : 0;
                     values.put(WifiScanDatabase.CONNECTED, connected);
                     getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                 }

@@ -72,10 +72,14 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         wifiList = (ListView) findViewById(R.id.wifi_list);
 
         getLoaderManager().initLoader(0, null, this);
-        wifiAdapter = new SimpleCursorAdapter(this,
+        wifiAdapter = new WifiCursorAdapter(this,
+                R.layout.wifi_list_item, null,
+                new String[]{WifiScanDatabase.SSID, WifiScanDatabase.BSSID, WifiScanDatabase.SIGNALSTRENGTH, WifiScanDatabase.LEVEL},
+                new int[]{R.id.ssid, R.id.bssid, R.id.signal_strength, R.id.level}, 0);
+        /*wifiAdapter = new SimpleCursorAdapter(this,
                 R.layout.wifi_list_item, null,
                 new String[]{WifiScanDatabase.SSID, WifiScanDatabase.CONNECTED, WifiScanDatabase.LEVEL, WifiScanDatabase.BSSID},
-                new int[]{R.id.ssid, R.id.connected, R.id.level, R.id.bssid}, 0);
+                new int[]{R.id.ssid, R.id.connected, R.id.level, R.id.bssid}, 0);*/
 
         if (headerView == null) {
             headerView = new TextView(MainActivity.this);

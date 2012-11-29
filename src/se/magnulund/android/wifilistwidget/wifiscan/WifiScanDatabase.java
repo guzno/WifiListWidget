@@ -49,7 +49,7 @@ public class WifiScanDatabase extends SQLiteOpenHelper {
                     + BSSID + " text not null, " + SSID + " text not null, " + NETWORK_ID + " int not null, "
                     + CAPABILITIES + " text not null, " + FREQUENCY + " int not null, "
                     + LEVEL + " int not null, " + SIGNALSTRENGTH + " int not null, "
-                    + CONNECTED + " text not null );";
+                    + CONNECTED + " int not null );";
 
     public WifiScanDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

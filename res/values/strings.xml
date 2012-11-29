@@ -10,9 +10,8 @@
     <string name="menu_settings">Settings</string>
     <string name="wifi_list_item_ssid">Wifi SSID</string>
     <string name="wifi_list_item_bssid">Wifi BSSID</string>
-    <string name="wifi_list_item_level">-40</string>
+    <string name="wifi_list_item_level">-0</string>
     <string name="wifi_list_item_level_label"> dbm</string>
-    <string name="wifi_list_item_connected">Connected</string>
     <string name="wifi_list_item_signal_strength_desc">Wifi signal strength</string>
     <string name="show_hotspot_toggle">Show HotSpot Toggle</string>
 </resources>
