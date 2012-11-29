@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.R;
@@ -29,9 +30,12 @@ import java.util.Random;
  * The weather widget's AppWidgetProvider.
  */
 public class WifiWidgetProvider extends AppWidgetProvider {
-    public static String CLICK_ACTION = "com.example.android.weatherlistwidget.CLICK";
-    public static String REFRESH_ACTION = "com.example.android.weatherlistwidget.REFRESH";
-    public static String EXTRA_CITY_ID = "com.example.android.weatherlistwidget.city";
+
+    private static final String TAG = "WifiWidgetProvider";
+
+    public static String CLICK_ACTION = "se.magnulund.android.wifilistwidget.widget.CLICK";
+    public static String REFRESH_ACTION = "se.magnulund.android.wifilistwidget.widget.REFRESH";
+    public static String EXTRA_CITY_ID = "se.magnulund.android.wifilistwidget.widget.city";
 
     private static HandlerThread sWorkerThread;
     private static Handler sWorkerQueue;
@@ -39,7 +43,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
     public WifiWidgetProvider() {
         // Start the worker thread
-        sWorkerThread = new HandlerThread("WeatherWidgetProvider-worker");
+        sWorkerThread = new HandlerThread("WifiWidgetProvider-worker");
         sWorkerThread.start();
         sWorkerQueue = new Handler(sWorkerThread.getLooper());
     }
@@ -62,6 +66,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
+        Log.e(TAG, "click?");
         if (action.equals(CLICK_ACTION)) {
             // Show a toast
             final int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -85,6 +90,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
             rv.setRemoteAdapter(R.id.widget_listview, intent);
 
+            Log.e(TAG, "UPDATE");
+
             // Set the empty view to be displayed if the collection is empty.  It must be a sibling
             // view of the collection view.
             rv.setEmptyView(R.id.widget_listview, R.id.empty_view);
@@ -92,7 +99,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             // Bind a click listener template for the contents of the weather list.  Note that we
             // need to update the intent's data if we set an extra, since the extras will be
             // ignored otherwise.
-            /*
+
             final Intent onClickIntent = new Intent(context, WifiWidgetProvider.class);
             onClickIntent.setAction(WifiWidgetProvider.CLICK_ACTION);
             onClickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
@@ -100,7 +107,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             final PendingIntent onClickPendingIntent = PendingIntent.getBroadcast(context, 0,
                     onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             rv.setPendingIntentTemplate(R.id.widget_listview, onClickPendingIntent);
-            */
+
             // Bind the click intent for the refresh button on the widget
             /*
             final Intent refreshIntent = new Intent(context, WifiWidgetProvider.class);
