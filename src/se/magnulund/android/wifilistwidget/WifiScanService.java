@@ -50,7 +50,7 @@ public class WifiScanService extends IntentService {
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         if (wifiManager == null) {
             // once when enabling hotspot we received a null wifimanager - should handle more gracefully.
-            Log.e(TAG, "once when enabling hotspot we received a null wifimanager - should handle more gracefully.", new Exception("null wifimanager"));
+            Log.e(TAG, "once when enabling hotspot we received a null WifiManager - should handle more gracefully.", new Exception("null WifiManager"));
             return;
         }
 
@@ -91,7 +91,7 @@ public class WifiScanService extends IntentService {
 
             for (ScanResult scanResult : scanResults) {
                 WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
-                //Log.e(TAG, scanResult.SSID + " configured: " + (wifiConfiguration != null));
+
                 if (wifiConfiguration != null) {
                     values.put(WifiScanDatabase.BSSID, scanResult.BSSID);
                     values.put(WifiScanDatabase.SSID, scanResult.SSID);
@@ -108,7 +108,6 @@ public class WifiScanService extends IntentService {
                     }
                     values.put(WifiScanDatabase.CONNECTED, connected);
                     getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
-
                 }
             }
 

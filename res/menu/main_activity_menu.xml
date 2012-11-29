@@ -6,10 +6,13 @@
           android:title="Toggle Hotspot"
           android:checkable="true"
           android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/rescan"
+          android:icon="@drawable/ic_menu_rescan"
+          android:title="Scan"
+          android:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/menu_settings"
           android:title="@string/menu_settings"
-          android:icon="@drawable/menu_settings"
+          android:icon="@drawable/ic_menu_settings"
           android:orderInCategory="100"
           android:showAsAction="ifRoom"/>
-
 </menu>

@@ -20,7 +20,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/signal_strength_ok"
+            android:src="@drawable/ic_signal_strength_ok"
             android:contentDescription="@string/wifi_list_item_signal_strength_desc"/>
     <TextView
             android:id="@+id/connected"

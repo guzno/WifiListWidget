@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.*;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     private Boolean mobileHotSpotActive = false;
 
     SharedPreferences preferences;
+    WifiApManager wifiApManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,12 +73,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 R.layout.wifi_list_item, null,
                 new String[]{WifiScanDatabase.SSID, WifiScanDatabase.CONNECTED, WifiScanDatabase.LEVEL, WifiScanDatabase.BSSID},
                 new int[]{R.id.ssid, R.id.connected, R.id.level, R.id.bssid}, 0);
-        /*
-        wifiAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, null,
-                new String[]{WifiScanDatabase.SSID, WifiScanDatabase.LEVEL},
-                new int[]{android.R.id.text1, android.R.id.text2}, 0);
-        */
 
         if (headerView == null) {
             headerView = new TextView(MainActivity.this);
@@ -89,6 +85,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         for (NetworkInfo networkInfo : connectivityManager.getAllNetworkInfo()) {
             if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
                 hasMobileNetwork = true;
+                wifiApManager = new WifiApManager(MainActivity.this);
                 break;
             }
         }
@@ -98,8 +95,15 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Cursor o = (Cursor) adapterView.getItemAtPosition(i);
+                if (o != null) {
+                    int networkId = o.getInt(o.getColumnIndex(WifiScanDatabase.NETWORK_ID));
 
-                if (l == -1) { // naive header-check.
+                    wifiManager.disconnect();
+                    wifiManager.enableNetwork(networkId, true);
+                    wifiManager.reconnect();
+                }
+                /*if (l == -1) { // naive header-check.
                     if (wifiManager.isWifiEnabled()) {
                         Toast.makeText(MainActivity.this, "with wifi enabled mabye we want to rescan here?", Toast.LENGTH_SHORT).show();
                     } else {
@@ -115,27 +119,11 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                         wifiManager.disconnect();
                         wifiManager.enableNetwork(networkId, true);
                         wifiManager.reconnect();
-                        /*
-                        List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
-                        for( WifiConfiguration wifiConfiguration : wifiConfigurationList ) {
-                            Log.e(TAG, "komperin: " + wifiConfiguration.SSID + " " + networkSSID);
-                            if(wifiConfiguration.SSID != null && wifiConfiguration.SSID.equals("\"" + networkSSID + "\"")) {
-
-                                wifiManager.disconnect();
-                                wifiManager.enableNetwork(wifiConfiguration.networkId, true);
-                                wifiManager.reconnect();
-
-                                break;
-                            }
-                        }
-                        */
                     }
-                }
+                }*/
             }
         });
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-
-        //wifiConfigurations = wifiManager.getConfiguredNetworks();
     }
 
     @Override
@@ -154,7 +142,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         Intent intent = new Intent(this, WifiStateService.class);
         intent.putExtra("stop_services", true);
         startService(intent);
-
     }
 
     @Override
@@ -168,8 +155,10 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         wifiAdapter.swapCursor(data);
-
-        headerView.setText("Lest sken: " + new Date().toString());
+        if (mobileHotSpotActive == false) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat();
+            headerView.setText("Last scan: " + dateFormat.format(new Date()));
+        }
     }
 
     @Override
@@ -182,21 +171,18 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_activity_menu, menu);
 
-        //MenuItem hotspotTogle = menu.findItem(R.id.hotspot_toggle);
-        //hotspotTogle.setChecked(IS_HOTSPOT_ENABLED());
-
         MenuItem hotspotToggle = menu.findItem(R.id.hotspot_toggle);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasMobileNetwork && preferences.getBoolean(PREFS_SHOW_HOTSPOT_TOGGLE, true)) {
-            hotspotToggle.setChecked(false);
-            hotspotToggle.setIcon((false) ? R.drawable.hotspot_active : R.drawable.hotspot_inactive);
-            hotspotToggle.setTitle((false) ? R.string.hotspot_active : R.string.hotspot_inactive);
+            mobileHotSpotActive = wifiApManager.isWifiApEnabled();
+            hotspotToggle.setChecked(mobileHotSpotActive);
+            hotspotToggle.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive);
+            hotspotToggle.setTitle((mobileHotSpotActive) ? R.string.hotspot_active : R.string.hotspot_inactive);
         } else {
             hotspotToggle.setVisible(false);
             hotspotToggle.setEnabled(false);
         }
-
 
         return super.onCreateOptionsMenu(menu);    //To change body of overridden methods use File | Settings | File Templates.
     }
@@ -205,22 +191,30 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.hotspot_toggle: {
-                Log.e(TAG, "If someone knew how to commit, things would happen now!!!");
-                Boolean hotSpotActive = !item.isChecked();
+                mobileHotSpotActive = !item.isChecked();
 
-                WifiApManager wifiApManager = new WifiApManager(MainActivity.this);
-
-                if (hotSpotActive) { //wifiApManager.isWifiApEnabled() == false) {
+                if (mobileHotSpotActive) { //(wifiApManager.isWifiApEnabled() == false) {
                     wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
+                    getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
+                    headerView.setText("Scan disabled when hotspot is active.");
                 } else {
                     wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
                     wifiApManager.setWifiEnabled(true);
+                    headerView.setText("Scanning...");
+                    wifiManager.startScan();
                 }
 
-                item.setChecked(hotSpotActive);
-                item.setIcon((hotSpotActive) ? R.drawable.hotspot_active : R.drawable.hotspot_inactive);
-                item.setTitle((hotSpotActive) ? R.string.hotspot_active : R.string.hotspot_inactive);
+                item.setChecked(mobileHotSpotActive);
+                item.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive);
+                item.setTitle((mobileHotSpotActive) ? R.string.hotspot_active : R.string.hotspot_inactive);
                 return true;
+            }
+            case R.id.rescan: {
+                if (!mobileHotSpotActive) {
+                    wifiManager.startScan();
+                    headerView.setText("Scanning...");
+                    return true;
+                }
             }
             case R.id.menu_settings: {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
