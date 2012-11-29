@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.database.ContentObserver;
 import android.os.Handler;
+import se.magnulund.android.wifilistwidget.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,6 @@ class WifiWidgetDataObserver extends ContentObserver {
         // In response, the factory's onDataSetChanged() will be called which will requery the
         // cursor for the new data.
         mAppWidgetManager.notifyAppWidgetViewDataChanged(
-                mAppWidgetManager.getAppWidgetIds(mComponentName), R.id.weather_list);
+                mAppWidgetManager.getAppWidgetIds(mComponentName), R.id.widget_listview);
     }
 }
