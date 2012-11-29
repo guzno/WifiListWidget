@@ -14,6 +14,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -225,10 +226,17 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     return true;
                 }
             }
+            case R.id.menu_wifi_settings: {
+                Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                startActivity(intent);
+                return true;
+            }
             case R.id.menu_settings: {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 intent.putExtra(DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
                 startActivity(intent);
+                return true;
             }
             default: {
                 return super.onOptionsItemSelected(item);
