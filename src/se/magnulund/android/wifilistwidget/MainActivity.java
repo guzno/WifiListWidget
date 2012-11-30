@@ -15,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.widget.*;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.settings.SettingsFragment;
+import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
@@ -107,18 +109,24 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     protected void onResume() {
         super.onResume();    //To change body of overridden methods use File | Settings | File Templates.
+        if (isWidgetActive() == false) {
+            Log.e(TAG, "Widget not active - starting service");
+            Intent intent = new Intent(this, WifiStateService.class);
+            startService(intent);
+        }
 
-        Intent intent = new Intent(this, WifiStateService.class);
-        startService(intent);
     }
 
     @Override
     protected void onPause() {
         super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
+        if (isWidgetActive() == false) {
+            Log.e(TAG, "Widget not active - stopping service");
+            Intent intent = new Intent(this, WifiStateService.class);
+            intent.putExtra("stop_services", true);
+            startService(intent);
+        }
 
-        Intent intent = new Intent(this, WifiStateService.class);
-        intent.putExtra("stop_services", true);
-        startService(intent);
     }
 
     @Override
@@ -209,5 +217,9 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 return super.onOptionsItemSelected(item);
             }
         }
+    }
+
+    private Boolean isWidgetActive() {
+        return preferences.getBoolean(WifiWidgetProvider.WIDGET_ACTIVE, false);
     }
 }

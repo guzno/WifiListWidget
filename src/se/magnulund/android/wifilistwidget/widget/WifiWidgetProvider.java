@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -34,6 +35,8 @@ import java.util.Random;
 public class WifiWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WifiWidgetProvider";
+
+    public static final String WIDGET_ACTIVE = "widget_active";
 
     public static String CLICK_ACTION = "se.magnulund.android.wifilistwidget.widget.CLICK";
     public static String REFRESH_ACTION = "se.magnulund.android.wifilistwidget.widget.REFRESH";
@@ -65,6 +68,16 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             sDataObserver = new WifiWidgetDataObserver(mgr, cn, sWorkerQueue);
             r.registerContentObserver(ScanDataProvider.CONTENT_URI, true, sDataObserver);
         }
+        setWidgetActive(context, true);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+        Intent intent = new Intent(context, WifiStateService.class);
+        intent.putExtra("stop_services", true);
+        context.startService(intent);
+        setWidgetActive(context, false);
     }
 
     @Override
@@ -130,5 +143,12 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+    private void setWidgetActive(Context context, Boolean active){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putBoolean(WIDGET_ACTIVE, active);
+        edit.commit();
     }
 }

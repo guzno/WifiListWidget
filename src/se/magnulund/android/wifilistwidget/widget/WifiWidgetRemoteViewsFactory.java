@@ -43,6 +43,8 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         }
     }
 
+
+
     public int getCount() {
         return mCursor.getCount();
     }
