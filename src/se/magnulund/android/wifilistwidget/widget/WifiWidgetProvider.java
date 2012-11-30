@@ -85,7 +85,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         final String action = intent.getAction();
 
         WifiManager wifiManager = (WifiManager) ctx.getSystemService(WifiWidgetService.WIFI_SERVICE);
-        Log.e(TAG, "click?");
+        Log.e(TAG, "Action: "+action);
         if (action.equals(CLICK_ACTION)) {
             // Show a toast
 
@@ -103,7 +103,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Update each of the widgets with the remote adapter
-        Log.e(TAG, "UPDATE");
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Specify the service to provide data for the collection widget.  Note that we need to
             // embed the appWidgetId via the data otherwise it will be ignored.
@@ -112,8 +111,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
             rv.setRemoteAdapter(R.id.widget_listview, intent);
-
-            Log.e(TAG, "UPDATE in loop");
 
             // Set the empty view to be displayed if the collection is empty.  It must be a sibling
             // view of the collection view.

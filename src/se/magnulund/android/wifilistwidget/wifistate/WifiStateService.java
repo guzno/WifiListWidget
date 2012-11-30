@@ -23,7 +23,7 @@ public class WifiStateService extends IntentService {
 
     public WifiStateService() {
         super("WifiListWidget_WifiUpdateService");
-        Log.e(TAG, "Constructed");
+        //Log.e(TAG, "Constructed");
     }
 
     @Override
@@ -96,7 +96,7 @@ public class WifiStateService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
-        Log.e(TAG, "stopped");
+        //Log.e(TAG, "stopped");
     }
 
 

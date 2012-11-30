@@ -42,7 +42,6 @@ public class ScanDataProvider extends ContentProvider {
     public boolean onCreate() {
         Context context = getContext();
         dbHelper = new WifiScanDatabase(context);
-        Log.e(TAG, "onCreate");
         return (dbHelper != null);
     }
 

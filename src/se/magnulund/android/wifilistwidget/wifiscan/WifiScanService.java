@@ -32,7 +32,7 @@ public class WifiScanService extends IntentService {
 
     public WifiScanService() {
         super("WifiListWidget_WifiScanService");
-        Log.e(TAG, "Constructed");
+        //Log.e(TAG, "Constructed");
     }
 
     /*
@@ -100,7 +100,6 @@ public class WifiScanService extends IntentService {
                     values.put(WifiScanDatabase.FREQUENCY, scanResult.frequency);
                     values.put(WifiScanDatabase.LEVEL, scanResult.level);
                     values.put(WifiScanDatabase.SIGNALSTRENGTH, getSignalStrength(scanResult.level));
-                    // DET HÄR BORDE JU VARA EN BOOL.... MEN DÅ MÅSTE JAG IN OCH RÅNKA I CURSORADAPTERN.....
                     connected = ( currentBSSID.equals(scanResult.BSSID) ) ? 1 : 0;
                     values.put(WifiScanDatabase.CONNECTED, connected);
                     getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
@@ -133,7 +132,7 @@ public class WifiScanService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
-        Log.e(TAG, "stopped");
+        //Log.e(TAG, "stopped");
     }
 
 
