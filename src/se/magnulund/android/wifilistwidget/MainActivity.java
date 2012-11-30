@@ -45,16 +45,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     SimpleCursorAdapter wifiAdapter;
     private WifiManager wifiManager;
 
-    static final String[] WIFI_NETWORKS_SSID_PROJECTION = new String[]{
-            WifiScanDatabase._ID,
-            WifiScanDatabase.SSID,
-            WifiScanDatabase.BSSID,
-            WifiScanDatabase.LEVEL,
-            WifiScanDatabase.SIGNALSTRENGTH,
-            WifiScanDatabase.CONNECTED,
-            WifiScanDatabase.NETWORK_ID
-    };
-
     private TextView headerView;
 
     private Boolean hasMobileNetwork = false;
@@ -135,7 +125,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
         Uri uri = ScanDataProvider.CONTENT_URI;
-        return new CursorLoader(this, uri, WIFI_NETWORKS_SSID_PROJECTION, null, null, WifiScanDatabase.LEVEL + " DESC");
+        return new CursorLoader(this, uri, WifiScanDatabase.WIFI_NETWORKS_SSID_PROJECTION, null, null, WifiScanDatabase.LEVEL + " DESC");
     }
 
 

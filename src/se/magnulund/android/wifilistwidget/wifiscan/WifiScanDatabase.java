@@ -38,6 +38,16 @@ public class WifiScanDatabase extends SQLiteOpenHelper {
     public static final String SIGNALSTRENGTH = "signal_strength";
     public static final String CONNECTED = "connected";
 
+    public static final String[] WIFI_NETWORKS_SSID_PROJECTION = new String[]{
+            WifiScanDatabase._ID,
+            WifiScanDatabase.SSID,
+            WifiScanDatabase.BSSID,
+            WifiScanDatabase.LEVEL,
+            WifiScanDatabase.SIGNALSTRENGTH,
+            WifiScanDatabase.CONNECTED,
+            WifiScanDatabase.NETWORK_ID
+    };
+
 
     //---for database use---
     private static final String DATABASE_NAME = "wifiListWidgetDB";

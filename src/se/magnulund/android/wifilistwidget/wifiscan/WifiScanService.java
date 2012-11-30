@@ -56,7 +56,7 @@ public class WifiScanService extends IntentService {
 
         List<ScanResult> scanResults = wifiManager.getScanResults();
 
-        getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
+        getContentResolver().delete(ScanDataProvider.CONTENT_URI_NO_NOTIFY, null, null);
 
         if (intent.getBooleanExtra("new_scan_results", false)) {
             ContentValues values = new ContentValues();

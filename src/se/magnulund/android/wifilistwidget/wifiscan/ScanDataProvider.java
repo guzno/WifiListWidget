@@ -20,8 +20,12 @@ public class ScanDataProvider extends ContentProvider {
     public static final Uri CONTENT_URI =
             Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks");
 
+    public static final Uri CONTENT_URI_NO_NOTIFY =
+            Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks/no_notify");
+
     private static final int WIFI_NETWORKS = 1;
     private static final int WIFI_ID = 2;
+    private static final int WIFI_NETWORKS_NO_NOTIFY = 3;
 
     private static final UriMatcher uriMatcher;
 
@@ -29,6 +33,7 @@ public class ScanDataProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks", WIFI_NETWORKS);
         uriMatcher.addURI(PROVIDER_NAME, "wifi_networks/#", WIFI_ID);
+        uriMatcher.addURI(PROVIDER_NAME, "wifi_networks/no_notify", WIFI_NETWORKS_NO_NOTIFY);
     }
 
     private WifiScanDatabase dbHelper;
@@ -108,14 +113,10 @@ public class ScanDataProvider extends ContentProvider {
     public int delete(Uri arg0, String arg1, String[] arg2) {
         SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
 
-        // arg0 = uri
-        // arg1 = selection
-        // arg2 = selectionArgs
+        int uriMatch = uriMatcher.match(arg0);
         int count = 0;
-        //checkIfTableExistsAndCreateTable();
-
-        switch (uriMatcher.match(arg0)) {
-            case WIFI_NETWORKS:
+        switch (uriMatch) {
+            case WIFI_NETWORKS|WIFI_NETWORKS_NO_NOTIFY:
                 count = scanDataDB.delete(
                         WifiScanDatabase.DATABASE_TABLE,
                         arg1,
@@ -134,17 +135,19 @@ public class ScanDataProvider extends ContentProvider {
                 throw new IllegalArgumentException(
                         "Unknown URI " + arg0);
         }
-        getContext().getContentResolver().notifyChange(arg0, null);
+        if (uriMatch != WIFI_NETWORKS_NO_NOTIFY){
+            getContext().getContentResolver().notifyChange(arg0, null);
+        }
         return count;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
-
+        int uriMatch = uriMatcher.match(uri);
         int count = 0;
-        switch (uriMatcher.match(uri)) {
-            case WIFI_NETWORKS:
+        switch (uriMatch) {
+            case WIFI_NETWORKS|WIFI_NETWORKS_NO_NOTIFY:
                 count = scanDataDB.update(
                         WifiScanDatabase.DATABASE_TABLE,
                         values,
@@ -164,7 +167,9 @@ public class ScanDataProvider extends ContentProvider {
                 throw new IllegalArgumentException(
                         "Unknown URI " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (uriMatch != WIFI_NETWORKS_NO_NOTIFY){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return count;
     }
 }
