@@ -70,13 +70,18 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
+
+        WifiManager wifiManager = (WifiManager) ctx.getSystemService(WifiWidgetService.WIFI_SERVICE);
         Log.e(TAG, "click?");
         if (action.equals(CLICK_ACTION)) {
             // Show a toast
-            final int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-            final String ssid = intent.getStringExtra(WifiScanDatabase.SSID);
-            Toast.makeText(ctx, ssid, Toast.LENGTH_SHORT).show();
+
+            final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
+            if ( networkId > -1 ){
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(networkId, true);
+                wifiManager.reconnect();
+            }
         }
 
         super.onReceive(ctx, intent);

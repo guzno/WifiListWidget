@@ -48,6 +48,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         // Get the data for this position from the content provider
         String ssid = "";
         int level = 0;
+        int networkID;
         if (mCursor.moveToPosition(position)) {
             final int ssidColumnID = mCursor.getColumnIndex(WifiScanDatabase.SSID);
             final int levelColumnID = mCursor.getColumnIndex(
@@ -60,11 +61,14 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         rv.setTextViewText(R.id.widget_ssid, ssid);
 
         rv.setTextViewText(R.id.widget_level, ""+level+"");
+        final int networkIDColumnID = mCursor.getColumnIndex(
+                WifiScanDatabase.NETWORK_ID);
+        networkID = mCursor.getInt(networkIDColumnID);
 
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
         final Bundle extras = new Bundle();
-        extras.putString(WifiScanDatabase.SSID, ssid);
+        extras.putInt(WifiScanDatabase.NETWORK_ID, networkID);
         fillInIntent.putExtras(extras);
         rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
 
