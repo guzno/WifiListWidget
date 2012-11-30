@@ -46,14 +46,13 @@ public class WifiStateService extends IntentService {
                 Log.e(TAG, "Enabling " + wifiStateReceiver.getShortClassName());
             }
 
-
-            int wifiState = intent.getIntExtra("wifi_state", -1);
+            WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+            int wifiState = wifiManager.getWifiState();
 
             switch (wifiState) {
                 case WifiManager.WIFI_STATE_ENABLED:
                     Log.e(TAG, "WIFI_STATE_ENABLED");
                     enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    WifiManager wifiManager = ( WifiManager )getSystemService(WIFI_SERVICE);
                     wifiManager.startScan();
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:

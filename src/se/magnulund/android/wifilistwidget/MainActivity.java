@@ -119,7 +119,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         super.onResume();    //To change body of overridden methods use File | Settings | File Templates.
 
         Intent intent = new Intent(this, WifiStateService.class);
-        intent.putExtra("wifi_state", wifiManager.getWifiState());
         startService(intent);
     }
 
