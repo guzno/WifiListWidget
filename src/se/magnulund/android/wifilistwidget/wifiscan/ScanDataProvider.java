@@ -13,14 +13,11 @@ public class ScanDataProvider extends ContentProvider {
 
     public static final String TAG = "ScanDataProvider";
 
-    public static final String PROVIDER_NAME =
-            "se.magnulund.provider.ScanData";
+    public static final String PROVIDER_NAME = "se.magnulund.provider.ScanData";
 
-    public static final Uri CONTENT_URI =
-            Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks");
+    public static final Uri CONTENT_URI = Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks");
 
-    public static final Uri CONTENT_URI_NO_NOTIFY =
-            Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks/no_notify");
+    public static final Uri CONTENT_URI_NO_NOTIFY = Uri.parse("content://" + PROVIDER_NAME + "/wifi_networks/no_notify");
 
     private static final int WIFI_NETWORKS = 1;
     private static final int WIFI_ID = 2;
@@ -45,8 +42,7 @@ public class ScanDataProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
         //checkIfTableExistsAndCreateTable();
@@ -54,8 +50,7 @@ public class ScanDataProvider extends ContentProvider {
 
         if (uriMatcher.match(uri) == WIFI_ID)
             //---if getting a particular wifi---
-            sqlBuilder.appendWhere(
-                    WifiScanDatabase._ID + " = " + uri.getPathSegments().get(1));
+            sqlBuilder.appendWhere(WifiScanDatabase._ID + " = " + uri.getPathSegments().get(1));
 
         if (sortOrder == null || sortOrder.equals(""))
             sortOrder = WifiScanDatabase.LEVEL;
@@ -79,10 +74,8 @@ public class ScanDataProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (uriMatcher.match(uri)) {
-            //---get all books---
             case WIFI_NETWORKS:
                 return "vnd.android.cursor.dir/vnd.magnulund.ScanData ";
-            //---get a particular book---
             case WIFI_ID:
                 return "vnd.android.cursor.item/vnd.magnulund.ScanData ";
             default:
@@ -95,8 +88,7 @@ public class ScanDataProvider extends ContentProvider {
         SQLiteDatabase scanDataDB = dbHelper.getWritableDatabase();
 
         //---add a new wifi---
-        long rowID = scanDataDB.insert(
-                WifiScanDatabase.DATABASE_TABLE, "", contentValues);
+        long rowID = scanDataDB.insert(WifiScanDatabase.DATABASE_TABLE, "", contentValues);
 
         //---if added successfully---
         if (rowID > 0) {
@@ -162,12 +154,13 @@ public class ScanDataProvider extends ContentProvider {
                         selectionArgs);
                 break;
             default:
-                throw new IllegalArgumentException(
-                        "Unknown URI " + uri);
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
+
         if (uriMatch != WIFI_NETWORKS_NO_NOTIFY) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
+
         return count;
     }
 }

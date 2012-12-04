@@ -8,5 +8,6 @@
         android:resizeMode="vertical"
         android:minResizeWidth="250dp"
         android:minResizeHeight="110dp"
+        android:configure="se.magnulund.android.wifilistwidget.widget.WifiWidgetConfigurationActivity"
         android:previewImage="@drawable/ic_signal_strength_best">
 </appwidget-provider>
