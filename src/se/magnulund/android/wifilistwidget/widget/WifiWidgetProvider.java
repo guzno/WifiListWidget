@@ -124,13 +124,17 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             rv.setPendingIntentTemplate(R.id.widget_listview, onClickPendingIntent);
 
             // Bind the click intent for the refresh button on the widget
-            /*
-            final Intent refreshIntent = new Intent(context, WifiWidgetProvider.class);
-            refreshIntent.setAction(WifiWidgetProvider.REFRESH_ACTION);
-            final PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0,
-                    refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setOnClickPendingIntent(R.id.refresh, refreshPendingIntent);
-            */
+            final Intent wifiToggleIntent = new Intent(context, WifiWidgetProvider.class);
+            wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
+            final PendingIntent wifiTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
+                    wifiToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, wifiTogglePendingIntent);
+
+            final Intent hotSpotToggleIntent = new Intent(context, WifiWidgetProvider.class);
+            hotSpotToggleIntent.setAction(WifiWidgetProvider.HOTSPOT_TOGGLE_ACTION);
+            final PendingIntent hotSpotTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
+                    hotSpotToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, hotSpotTogglePendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
