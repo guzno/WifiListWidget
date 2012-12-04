@@ -100,7 +100,7 @@ public class WifiScanService extends IntentService {
                     values.put(WifiScanDatabase.FREQUENCY, scanResult.frequency);
                     values.put(WifiScanDatabase.LEVEL, scanResult.level);
                     values.put(WifiScanDatabase.SIGNALSTRENGTH, getSignalStrength(scanResult.level));
-                    connected = ( currentBSSID.equals(scanResult.BSSID) ) ? 1 : 0;
+                    connected = (currentBSSID.equals(scanResult.BSSID)) ? 1 : 0;
                     values.put(WifiScanDatabase.CONNECTED, connected);
                     getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                 }

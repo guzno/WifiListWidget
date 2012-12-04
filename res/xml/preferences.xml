@@ -4,7 +4,7 @@
             android:key="merge_access_points"
             android:title="@string/merge_access_points"
             android:summary="@string/merge_access_points_summary"
-            android:defaultValue="false" />
+            android:defaultValue="false"/>
     <CheckBoxPreference
             android:key="show_hotspot_toggle"
             android:title="@string/show_hotspot_toggle"

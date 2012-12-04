@@ -21,9 +21,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
-import se.magnulund.android.wifilistwidget.settings.SettingsFragment;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
@@ -33,7 +35,6 @@ import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class ScanDataProvider extends ContentProvider {
 
@@ -115,7 +114,7 @@ public class ScanDataProvider extends ContentProvider {
         int uriMatch = uriMatcher.match(arg0);
         int count = 0;
         switch (uriMatch) {
-            case WIFI_NETWORKS|WIFI_NETWORKS_NO_NOTIFY:
+            case WIFI_NETWORKS | WIFI_NETWORKS_NO_NOTIFY:
                 count = scanDataDB.delete(
                         WifiScanDatabase.DATABASE_TABLE,
                         arg1,
@@ -134,7 +133,7 @@ public class ScanDataProvider extends ContentProvider {
                 throw new IllegalArgumentException(
                         "Unknown URI " + arg0);
         }
-        if (uriMatch != WIFI_NETWORKS_NO_NOTIFY){
+        if (uriMatch != WIFI_NETWORKS_NO_NOTIFY) {
             getContext().getContentResolver().notifyChange(arg0, null);
         }
         return count;
@@ -146,7 +145,7 @@ public class ScanDataProvider extends ContentProvider {
         int uriMatch = uriMatcher.match(uri);
         int count = 0;
         switch (uriMatch) {
-            case WIFI_NETWORKS|WIFI_NETWORKS_NO_NOTIFY:
+            case WIFI_NETWORKS | WIFI_NETWORKS_NO_NOTIFY:
                 count = scanDataDB.update(
                         WifiScanDatabase.DATABASE_TABLE,
                         values,
@@ -166,7 +165,7 @@ public class ScanDataProvider extends ContentProvider {
                 throw new IllegalArgumentException(
                         "Unknown URI " + uri);
         }
-        if (uriMatch != WIFI_NETWORKS_NO_NOTIFY){
+        if (uriMatch != WIFI_NETWORKS_NO_NOTIFY) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return count;

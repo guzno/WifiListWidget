@@ -2,7 +2,6 @@ package se.magnulund.android.wifilistwidget;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,7 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
         boolean connected = (c.getInt(columnIndex) == 1);
 
         ImageView imageView = (ImageView) v.findViewById(R.id.signal_strength);
-        imageView.setImageResource( getSignalStrengthIcon(signalStrength, connected) );
+        imageView.setImageResource(getSignalStrengthIcon(signalStrength, connected));
 
         return v;
     }
@@ -113,10 +112,10 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
         boolean connected = (c.getInt(columnIndex) == 1);
 
         ImageView imageView = (ImageView) v.findViewById(R.id.signal_strength);
-        imageView.setImageResource( getSignalStrengthIcon(signalStrength, connected) );
+        imageView.setImageResource(getSignalStrengthIcon(signalStrength, connected));
     }
 
-    private int getSignalStrengthIcon(int signalStrength, Boolean connected){
+    private int getSignalStrengthIcon(int signalStrength, Boolean connected) {
         int icon;
         if (connected) {
             switch (signalStrength) {
@@ -136,7 +135,7 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
                     icon = R.drawable.ic_signal_strength_poor_connected;
                     break;
             }
-        }   else {
+        } else {
             switch (signalStrength) {
                 case WifiScanService.WIFI_SIGNAL_BEST:
                     icon = R.drawable.ic_signal_strength_best;

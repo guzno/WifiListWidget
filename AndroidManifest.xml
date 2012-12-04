@@ -29,17 +29,17 @@
         </receiver>
         <receiver android:name=".widget.WifiWidgetProvider">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <!-- This specifies the widget provider info -->
             <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widgetinfo" />
+                       android:resource="@xml/widgetinfo"/>
         </receiver>
 
         <!-- The service serving the RemoteViews to the collection widget -->
         <service android:name=".widget.WifiWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS"
-                 android:exported="false" />
+                 android:exported="true"/>
         <service android:name=".wifistate.WifiStateService"
                  android:enabled="true"/>
         <service android:name=".wifiscan.WifiScanService"

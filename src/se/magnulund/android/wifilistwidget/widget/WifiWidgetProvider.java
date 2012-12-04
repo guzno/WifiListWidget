@@ -4,8 +4,6 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.*;
-import android.database.ContentObserver;
-import android.database.Cursor;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -13,13 +11,10 @@ import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.R;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
-
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -85,12 +80,12 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         final String action = intent.getAction();
 
         WifiManager wifiManager = (WifiManager) ctx.getSystemService(WifiWidgetService.WIFI_SERVICE);
-        Log.e(TAG, "Action: "+action);
+        Log.e(TAG, "Action: " + action);
         if (action.equals(CLICK_ACTION)) {
             // Show a toast
 
             final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
-            if ( networkId > -1 ){
+            if (networkId > -1) {
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(networkId, true);
                 wifiManager.reconnect();
@@ -142,7 +137,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
-    private void setWidgetActive(Context context, Boolean active){
+    private void setWidgetActive(Context context, Boolean active) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor edit = prefs.edit();
         edit.putBoolean(WIDGET_ACTIVE, active);

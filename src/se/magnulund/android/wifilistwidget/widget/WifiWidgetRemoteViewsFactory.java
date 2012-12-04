@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.TextView;
 import se.magnulund.android.wifilistwidget.R;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
@@ -44,7 +42,6 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
     }
 
 
-
     public int getCount() {
         return mCursor.getCount();
     }
@@ -58,23 +55,27 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         int level = 0;
         int networkID = 0;
         if (mCursor.moveToPosition(position)) {
-            final int ssidColumnID = mCursor.getColumnIndex(WifiScanDatabase.SSID);
-            final int levelColumnID = mCursor.getColumnIndex(
-                    WifiScanDatabase.LEVEL);
-            final int networkIDColumnID = mCursor.getColumnIndex(
-                    WifiScanDatabase.NETWORK_ID);
-            final int bssidColumnID = mCursor.getColumnIndex(
-                    WifiScanDatabase.BSSID);
-            final int signalStrengthColumnID = mCursor.getColumnIndex(
-                    WifiScanDatabase.SIGNALSTRENGTH);
-            final int connectedColumnID = mCursor.getColumnIndex(WifiScanDatabase.CONNECTED);
-            ssid = mCursor.getString(ssidColumnID);
-            level = mCursor.getInt(levelColumnID);
-            networkID = mCursor.getInt(networkIDColumnID);
-            bssid = mCursor.getString(bssidColumnID);
-            signalStrength = mCursor.getInt(signalStrengthColumnID);
-            connected = (mCursor.getInt(connectedColumnID) == 1);
+            int columnIndex = mCursor.getColumnIndex(WifiScanDatabase.SSID);
+            ssid = mCursor.getString(columnIndex);
 
+            columnIndex = mCursor.getColumnIndex(
+                    WifiScanDatabase.LEVEL);
+            level = mCursor.getInt(columnIndex);
+
+            columnIndex = mCursor.getColumnIndex(
+                    WifiScanDatabase.NETWORK_ID);
+            networkID = mCursor.getInt(columnIndex);
+
+            columnIndex = mCursor.getColumnIndex(
+                    WifiScanDatabase.BSSID);
+            bssid = mCursor.getString(columnIndex);
+
+            columnIndex = mCursor.getColumnIndex(
+                    WifiScanDatabase.SIGNALSTRENGTH);
+            signalStrength = mCursor.getInt(columnIndex);
+
+            columnIndex = mCursor.getColumnIndex(WifiScanDatabase.CONNECTED);
+            connected = (mCursor.getInt(columnIndex) == 1);
         }
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_wifi_list_item);
@@ -84,7 +85,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
         rv.setImageViewResource(R.id.widget_signal_strength, getSignalStrengthIcon(signalStrength, connected));
 
-        rv.setTextViewText(R.id.widget_level, ""+level+"");
+        rv.setTextViewText(R.id.widget_level, "" + level + "");
 
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
@@ -95,6 +96,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
         return rv;
     }
+
     public RemoteViews getLoadingView() {
         // We aren't going to return a default loading view in this sample
         return null;
@@ -121,7 +123,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         mCursor = mContext.getContentResolver().query(ScanDataProvider.CONTENT_URI, WifiScanDatabase.WIFI_NETWORKS_SSID_PROJECTION, null, null, WifiScanDatabase.LEVEL + " DESC");
     }
 
-    private int getSignalStrengthIcon(int signalStrength, Boolean connected){
+    private int getSignalStrengthIcon(int signalStrength, Boolean connected) {
         int icon;
         if (connected) {
             switch (signalStrength) {
@@ -141,7 +143,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
                     icon = R.drawable.ic_signal_strength_poor_connected;
                     break;
             }
-        }   else {
+        } else {
             switch (signalStrength) {
                 case WifiScanService.WIFI_SIGNAL_BEST:
                     icon = R.drawable.ic_signal_strength_best;
