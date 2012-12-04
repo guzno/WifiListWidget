@@ -11,7 +11,7 @@
             android:id="@+id/ssid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="@dimen/text_large"
             android:paddingTop="6dp"
             android:text="@string/wifi_list_item_ssid"
             />
@@ -29,7 +29,7 @@
             android:layout_below="@id/ssid"
             android:layout_alignParentLeft="true"
             android:paddingLeft="4dp"
-            android:textSize="12dp"
+            android:textSize="@dimen/text_medium"
             android:textColor="@color/list_item_sub_heading"
             android:text="@string/wifi_list_item_bssid"/>
     <TextView
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/signal_strength"
             android:layout_alignParentRight="true"
-            android:textSize="8dp"
+            android:textSize="@dimen/text_small"
             android:text="@string/wifi_list_item_level_label"/>
     <TextView
             android:id="@+id/level"
@@ -46,6 +46,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/signal_strength"
             android:layout_toLeftOf="@id/level_label"
-            android:textSize="8dp"
+            android:textSize="@dimen/text_small"
             android:text="@string/wifi_list_item_level"/>
 </RelativeLayout>

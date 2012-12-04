@@ -18,4 +18,10 @@
     <dimen name="widget_margin_bottom">8dp</dimen>
     <dimen name="widget_margin_left">8dp</dimen>
     <dimen name="widget_margin_right">8dp</dimen>
+
+
+    <dimen name="text_small">8sp</dimen>
+    <dimen name="text_medium">12sp</dimen>
+    <dimen name="text_large">16sp</dimen>
+    <dimen name="text_x_large">20sp</dimen>
 </resources>

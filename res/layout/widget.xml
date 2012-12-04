@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/widget_background"
-        android:layout_marginTop="@dimen/widget_margin_top"
-        android:layout_marginBottom="@dimen/widget_margin_bottom"
-        android:layout_marginLeft="@dimen/widget_margin_left"
-        android:layout_marginRight="@dimen/widget_margin_right">
-    <ImageButton
-            android:id="@+id/widget_wifi_toggle"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_signal_strength_best"
-            android:background="@android:color/transparent"
-            android:layout_alignParentLeft="true"/>
-    <TextView android:id="@+id/widget_title"
-              android:layout_height="32dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_toRightOf="@id/widget_wifi_toggle"
-              android:layout_margin="8dp"
-              android:textSize="16dp"
-              android:gravity="center_vertical"
-              android:text="Wifi Networks"/>
-    <ImageButton android:id="@+id/widget_hotspot_toggle"
-                 android:layout_width="48dp"
-                 android:layout_height="48dp"
-                 android:src="@drawable/ic_menu_hotspot_inactive"
-                 android:scaleType="centerInside"
-                 android:layout_alignParentRight="true"
-                 android:background="@android:color/transparent"
-            />
-    <ListView android:id="@+id/widget_listview"
-              android:layout_below="@id/widget_wifi_toggle"
               android:layout_height="match_parent"
-              android:layout_width="match_parent"/>
-    <TextView android:id="@+id/empty_view"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:gravity="center"
-              android:visibility="gone"
-              android:textColor="#ffffff"
-              android:text=""
-              android:textSize="20dp"/>
-</RelativeLayout>
+              android:orientation="vertical"
+              android:background="@drawable/widget_background"
+              android:layout_marginTop="@dimen/widget_margin_top"
+              android:layout_marginBottom="@dimen/widget_margin_bottom"
+              android:layout_marginLeft="@dimen/widget_margin_left"
+              android:layout_marginRight="@dimen/widget_margin_right">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <ImageButton
+                android:id="@+id/title_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_signal_strength_best"
+                android:background="null"
+                android:layout_alignParentLeft="true"/>
+        <TextView android:id="@+id/widget_title"
+                  android:layout_height="32dp"
+                  android:layout_width="match_parent"
+                  android:layout_toRightOf="@id/title_image"
+                  android:layout_margin="8dp"
+                  android:textSize="16dp"
+                  android:gravity="center_vertical"
+                  android:text="Wifi Networks"/>
+        <ImageButton android:id="@+id/widget_hotspot_toggle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_menu_hotspot_inactive"
+                android:scaleType="centerInside"
+                android:layout_alignParentRight="true"
+                android:background="null"
+                />
+        <ListView android:id="@+id/widget_listview"
+                  android:layout_below="@id/title_image"
+                  android:layout_height="match_parent"
+                  android:layout_width="match_parent"/>
+        <TextView android:id="@+id/empty_view"
+                  android:layout_height="match_parent"
+                  android:layout_width="match_parent"
+                  android:gravity="center"
+                  android:visibility="gone"
+                  android:textColor="#ffffff"
+                  android:text=""
+                  android:textSize="20dp"/>
+    </RelativeLayout>
+</LinearLayout>
