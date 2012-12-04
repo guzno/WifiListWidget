@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
+import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
@@ -78,6 +79,12 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
             headerView.setPadding(padding, padding, padding, padding);
             wifiList.addHeaderView(headerView);
+        }
+
+        hasMobileNetwork = NetworkUtils.hasMobileNetwork(this);
+
+        if ( hasMobileNetwork ){
+            wifiApManager = new WifiApManager(MainActivity.this);
         }
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

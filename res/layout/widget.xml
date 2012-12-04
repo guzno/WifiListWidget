@@ -13,22 +13,30 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <ImageView
+        <ImageButton
                 android:id="@+id/title_image"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="8dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_signal_strength_best"
+                android:background="null"
                 android:layout_alignParentLeft="true"/>
         <TextView android:id="@+id/widget_title"
                   android:layout_height="32dp"
-                  android:layout_width="fill_parent"
+                  android:layout_width="match_parent"
                   android:layout_toRightOf="@id/title_image"
                   android:layout_margin="8dp"
                   android:textSize="16dp"
                   android:gravity="center_vertical"
                   android:text="Wifi Networks"/>
+        <ImageButton android:id="@+id/widget_hotspot_toggle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_menu_hotspot_inactive"
+                android:scaleType="centerInside"
+                android:layout_alignParentRight="true"
+                android:background="null"
+                />
         <ListView android:id="@+id/widget_listview"
                   android:layout_below="@id/title_image"
                   android:layout_height="match_parent"
