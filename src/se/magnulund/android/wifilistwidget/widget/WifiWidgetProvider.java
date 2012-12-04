@@ -93,6 +93,28 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             }
         }
 
+        if (action.equals(CLICK_ACTION)) {
+            // Show a toast
+
+            final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
+            if (networkId > -1) {
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(networkId, true);
+                wifiManager.reconnect();
+            }
+        }
+
+        if (action.equals(CLICK_ACTION)) {
+            // Show a toast
+
+            final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
+            if (networkId > -1) {
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(networkId, true);
+                wifiManager.reconnect();
+            }
+        }
+
         super.onReceive(ctx, intent);
     }
 
