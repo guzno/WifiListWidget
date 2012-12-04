@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.EditText;
 import se.magnulund.android.wifilistwidget.R;
@@ -20,6 +21,8 @@ public class WifiWidgetConfigurationActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
 
         setResult(RESULT_CANCELED);
 
