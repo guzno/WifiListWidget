@@ -34,8 +34,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public static final String WIDGET_ACTIVE = "widget_active";
 
     public static String CLICK_ACTION = "se.magnulund.android.wifilistwidget.widget.CLICK";
-    public static String REFRESH_ACTION = "se.magnulund.android.wifilistwidget.widget.REFRESH";
-    public static String EXTRA_CITY_ID = "se.magnulund.android.wifilistwidget.widget.city";
+    public static String WIFI_TOGGLE_ACTION = "se.magnulund.android.wifilistwidget.widget.WIFI_TOGGLE";
+    public static String HOTSPOT_TOGGLE_ACTION = "se.magnulund.android.wifilistwidget.widget.HOTSPOT_TOGGLE";
 
     private static HandlerThread sWorkerThread;
     private static Handler sWorkerQueue;
