@@ -81,6 +81,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
         WifiManager wifiManager = (WifiManager) ctx.getSystemService(WifiWidgetService.WIFI_SERVICE);
         Log.e(TAG, "Action: " + action);
+
         if (action.equals(CLICK_ACTION)) {
             // Show a toast
 
