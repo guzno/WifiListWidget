@@ -105,6 +105,10 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             wifiManager.setWifiEnabled(wifiEnabled);
 
+            if (wifiEnabled == false) {
+                context.getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
+            }
+
             AlarmUtility.scheduleAlarm(context);
         }
         else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
