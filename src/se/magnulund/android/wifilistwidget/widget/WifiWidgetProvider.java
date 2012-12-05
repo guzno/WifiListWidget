@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
@@ -93,6 +94,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(networkId, true);
                 wifiManager.reconnect();
+
+                AlarmUtility.scheduleAlarm(ctx);
             }
         }
         else if (action.equals(WIFI_TOGGLE_ACTION)) {
@@ -102,9 +105,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             wifiManager.setWifiEnabled(wifiEnabled);
 
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
-            ComponentName componentName = new ComponentName(ctx, WifiWidgetProvider.class);
-            onUpdate(ctx, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName));
+            AlarmUtility.scheduleAlarm(ctx);
         }
         else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             Log.e(TAG, "HotSpot toggle pressed");
@@ -122,9 +123,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             mobileHotSpotActive = !mobileHotSpotActive;
 
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
-            ComponentName componentName = new ComponentName(ctx, WifiWidgetProvider.class);
-            onUpdate(ctx, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName));
+            AlarmUtility.scheduleAlarm(ctx);
         }
 
         super.onReceive(ctx, intent);
@@ -136,6 +135,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Specify the service to provide data for the collection widget.  Note that we need to
             // embed the appWidgetId via the data otherwise it will be ignored.
+            /*
             final Intent intent = new Intent(context, WifiWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -186,6 +186,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             int hotSpotIconID = (mobileHotSpotActive)? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive;
             rv.setImageViewResource(R.id.widget_hotspot_toggle, hotSpotIconID);
 
+            */
+            RemoteViews rv = getRemoteViews(context, appWidgetIds[i]);
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -196,5 +198,59 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         SharedPreferences.Editor edit = prefs.edit();
         edit.putBoolean(WIDGET_ACTIVE, active);
         edit.commit();
+    }
+
+    public static RemoteViews getRemoteViews(Context context, int appWidgetID){
+        // Specify the service to provide data for the collection widget.  Note that we need to
+        // embed the appWidgetId via the data otherwise it will be ignored.
+        final Intent intent = new Intent(context, WifiWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetID);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
+        rv.setRemoteAdapter(R.id.widget_listview, intent);
+
+        rv.setEmptyView(R.id.widget_listview, R.id.empty_view);
+
+        // LIST ITEM CLICK
+
+        final Intent onClickIntent = new Intent(context, WifiWidgetProvider.class);
+        onClickIntent.setAction(WifiWidgetProvider.CLICK_ACTION);
+        onClickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetID);
+        onClickIntent.setData(Uri.parse(onClickIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        final PendingIntent onClickPendingIntent = PendingIntent.getBroadcast(context, 0,
+                onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setPendingIntentTemplate(R.id.widget_listview, onClickPendingIntent);
+
+        // WIFI TOOGLE
+
+        final Intent wifiToggleIntent = new Intent(context, WifiWidgetProvider.class);
+        wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
+        final PendingIntent wifiTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
+                wifiToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, wifiTogglePendingIntent);
+
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            boolean wifiEnabled = wifiManager.isWifiEnabled();
+
+
+        int wifiIconID = (wifiEnabled)? R.drawable.ic_signal_strength_best_connected : R.drawable.ic_signal_strength_best;
+        rv.setImageViewResource(R.id.widget_wifi_toggle, wifiIconID);
+
+        // HOTSPOT TOGGLE
+
+        final Intent hotSpotToggleIntent = new Intent(context, WifiWidgetProvider.class);
+        hotSpotToggleIntent.setAction(WifiWidgetProvider.HOTSPOT_TOGGLE_ACTION);
+        final PendingIntent hotSpotTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
+                hotSpotToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        rv.setOnClickPendingIntent(R.id.widget_hotspot_toggle, hotSpotTogglePendingIntent);
+
+
+            WifiApManager wifiApManager = new WifiApManager(context);
+            boolean mobileHotSpotActive = wifiApManager.isWifiApEnabled();
+
+        int hotSpotIconID = (mobileHotSpotActive)? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive;
+        rv.setImageViewResource(R.id.widget_hotspot_toggle, hotSpotIconID);
+
+        return rv;
     }
 }

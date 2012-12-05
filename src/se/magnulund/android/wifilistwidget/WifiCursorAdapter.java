@@ -71,7 +71,7 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
         boolean connected = (c.getInt(columnIndex) == 1);
 
         ImageView imageView = (ImageView) v.findViewById(R.id.signal_strength);
-        imageView.setImageResource(getSignalStrengthIcon(signalStrength, connected));
+        imageView.setImageResource(WifiScanService.getSignalStrengthIcon(signalStrength, connected));
 
         return v;
     }
@@ -112,50 +112,7 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
         boolean connected = (c.getInt(columnIndex) == 1);
 
         ImageView imageView = (ImageView) v.findViewById(R.id.signal_strength);
-        imageView.setImageResource(getSignalStrengthIcon(signalStrength, connected));
-    }
-
-    private int getSignalStrengthIcon(int signalStrength, Boolean connected) {
-        int icon;
-        if (connected) {
-            switch (signalStrength) {
-                case WifiScanService.WIFI_SIGNAL_BEST:
-                    icon = R.drawable.ic_signal_strength_best_connected;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_GOOD:
-                    icon = R.drawable.ic_signal_strength_good_connected;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_OK:
-                    icon = R.drawable.ic_signal_strength_ok_connected;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_POOR:
-                    icon = R.drawable.ic_signal_strength_poor_connected;
-                    break;
-                default:
-                    icon = R.drawable.ic_signal_strength_poor_connected;
-                    break;
-            }
-        } else {
-            switch (signalStrength) {
-                case WifiScanService.WIFI_SIGNAL_BEST:
-                    icon = R.drawable.ic_signal_strength_best;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_GOOD:
-                    icon = R.drawable.ic_signal_strength_good;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_OK:
-                    icon = R.drawable.ic_signal_strength_ok;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_POOR:
-                    icon = R.drawable.ic_signal_strength_poor;
-                    break;
-                default:
-                    icon = R.drawable.ic_signal_strength_poor;
-                    break;
-            }
-        }
-
-        return icon;
+        imageView.setImageResource(WifiScanService.getSignalStrengthIcon(signalStrength, connected));
     }
 }
 
