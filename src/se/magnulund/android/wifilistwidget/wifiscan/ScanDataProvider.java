@@ -106,7 +106,8 @@ public class ScanDataProvider extends ContentProvider {
         int uriMatch = uriMatcher.match(arg0);
         int count = 0;
         switch (uriMatch) {
-            case WIFI_NETWORKS | WIFI_NETWORKS_NO_NOTIFY:
+            case WIFI_NETWORKS:
+            case WIFI_NETWORKS_NO_NOTIFY:
                 count = scanDataDB.delete(
                         WifiScanDatabase.DATABASE_TABLE,
                         arg1,
@@ -137,7 +138,8 @@ public class ScanDataProvider extends ContentProvider {
         int uriMatch = uriMatcher.match(uri);
         int count = 0;
         switch (uriMatch) {
-            case WIFI_NETWORKS | WIFI_NETWORKS_NO_NOTIFY:
+            case WIFI_NETWORKS:
+            case WIFI_NETWORKS_NO_NOTIFY:
                 count = scanDataDB.update(
                         WifiScanDatabase.DATABASE_TABLE,
                         values,

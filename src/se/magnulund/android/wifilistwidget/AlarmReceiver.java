@@ -30,13 +30,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent receivedIntent) {
         try {
-            Log.e(TAG, "meep");
-
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName thisWidget = new ComponentName(context, WifiWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
             for (int i = 0; i < appWidgetIds.length; ++i) {
+                RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
+                /*
                 // Specify the service to provide data for the collection widget.  Note that we need to
                 // embed the appWidgetId via the data otherwise it will be ignored.
                 final Intent intent = new Intent(context, WifiWidgetService.class);
@@ -73,7 +73,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 final PendingIntent hotSpotTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
                         hotSpotToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, hotSpotTogglePendingIntent);
-
+                */
                 appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
             }
 

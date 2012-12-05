@@ -81,10 +81,10 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     private Boolean mobileHotSpotActive;
 
     @Override
-    public void onReceive(Context ctx, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
 
-        WifiManager wifiManager = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         Log.e(TAG, "Action: " + action);
 
         if (action.equals(CLICK_ACTION)) {
@@ -95,7 +95,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiManager.enableNetwork(networkId, true);
                 wifiManager.reconnect();
 
-                AlarmUtility.scheduleAlarm(ctx);
+                AlarmUtility.scheduleAlarm(context);
             }
         }
         else if (action.equals(WIFI_TOGGLE_ACTION)) {
@@ -105,11 +105,11 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             wifiManager.setWifiEnabled(wifiEnabled);
 
-            AlarmUtility.scheduleAlarm(ctx);
+            AlarmUtility.scheduleAlarm(context);
         }
         else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             Log.e(TAG, "HotSpot toggle pressed");
-            WifiApManager wifiApManager = new WifiApManager(ctx);
+            WifiApManager wifiApManager = new WifiApManager(context);
 
             mobileHotSpotActive = wifiApManager.isWifiApEnabled();
 
@@ -118,15 +118,16 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiApManager.setWifiEnabled(true);
                 wifiManager.startScan();
             } else {
+                context.getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
                 wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
             }
 
             mobileHotSpotActive = !mobileHotSpotActive;
 
-            AlarmUtility.scheduleAlarm(ctx);
+            AlarmUtility.scheduleAlarm(context);
         }
 
-        super.onReceive(ctx, intent);
+        super.onReceive(context, intent);
     }
 
     @Override
