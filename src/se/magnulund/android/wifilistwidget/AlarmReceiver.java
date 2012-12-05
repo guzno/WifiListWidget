@@ -77,10 +77,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
             }
 
-
-            AlarmUtility.scheduleAlarm(context);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            int attempt = receivedIntent.getIntExtra(AlarmUtility.IDENTIFIER_ALARM_ATTEMPT, -1);
+            AlarmUtility.scheduleAlarmWithBackoff(context, ++attempt);
         }
     }
 }
