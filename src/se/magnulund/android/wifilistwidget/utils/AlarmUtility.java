@@ -34,6 +34,7 @@ public class AlarmUtility {
     }
 
     public static void scheduleAlarm(Context context) {
+
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -42,10 +43,11 @@ public class AlarmUtility {
         PendingIntent sender = PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 10);
+        cal.add(Calendar.SECOND, 30);
         Log.e(TAG, "registered new alarm at time " + cal.getTime().toString());
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+
     }
 
     public static void clearAlarm(Context context) {

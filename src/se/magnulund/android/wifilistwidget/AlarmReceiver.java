@@ -42,11 +42,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 final Intent intent = new Intent(context, WifiWidgetService.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
                 intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-
                 final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
                 rv.setRemoteAdapter(R.id.widget_listview, intent);
-
-                rv.setTextViewText(R.id.widget_title, "Wifi " + new Date().toString());
 
                 // Set the empty view to be displayed if the collection is empty.  It must be a sibling
                 // view of the collection view.
