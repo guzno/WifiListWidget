@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
@@ -75,6 +76,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         setWidgetActive(context, false);
     }
 
+    private Boolean wifiEnabled;
+    private Boolean mobileHotSpotActive;
+
     @Override
     public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
@@ -83,7 +87,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         Log.e(TAG, "Action: " + action);
 
         if (action.equals(CLICK_ACTION)) {
-            // Show a toast
 
             final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
             if (networkId > -1) {
@@ -93,26 +96,29 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             }
         }
 
-        if (action.equals(CLICK_ACTION)) {
-            // Show a toast
-
-            final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
-            if (networkId > -1) {
-                wifiManager.disconnect();
-                wifiManager.enableNetwork(networkId, true);
-                wifiManager.reconnect();
-            }
+        if (action.equals(WIFI_TOGGLE_ACTION)) {
+            Log.e(TAG, "Wifi toggle pressed");
         }
 
-        if (action.equals(CLICK_ACTION)) {
-            // Show a toast
+        if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
+            Log.e(TAG, "HotSpot toggle pressed");
+            WifiApManager wifiApManager = new WifiApManager(ctx);
 
-            final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
-            if (networkId > -1) {
-                wifiManager.disconnect();
-                wifiManager.enableNetwork(networkId, true);
-                wifiManager.reconnect();
+            mobileHotSpotActive = wifiApManager.isWifiApEnabled();
+
+            if (mobileHotSpotActive) {
+                wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
+                wifiApManager.setWifiEnabled(true);
+                wifiManager.startScan();
+            } else {
+                wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
             }
+
+            mobileHotSpotActive = !mobileHotSpotActive;
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
+            ComponentName componentName = new ComponentName(ctx, WifiWidgetProvider.class);
+            onUpdate(ctx, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName));
         }
 
         super.onReceive(ctx, intent);
@@ -130,13 +136,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
             rv.setRemoteAdapter(R.id.widget_listview, intent);
 
-            // Set the empty view to be displayed if the collection is empty.  It must be a sibling
-            // view of the collection view.
             rv.setEmptyView(R.id.widget_listview, R.id.empty_view);
-
-            // Bind a click listener template for the contents of the weather list.  Note that we
-            // need to update the intent's data if we set an extra, since the extras will be
-            // ignored otherwise.
 
             final Intent onClickIntent = new Intent(context, WifiWidgetProvider.class);
             onClickIntent.setAction(WifiWidgetProvider.CLICK_ACTION);
@@ -146,7 +146,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             rv.setPendingIntentTemplate(R.id.widget_listview, onClickPendingIntent);
 
-            // Bind the click intent for the refresh button on the widget
             final Intent wifiToggleIntent = new Intent(context, WifiWidgetProvider.class);
             wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
             final PendingIntent wifiTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
@@ -157,7 +156,15 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             hotSpotToggleIntent.setAction(WifiWidgetProvider.HOTSPOT_TOGGLE_ACTION);
             final PendingIntent hotSpotTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
                     hotSpotToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, hotSpotTogglePendingIntent);
+            rv.setOnClickPendingIntent(R.id.widget_hotspot_toggle, hotSpotTogglePendingIntent);
+
+            if(mobileHotSpotActive == null ){
+                WifiApManager wifiApManager = new WifiApManager(context);
+                mobileHotSpotActive = wifiApManager.isWifiApEnabled();
+            }
+
+            int hotSpotIconID = (mobileHotSpotActive)? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive;
+            rv.setImageViewResource(R.id.widget_hotspot_toggle, hotSpotIconID);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
