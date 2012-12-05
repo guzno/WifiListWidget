@@ -1,0 +1,5 @@
+<resources>
+    <item type="id" name="notificationUniqueId"/>
+    <item type="id" name="alarmRequestCode"/>
+    <item type="id" name="pendingIntentRequestCode"/>
+</resources>

@@ -1,6 +1,7 @@
 package se.magnulund.android.wifilistwidget;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
+import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
@@ -65,6 +67,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        AlarmUtility.scheduleAlarm(this);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
 
