@@ -83,7 +83,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
 
-        WifiManager wifiManager = (WifiManager) ctx.getSystemService(WifiWidgetService.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
         Log.e(TAG, "Action: " + action);
 
         if (action.equals(CLICK_ACTION)) {
@@ -95,12 +95,18 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiManager.reconnect();
             }
         }
-
-        if (action.equals(WIFI_TOGGLE_ACTION)) {
+        else if (action.equals(WIFI_TOGGLE_ACTION)) {
             Log.e(TAG, "Wifi toggle pressed");
-        }
 
-        if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
+            wifiEnabled = !wifiManager.isWifiEnabled();
+
+            wifiManager.setWifiEnabled(wifiEnabled);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
+            ComponentName componentName = new ComponentName(ctx, WifiWidgetProvider.class);
+            onUpdate(ctx, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName));
+        }
+        else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             Log.e(TAG, "HotSpot toggle pressed");
             WifiApManager wifiApManager = new WifiApManager(ctx);
 
@@ -138,6 +144,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             rv.setEmptyView(R.id.widget_listview, R.id.empty_view);
 
+            // LIST ITEM CLICK
+
             final Intent onClickIntent = new Intent(context, WifiWidgetProvider.class);
             onClickIntent.setAction(WifiWidgetProvider.CLICK_ACTION);
             onClickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
@@ -146,11 +154,23 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             rv.setPendingIntentTemplate(R.id.widget_listview, onClickPendingIntent);
 
+            // WIFI TOOGLE
+
             final Intent wifiToggleIntent = new Intent(context, WifiWidgetProvider.class);
             wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
             final PendingIntent wifiTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
                     wifiToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, wifiTogglePendingIntent);
+
+            if(wifiEnabled == null ){
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                wifiEnabled = wifiManager.isWifiEnabled();
+            }
+
+            int wifiIconID = (wifiEnabled)? R.drawable.ic_signal_strength_best_connected : R.drawable.ic_signal_strength_best;
+            rv.setImageViewResource(R.id.widget_wifi_toggle, wifiIconID);
+
+            // HOTSPOT TOGGLE
 
             final Intent hotSpotToggleIntent = new Intent(context, WifiWidgetProvider.class);
             hotSpotToggleIntent.setAction(WifiWidgetProvider.HOTSPOT_TOGGLE_ACTION);
