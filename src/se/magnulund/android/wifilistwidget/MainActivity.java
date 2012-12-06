@@ -67,8 +67,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Crittercism.init(getApplicationContext(), "50c084317e69a33c53000002");
-
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
