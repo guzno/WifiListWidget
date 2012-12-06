@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import com.crittercism.app.Crittercism;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
@@ -36,11 +35,11 @@ import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
+import com.crittercism.app.Crittercism;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import com.crittercism.NotificationActivity;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
