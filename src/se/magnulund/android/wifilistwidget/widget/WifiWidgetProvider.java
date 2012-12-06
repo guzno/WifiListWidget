@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import se.magnulund.android.wifilistwidget.R;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
+import se.magnulund.android.wifilistwidget.wifiap.WIFI_AP_STATE;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
@@ -203,5 +204,35 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         rv.setImageViewResource(R.id.widget_hotspot_toggle, hotSpotIconID);
 
         return rv;
+    }
+
+    public static boolean areWidgetsIdle(Context context){
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiApManager wifiApManager = new WifiApManager(context);
+
+        boolean idle  = true;
+
+        int wifiState = wifiManager.getWifiState();
+
+        WIFI_AP_STATE wifiApState = wifiApManager.getWifiApState();
+
+        switch (wifiState){
+            case WifiManager.WIFI_STATE_ENABLING:
+            case WifiManager.WIFI_STATE_DISABLING:
+            case WifiManager.WIFI_STATE_UNKNOWN:
+                idle = false;
+                break;
+        }
+        if (idle){
+            switch (wifiApState){
+                case WIFI_AP_STATE_ENABLING:
+                case WIFI_AP_STATE_DISABLING:
+                    idle = false;
+                    break;
+            }
+        }
+
+        return idle;
+
     }
 }
