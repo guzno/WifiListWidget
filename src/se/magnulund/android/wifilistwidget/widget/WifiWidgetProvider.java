@@ -207,14 +207,12 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     }
 
     public static boolean areWidgetsIdle(Context context){
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiApManager wifiApManager = new WifiApManager(context);
 
-        boolean idle  = true;
+        boolean idle;
+
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
         int wifiState = wifiManager.getWifiState();
-
-        WIFI_AP_STATE wifiApState = wifiApManager.getWifiApState();
 
         switch (wifiState){
             case WifiManager.WIFI_STATE_ENABLING:
@@ -222,17 +220,21 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             case WifiManager.WIFI_STATE_UNKNOWN:
                 idle = false;
                 break;
-        }
-        if (idle){
-            switch (wifiApState){
-                case WIFI_AP_STATE_ENABLING:
-                case WIFI_AP_STATE_DISABLING:
-                    idle = false;
-                    break;
+            default: {
+                WifiApManager wifiApManager = new WifiApManager(context);
+                WIFI_AP_STATE wifiApState = wifiApManager.getWifiApState();
+
+                switch (wifiApState){
+                    case WIFI_AP_STATE_ENABLING:
+                    case WIFI_AP_STATE_DISABLING:
+                        idle = false;
+                        break;
+                    default:
+                        idle = true;
+                }
             }
         }
 
         return idle;
-
     }
 }
