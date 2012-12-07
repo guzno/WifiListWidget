@@ -1,7 +1,6 @@
 package se.magnulund.android.wifilistwidget;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -34,8 +33,6 @@ import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
-
-import com.crittercism.app.Crittercism;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -176,7 +173,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         if (hasMobileNetwork && preferences.getBoolean(PREFS_SHOW_HOTSPOT_TOGGLE, true)) {
             mobileHotSpotActive = wifiApManager.isWifiApEnabled();
             hotspotToggle.setChecked(mobileHotSpotActive);
-            hotspotToggle.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive);
+            hotspotToggle.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_pending : R.drawable.ic_menu_hotspot_inactive);
             hotspotToggle.setTitle((mobileHotSpotActive) ? R.string.hotspot_active : R.string.hotspot_inactive);
         } else {
             hotspotToggle.setVisible(false);
@@ -204,7 +201,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 }
 
                 item.setChecked(mobileHotSpotActive);
-                item.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_active : R.drawable.ic_menu_hotspot_inactive);
+                item.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_pending : R.drawable.ic_menu_hotspot_inactive);
                 item.setTitle((mobileHotSpotActive) ? R.string.hotspot_active : R.string.hotspot_inactive);
                 return true;
             }
