@@ -181,7 +181,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, wifiTogglePendingIntent);
 
-            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             boolean wifiEnabled = wifiManager.isWifiEnabled();
 
 
@@ -210,7 +210,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
         boolean idle;
 
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         int wifiState = wifiManager.getWifiState();
 
