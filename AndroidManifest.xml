@@ -31,13 +31,13 @@
 
         <activity android:name="com.crittercism.NotificationActivity"/>
 
-        <receiver android:name=".wifiscan.WifiScanReceiver">
+        <receiver android:name=".wifiscan.WifiScanReceiver" android:enabled="false">
             <intent-filter>
                 <action android:name="android.net.wifi.SCAN_RESULTS"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".wifistate.WifiStateReceiver">
+        <receiver android:name=".wifistate.WifiStateReceiver" android:enabled="false">
             <intent-filter>
                 <action android:name="android.net.wifi.STATE_CHANGE"/>
             </intent-filter>

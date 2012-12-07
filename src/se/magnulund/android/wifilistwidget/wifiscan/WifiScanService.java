@@ -36,6 +36,8 @@ public class WifiScanService extends IntentService {
         //Log.e(TAG, "Constructed");
     }
 
+    private WifiManager wifiManager;
+
     /*
      ScanResult:
        public String	BSSID	The address of the access point.
@@ -48,7 +50,9 @@ public class WifiScanService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        if (wifiManager == null){
+            wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        }
         if (wifiManager == null) {
             // once when enabling hotspot we received a null wifimanager - should handle more gracefully.
             Log.e(TAG, "once when enabling hotspot we received a null WifiManager - should handle more gracefully.", new Exception("null WifiManager"));

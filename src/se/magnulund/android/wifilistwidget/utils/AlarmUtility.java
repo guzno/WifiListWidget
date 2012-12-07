@@ -41,7 +41,7 @@ public class AlarmUtility {
             return;
         }
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(IDENTIFIER_ALARM_ATTEMPT, attempt);
@@ -49,7 +49,7 @@ public class AlarmUtility {
         PendingIntent sender = PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, attempt*2);
+        cal.add(Calendar.MILLISECOND, 500*attempt);
         Log.e(TAG, "registered new alarm(" + attempt + ") at time " + cal.getTime().toString());
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);

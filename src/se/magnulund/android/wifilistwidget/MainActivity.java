@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        AlarmUtility.scheduleAlarm(this);
+        //AlarmUtility.scheduleAlarm(this);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
 

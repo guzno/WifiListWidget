@@ -10,25 +10,20 @@ import android.util.Log;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanReceiver;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Gustav
- * Date: 21/11/2012
- * Time: 10:32
- * To change this template use File | Settings | File Templates.
- */
 public class WifiStateService extends IntentService {
 
     private static final String TAG = "WifiStateService";
 
     public WifiStateService() {
-        super("WifiListWidget_WifiUpdateService");
+        super("WifiListWidget_WifiStateService");
         //Log.e(TAG, "Constructed");
     }
 
+    private WifiManager wifiManager;
+
     @Override
     protected void onHandleIntent(Intent intent) {
-        // hittade på: http://stackoverflow.com/questions/6529276/android-how-to-unregister-a-receiver-created-in-the-manifest
+
         Context context = getApplicationContext();
 
         ComponentName wifiStateReceiver = new ComponentName(context, WifiStateReceiver.class);
@@ -41,22 +36,27 @@ public class WifiStateService extends IntentService {
             disableComponent(context, wifiStateStatus, wifiStateReceiver);
             disableComponent(context, wifiScanStatus, wifiScanReceiver);
         } else {
+
             if (wifiStateStatus != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
                 context.getPackageManager().setComponentEnabledSetting(wifiStateReceiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
                 Log.e(TAG, "Enabling " + wifiStateReceiver.getShortClassName());
             }
 
-            WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+            if (wifiManager == null){
+                wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+            }
+
             int wifiState = wifiManager.getWifiState();
 
             switch (wifiState) {
                 case WifiManager.WIFI_STATE_ENABLED:
                     Log.e(TAG, "WIFI_STATE_ENABLED");
-                    enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    wifiManager.startScan();
+                    if ( enableComponent(context, wifiScanStatus, wifiScanReceiver) ) {
+                        wifiManager.startScan();
+                    }
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:
-                    enableComponent(context, wifiScanStatus, wifiScanReceiver);
+                    //enableComponent(context, wifiScanStatus, wifiScanReceiver);
                     Log.e(TAG, "WIFI_STATE_ENABLING");
                     break;
                 case WifiManager.WIFI_STATE_DISABLING:
@@ -77,20 +77,24 @@ public class WifiStateService extends IntentService {
         }
     }
 
-    private void enableComponent(Context context, int status, ComponentName component) {
+    private boolean enableComponent(Context context, int status, ComponentName component) {
         //Log.e(TAG, " Check if Enabling " + component.getClassName() + " : " + (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED));
         if (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             Log.e(TAG, "Enabling " + component.getShortClassName());
+            return true;
         }
+        return false;
     }
 
-    private void disableComponent(Context context, int status, ComponentName component) {
+    private boolean disableComponent(Context context, int status, ComponentName component) {
         //Log.e(TAG, " Check if Disabling " + component.getClassName() + " : " + (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED));
         if (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             Log.e(TAG, "Disabling " + component.getShortClassName());
+            return true;
         }
+        return false;
     }
 
     @Override

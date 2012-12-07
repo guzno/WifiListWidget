@@ -78,9 +78,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         setWidgetActive(context, false);
     }
 
-    private Boolean wifiEnabled;
-    private Boolean mobileHotSpotActive;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
@@ -101,7 +98,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         } else if (action.equals(WIFI_TOGGLE_ACTION)) {
             Log.e(TAG, "Wifi toggle pressed");
 
-            wifiEnabled = !wifiManager.isWifiEnabled();
+            boolean wifiEnabled = !wifiManager.isWifiEnabled();
 
             wifiManager.setWifiEnabled(wifiEnabled);
 
@@ -114,7 +111,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             Log.e(TAG, "HotSpot toggle pressed");
             WifiApManager wifiApManager = new WifiApManager(context);
 
-            mobileHotSpotActive = wifiApManager.isWifiApEnabled();
+            boolean mobileHotSpotActive = wifiApManager.isWifiApEnabled();
 
             if (mobileHotSpotActive) {
                 wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);
@@ -125,10 +122,10 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
             }
 
-            mobileHotSpotActive = !mobileHotSpotActive;
-
             AlarmUtility.scheduleAlarm(context);
         }
+
+
 
         super.onReceive(context, intent);
     }
