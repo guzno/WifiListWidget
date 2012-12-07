@@ -15,4 +15,7 @@
     <string name="wifi_list_item_level_label">dbm</string>
     <string name="wifi_list_item_signal_strength_desc">Wifi signal strength</string>
     <string name="show_hotspot_toggle">Show HotSpot Toggle</string>
+    <string name="widget_wifi_toggle">Toogle WIFI On/Off</string>
+    <string name="widget_hotspot_toggle">Toggle HotSpot On/Off</string>
+    <string name="widget_title">Wifi Networks</string>
 </resources>
