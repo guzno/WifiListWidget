@@ -11,7 +11,6 @@ import se.magnulund.android.wifilistwidget.wifiscan.WifiScanReceiver;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 
 public class WifiStateService extends IntentService {
-
     private static final String TAG = "WifiStateService";
     public static final Object wifiManagerLock = new Object();
 
@@ -20,11 +19,10 @@ public class WifiStateService extends IntentService {
         //Log.e(TAG, "Constructed");
     }
 
-    //private WifiManager wifiManager;
+    private WifiManager wifiManager;
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         Context context = getApplicationContext();
 
         ComponentName wifiStateReceiver = new ComponentName(context, WifiStateReceiver.class);
@@ -43,21 +41,22 @@ public class WifiStateService extends IntentService {
                 Log.e(TAG, "Enabling " + wifiStateReceiver.getShortClassName());
             }
 
-            /*
-            if (wifiManager == null) {
-                wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+
+            int wifiState = intent.getIntExtra(WifiStateReceiver.LULCAKE, -1);
+            if (wifiState == -1) {
+                if (wifiManager == null) {
+                    wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+                }
+                wifiState = wifiManager.getWifiState();
             }
-                */
 
             synchronized (WifiStateService.wifiManagerLock) {
-                //int wifiState = wifiManager.getWifiState();
-                int wifiState = intent.getIntExtra(WifiStateReceiver.LULCAKE, -1);
 
                 switch (wifiState) {
                     case WifiManager.WIFI_STATE_ENABLED:
                         Log.e(TAG, "WIFI_STATE_ENABLED");
                         if (enableComponent(context, wifiScanStatus, wifiScanReceiver)) {
-                            //wifiManager.startScan();
+                        //wifiManager.startScan();
                         }
                         break;
                     case WifiManager.WIFI_STATE_ENABLING:
@@ -76,8 +75,10 @@ public class WifiStateService extends IntentService {
                         intent.setClass(context, WifiScanService.class);
                         context.startService(intent);
                         break;
-                    default:
+                    case WifiManager.WIFI_STATE_UNKNOWN:
                         break;
+                    default:
+                        throw new UnsupportedOperationException("that's no numbar" + wifiState);
                 }
             }
         }
@@ -85,7 +86,8 @@ public class WifiStateService extends IntentService {
 
     private boolean enableComponent(Context context, int status, ComponentName component) {
         //Log.e(TAG, " Check if Enabling " + component.getClassName() + " : " + (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED));
-        if (status > PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+        if (status == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
+                || status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             Log.e(TAG, "Enabling " + component.getShortClassName());
             return true;
@@ -95,6 +97,7 @@ public class WifiStateService extends IntentService {
 
     private boolean disableComponent(Context context, int status, ComponentName component) {
         //Log.e(TAG, " Check if Disabling " + component.getClassName() + " : " + (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED));
+
         if (status < PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
             context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             Log.e(TAG, "Disabling " + component.getShortClassName());
