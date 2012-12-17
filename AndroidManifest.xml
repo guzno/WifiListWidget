@@ -65,11 +65,14 @@
         <!-- The service serving the RemoteViews to the collection widget -->
         <service android:name=".widget.WifiWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS"
-                 android:exported="true"/>
+                 android:exported="true"
+                 android:process=":remote"/>
         <service android:name=".wifistate.WifiStateService"
-                 android:enabled="true"/>
+                 android:enabled="true"
+                 android:process=":remote"/>
         <service android:name=".wifiscan.WifiScanService"
-                 android:enabled="true"/>
+                 android:enabled="true"
+                 android:process=":remote"/>
 
         <provider android:name=".wifiscan.ScanDataProvider"
                   android:authorities="se.magnulund.provider.ScanData"/>

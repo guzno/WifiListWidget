@@ -1,8 +1,7 @@
 package se.magnulund.android.wifilistwidget.wifiscan;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.animation.ScaleAnimation;
 
@@ -20,6 +19,7 @@ public class WifiScanReceiver extends BroadcastReceiver {
 
         intent.setClass(context, WifiScanService.class);
         intent.putExtra("new_scan_results", true);
+
         context.startService(intent);
         Log.e(TAG, "SCAN RECEIVED");
     }
