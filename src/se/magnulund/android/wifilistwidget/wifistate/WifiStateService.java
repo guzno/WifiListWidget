@@ -13,13 +13,14 @@ import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 public class WifiStateService extends IntentService {
 
     private static final String TAG = "WifiStateService";
+    public static final Object wifiManagerLock = new Object();
 
     public WifiStateService() {
         super("WifiListWidget_WifiStateService");
         //Log.e(TAG, "Constructed");
     }
 
-    private WifiManager wifiManager;
+    //private WifiManager wifiManager;
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -42,37 +43,42 @@ public class WifiStateService extends IntentService {
                 Log.e(TAG, "Enabling " + wifiStateReceiver.getShortClassName());
             }
 
-            if (wifiManager == null){
+            /*
+            if (wifiManager == null) {
                 wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
             }
+                */
 
-            int wifiState = wifiManager.getWifiState();
+            synchronized (WifiStateService.wifiManagerLock) {
+                //int wifiState = wifiManager.getWifiState();
+                int wifiState = intent.getIntExtra(WifiStateReceiver.LULCAKE, -1);
 
-            switch (wifiState) {
-                case WifiManager.WIFI_STATE_ENABLED:
-                    Log.e(TAG, "WIFI_STATE_ENABLED");
-                    if ( enableComponent(context, wifiScanStatus, wifiScanReceiver) ) {
-                        wifiManager.startScan();
-                    }
-                    break;
-                case WifiManager.WIFI_STATE_ENABLING:
-                    //enableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    Log.e(TAG, "WIFI_STATE_ENABLING");
-                    break;
-                case WifiManager.WIFI_STATE_DISABLING:
-                    Log.e(TAG, "WIFI_STATE_DISABLING");
-                    disableComponent(context, wifiScanStatus, wifiScanReceiver);
-                    break;
-                case WifiManager.WIFI_STATE_DISABLED:
-                    Log.e(TAG, "WIFI_STATE_DISABLED");
-                    disableComponent(context, wifiScanStatus, wifiScanReceiver);
+                switch (wifiState) {
+                    case WifiManager.WIFI_STATE_ENABLED:
+                        Log.e(TAG, "WIFI_STATE_ENABLED");
+                        if (enableComponent(context, wifiScanStatus, wifiScanReceiver)) {
+                            //wifiManager.startScan();
+                        }
+                        break;
+                    case WifiManager.WIFI_STATE_ENABLING:
+                        //enableComponent(context, wifiScanStatus, wifiScanReceiver);
+                        Log.e(TAG, "WIFI_STATE_ENABLING");
+                        break;
+                    case WifiManager.WIFI_STATE_DISABLING:
+                        Log.e(TAG, "WIFI_STATE_DISABLING");
+                        disableComponent(context, wifiScanStatus, wifiScanReceiver);
+                        break;
+                    case WifiManager.WIFI_STATE_DISABLED:
+                        Log.e(TAG, "WIFI_STATE_DISABLED");
+                        disableComponent(context, wifiScanStatus, wifiScanReceiver);
 
-                    // Clear list of APs
-                    intent.setClass(context, WifiScanService.class);
-                    context.startService(intent);
-                    break;
-                default:
-                    break;
+                        // Clear list of APs
+                        intent.setClass(context, WifiScanService.class);
+                        context.startService(intent);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +50,6 @@ public class WifiScanService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         if (wifiManager == null){
             wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         }
@@ -59,61 +59,64 @@ public class WifiScanService extends IntentService {
             return;
         }
 
-        List<ScanResult> scanResults = wifiManager.getScanResults();
 
-        getContentResolver().delete(ScanDataProvider.CONTENT_URI_NO_NOTIFY, null, null);
+        synchronized (WifiStateService.wifiManagerLock) {
+            List<ScanResult> scanResults = wifiManager.getScanResults();
 
-        if (intent.getBooleanExtra("new_scan_results", false)) {
-            ContentValues values = new ContentValues();
-            Log.e(TAG, "here/1");
-            HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
-            for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
-                wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
-            }
-            Log.e(TAG, "here/2");
+            getContentResolver().delete(ScanDataProvider.CONTENT_URI_NO_NOTIFY, null, null);
 
-            WifiInfo currentConnection = wifiManager.getConnectionInfo();
-            String currentBSSID = "";
-            if (currentConnection != null) {
-                currentBSSID = currentConnection.getBSSID();
-            }
+            if (intent.getBooleanExtra("new_scan_results", false)) {
+                ContentValues values = new ContentValues();
+                Log.e(TAG, "here/1");
+                HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
+                for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
+                    wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
+                }
+                Log.e(TAG, "here/2");
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            Boolean mergeAPs = preferences.getBoolean(KEY_PREF_MERGE_ACCESS_POINTS, false);
+                WifiInfo currentConnection = wifiManager.getConnectionInfo();
+                String currentBSSID = "";
+                if (currentConnection != null) {
+                    currentBSSID = currentConnection.getBSSID();
+                }
 
-            if (mergeAPs) {
-                HashMap<String, ScanResult> SSIDs;
-                SSIDs = new HashMap<String, ScanResult>();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                Boolean mergeAPs = preferences.getBoolean(KEY_PREF_MERGE_ACCESS_POINTS, false);
+
+                if (mergeAPs) {
+                    HashMap<String, ScanResult> SSIDs;
+                    SSIDs = new HashMap<String, ScanResult>();
+                    for (ScanResult scanResult : scanResults) {
+                        ScanResult otherAP = SSIDs.get(scanResult.SSID);
+                        if (otherAP == null || scanResult.level > otherAP.level) {
+                            SSIDs.put(scanResult.SSID, scanResult);
+                        }
+                    }
+                    scanResults = new ArrayList<ScanResult>(SSIDs.values());
+                }
+
+                int connected = 0;
+
                 for (ScanResult scanResult : scanResults) {
-                    ScanResult otherAP = SSIDs.get(scanResult.SSID);
-                    if (otherAP == null || scanResult.level > otherAP.level) {
-                        SSIDs.put(scanResult.SSID, scanResult);
+                    WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
+
+                    if (wifiConfiguration != null) {
+                        values.put(WifiScanDatabase.BSSID, scanResult.BSSID);
+                        values.put(WifiScanDatabase.SSID, scanResult.SSID);
+                        values.put(WifiScanDatabase.NETWORK_ID, wifiConfiguration.networkId);
+                        values.put(WifiScanDatabase.CAPABILITIES, scanResult.capabilities);
+                        values.put(WifiScanDatabase.FREQUENCY, scanResult.frequency);
+                        values.put(WifiScanDatabase.LEVEL, scanResult.level);
+                        values.put(WifiScanDatabase.SIGNALSTRENGTH, getSignalStrength(scanResult.level));
+                        connected = (currentBSSID.equals(scanResult.BSSID)) ? 1 : 0;
+                        values.put(WifiScanDatabase.CONNECTED, connected);
+                        getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                     }
                 }
-                scanResults = new ArrayList<ScanResult>(SSIDs.values());
+                Log.e(TAG, "new wifi scan results");
             }
-
-            int connected = 0;
-
-            for (ScanResult scanResult : scanResults) {
-                WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
-
-                if (wifiConfiguration != null) {
-                    values.put(WifiScanDatabase.BSSID, scanResult.BSSID);
-                    values.put(WifiScanDatabase.SSID, scanResult.SSID);
-                    values.put(WifiScanDatabase.NETWORK_ID, wifiConfiguration.networkId);
-                    values.put(WifiScanDatabase.CAPABILITIES, scanResult.capabilities);
-                    values.put(WifiScanDatabase.FREQUENCY, scanResult.frequency);
-                    values.put(WifiScanDatabase.LEVEL, scanResult.level);
-                    values.put(WifiScanDatabase.SIGNALSTRENGTH, getSignalStrength(scanResult.level));
-                    connected = (currentBSSID.equals(scanResult.BSSID)) ? 1 : 0;
-                    values.put(WifiScanDatabase.CONNECTED, connected);
-                    getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
-                }
-            }
-
-            Log.e(TAG, "new wifi scan results");
         }
+
     }
 
     private int getSignalStrength(int level) {

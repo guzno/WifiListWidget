@@ -12,12 +12,14 @@ import android.os.IBinder;
  * To change this template use File | Settings | File Templates.
  */
 public class WifiStateReceiver extends BroadcastReceiver {
+    public static final String LULCAKE = "wifi_state";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
 
         intent.setClass(context, WifiStateService.class);
-        intent.putExtra("wifi_state", wifiState);
+        intent.putExtra(WifiStateReceiver.LULCAKE, wifiState);
 
         context.startService(intent);
     }
