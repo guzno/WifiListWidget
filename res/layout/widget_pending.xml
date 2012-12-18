@@ -23,14 +23,15 @@
                 android:background="@android:color/transparent"
                 android:layout_alignParentLeft="true"
                 android:contentDescription="@string/widget_wifi_toggle"/>
-        <TextView android:id="@+id/widget_title"
-                  android:layout_height="32dp"
-                  android:layout_width="match_parent"
-                  android:layout_toRightOf="@id/widget_wifi_toggle"
-                  android:layout_margin="8dp"
-                  android:textSize="16dp"
-                  android:gravity="center_vertical"
-                  android:text="@string/widget_title"/>
+        <ImageButton
+                android:id="@+id/widget_wifi_scan"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_wifi_scan_active"
+                android:background="@android:color/transparent"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/widget_wifi_scan"/>
         <ImageButton android:id="@+id/widget_hotspot_toggle"
                      android:layout_width="48dp"
                      android:layout_height="48dp"
@@ -41,18 +42,12 @@
                      android:contentDescription="@string/widget_hotspot_toggle"
                 />
     </RelativeLayout>
-    <ListView android:id="@+id/widget_listview"
-              android:layout_below="@id/widget_header"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
+    <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_below="@id/widget_header"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"/>
-    <TextView android:id="@+id/empty_view"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:gravity="center"
-              android:visibility="gone"
-              android:textColor="#ffffff"
-              android:text=""
-              android:textSize="20dp"/>
+            android:layout_marginRight="5dp"
+            android:background="@android:color/background_dark"
+            />
 </RelativeLayout>

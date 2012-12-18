@@ -2,10 +2,7 @@ package se.magnulund.android.wifilistwidget;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,7 +23,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
-import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
@@ -44,6 +40,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     public static final String PREFS_SHOW_HOTSPOT_TOGGLE = "show_hotspot_toggle";
     public static final String DEVICE_HAS_MOBILE_NETWORK = "device_has_mobile_networks";
+    public static final String MOBILE_NETWORK_CHECKED = "mobile_network_checked";
 
     private ListView wifiList;
     private List<WifiConfiguration> wifiConfigurations;
@@ -86,17 +83,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         hasMobileNetwork = NetworkUtils.hasMobileNetwork(this);
 
-        if ( hasMobileNetwork ){
+        if (hasMobileNetwork) {
             wifiApManager = new WifiApManager(MainActivity.this);
         }
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        for (NetworkInfo networkInfo : connectivityManager.getAllNetworkInfo()) {
-            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                hasMobileNetwork = true;
-                wifiApManager = new WifiApManager(MainActivity.this);
-                break;
-            }
+        hasMobileNetwork = preferences.getBoolean(DEVICE_HAS_MOBILE_NETWORK, deviceHasMobileNetwork(MainActivity.this));
+        if (hasMobileNetwork) {
+            wifiApManager = new WifiApManager(MainActivity.this);
         }
 
         wifiList.setAdapter(wifiAdapter);
@@ -117,6 +110,18 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
     }
 
+    public static boolean deviceHasMobileNetwork(Context context) {
+        boolean mobileNetwork = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        for (NetworkInfo networkInfo : connectivityManager.getAllNetworkInfo()) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                mobileNetwork = true;
+                break;
+            }
+        }
+        return mobileNetwork;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();    //To change body of overridden methods use File | Settings | File Templates.
@@ -131,6 +136,12 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     protected void onPause() {
         super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
+        if ( preferences.getBoolean(MOBILE_NETWORK_CHECKED, false) == false ){
+            SharedPreferences.Editor edit = preferences.edit();
+            edit.putBoolean(DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
+            edit.putBoolean(MOBILE_NETWORK_CHECKED, true);
+            edit.commit();
+        }
         if (isWidgetActive() == false) {
             Log.e(TAG, "Widget not active - stopping service");
             Intent intent = new Intent(this, WifiStateService.class);

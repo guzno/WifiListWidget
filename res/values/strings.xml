@@ -18,4 +18,7 @@
     <string name="widget_wifi_toggle">Toogle WIFI On/Off</string>
     <string name="widget_hotspot_toggle">Toggle HotSpot On/Off</string>
     <string name="widget_title">Wifi Networks</string>
+    <string name="widget_wifi_scan">Scan for Wifi networks</string>
+    <string name="widget_toggle_msg_hotspot">Click to turn off HotSpot</string>
+    <string name="widget_toggle_msg_wifi">Click to turn on wifi</string>
 </resources>

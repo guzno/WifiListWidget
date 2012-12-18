@@ -37,12 +37,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             for (int i = 0; i < appWidgetIds.length; ++i) {
                 RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
                 /*
-                // Specify the service to provide data for the collection widget.  Note that we need to
+                // Specify the service to provide data for the collection widget_listview.  Note that we need to
                 // embed the appWidgetId via the data otherwise it will be ignored.
                 final Intent intent = new Intent(context, WifiWidgetService.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
                 intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-                final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
+                final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_listview);
                 rv.setRemoteAdapter(R.id.widget_listview, intent);
 
                 // Set the empty view to be displayed if the collection is empty.  It must be a sibling
@@ -61,7 +61,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv.setPendingIntentTemplate(R.id.widget_listview, onClickPendingIntent);
 
-                // Bind the click intent for the refresh button on the widget
+                // Bind the click intent for the refresh button on the widget_listview
                 final Intent wifiToggleIntent = new Intent(context, WifiWidgetProvider.class);
                 wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
                 final PendingIntent wifiTogglePendingIntent = PendingIntent.getBroadcast(context, 0,

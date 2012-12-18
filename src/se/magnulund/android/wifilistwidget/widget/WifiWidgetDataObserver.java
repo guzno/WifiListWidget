@@ -29,7 +29,7 @@ class WifiWidgetDataObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange) {
-        // The data has changed, so notify the widget that the collection view needs to be updated.
+        // The data has changed, so notify the widget_listview that the collection view needs to be updated.
         // In response, the factory's onDataSetChanged() will be called which will requery the
         // cursor for the new data.
         Log.e(TAG, "Widget data changed");

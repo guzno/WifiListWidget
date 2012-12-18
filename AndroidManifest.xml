@@ -47,7 +47,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
-            <!-- This specifies the widget provider info -->
+            <!-- This specifies the widget_listview provider info -->
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widgetinfo"/>
         </receiver>
@@ -62,7 +62,7 @@
         <receiver android:name=".BootReceiver"/>
         <receiver android:name=".AlarmReceiver"/>
 
-        <!-- The service serving the RemoteViews to the collection widget -->
+        <!-- The service serving the RemoteViews to the collection widget_listview -->
         <service android:name=".widget.WifiWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS"
                  android:exported="true"

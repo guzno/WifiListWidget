@@ -43,7 +43,7 @@ public class WifiWidgetConfigurationActivity extends Activity {
         }
 
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            throw new RuntimeException("I want to be instantiated by a widget.");
+            throw new RuntimeException("I want to be instantiated by a widget_listview.");
         }
     }
 
