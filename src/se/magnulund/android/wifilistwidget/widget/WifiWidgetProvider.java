@@ -134,6 +134,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             mobileHotSpotActive = !mobileHotSpotActive;
 
             AlarmUtility.scheduleAlarm(context);
+        } else if (action.equals(WIFI_SCAN_ACTION)) {
+            wifiManager.startScan();
         }
 
         super.onReceive(context, intent);
@@ -203,15 +205,15 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     toggleMsg = R.string.widget_toggle_msg_hotspot;
                     toggleIntent.setAction(WifiWidgetProvider.HOTSPOT_TOGGLE_ACTION);
 
-                } else if ( wifiState == WifiManager.WIFI_STATE_DISABLED){
+                } else if (wifiState == WifiManager.WIFI_STATE_DISABLED) {
                     toggleImg = R.drawable.ic_widget_wifi_toggle;
                     toggleMsg = R.string.widget_toggle_msg_wifi;
                     toggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
                 }
 
-                if ( toggleImg > 0 ) {
+                if (toggleImg > 0) {
 
-                    rv.setImageViewResource(R.id.widget_hotspot_toggle, toggleImg);
+                    rv.setImageViewResource(R.id.widget_main_toggle, toggleImg);
                     rv.setTextViewText(R.id.widget_main_toggle_text, context.getResources().getString(toggleMsg));
 
                     final PendingIntent togglePendingIntent = PendingIntent.getBroadcast(context, 0, toggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -265,6 +267,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 widgetType = WIDGET_TYPE_PENDING;
                 break;
         }
+        Log.e(TAG, "WIDGET TYPE: "+widgetType);
         return widgetType;
     }
 
@@ -274,9 +277,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         int headerScanImg;
         int widgetLayout;
 
-        boolean deviceHasAP = true;
-        //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //boolean deviceHasAP = preferences.getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, true);
+        //boolean deviceHasAP = true;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean deviceHasAP = preferences.getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, true);
 
         // CHECK WHICH LAYOUT TO USE
         if (deviceHasAP) {
@@ -399,7 +402,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             if (scanningEnabled) {
                 final Intent wifiScanIntent = new Intent(context, WifiWidgetProvider.class);
-                wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_SCAN_ACTION);
+                wifiScanIntent.setAction(WifiWidgetProvider.WIFI_SCAN_ACTION);
                 final PendingIntent wifiScanPendingIntent = PendingIntent.getBroadcast(context, 0,
                         wifiScanIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv.setOnClickPendingIntent(R.id.widget_wifi_scan, wifiScanPendingIntent);
