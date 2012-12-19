@@ -91,7 +91,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
 
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        Context appContext = context.getApplicationContext();
+
+        WifiManager wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
         Log.e(TAG, "Action: " + action);
 
         if (action.equals(CLICK_ACTION)) {
@@ -102,7 +104,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiManager.enableNetwork(networkId, true);
                 wifiManager.reconnect();
 
-                AlarmUtility.scheduleAlarm(context);
+                AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
             }
         } else if (action.equals(WIFI_TOGGLE_ACTION)) {
             Log.e(TAG, "Wifi toggle pressed");
@@ -115,10 +117,10 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 context.getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
             }
 
-            AlarmUtility.scheduleAlarm(context);
+            AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
         } else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             Log.e(TAG, "HotSpot toggle pressed");
-            WifiApManager wifiApManager = new WifiApManager(context);
+            WifiApManager wifiApManager = new WifiApManager(appContext);
 
             mobileHotSpotActive = wifiApManager.isWifiApEnabled();
 
@@ -133,9 +135,16 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             mobileHotSpotActive = !mobileHotSpotActive;
 
-            AlarmUtility.scheduleAlarm(context);
+            AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
+
         } else if (action.equals(WIFI_SCAN_ACTION)) {
             wifiManager.startScan();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(AlarmUtility.SCANNING_ENABLED, false);
+            editor.commit();
+            //Log.e(TAG, "Scanning enabled1: " + preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, true));
+            AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_SCAN_DELAY);
         }
 
         super.onReceive(context, intent);
@@ -155,6 +164,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor edit = preferences.edit();
         if (preferences.getBoolean(MainActivity.MOBILE_NETWORK_CHECKED, false) == false) {
+            Log.e(TAG, "MOBILE NETWORKS NOT CHECKED, CHECKING...");
             edit.putBoolean(MainActivity.MOBILE_NETWORK_CHECKED, true);
             edit.putBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
         }
@@ -164,15 +174,17 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
     public static RemoteViews getRemoteViews(Context context, int appWidgetID) {
 
-        WifiApManager wifiApManager = new WifiApManager(context);
+        Context appContext = context.getApplicationContext();
+
+        WifiApManager wifiApManager = new WifiApManager(appContext);
         WIFI_AP_STATE wifiApState = wifiApManager.getWifiApState();
 
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
         int wifiState = wifiManager.getWifiState();
 
         int widgetType = getWidgetType(wifiApState, wifiState);
 
-        final RemoteViews rv = getWidgetLayoutAndHeader(context, widgetType, wifiApState, wifiState);
+        final RemoteViews rv = getWidgetLayoutAndHeader(context, appContext, widgetType, wifiApState, wifiState);
 
         switch (widgetType) {
             case WIDGET_TYPE_LISTVIEW: {
@@ -267,18 +279,18 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 widgetType = WIDGET_TYPE_PENDING;
                 break;
         }
-        Log.e(TAG, "WIDGET TYPE: "+widgetType);
+        //Log.e(TAG, "WIDGET TYPE: " + widgetType);
         return widgetType;
     }
 
-    private static RemoteViews getWidgetLayoutAndHeader(Context context, int widgetType, WIFI_AP_STATE wifiApState, int wifiState) {
+    private static RemoteViews getWidgetLayoutAndHeader(Context context, Context appContext, int widgetType, WIFI_AP_STATE wifiApState, int wifiState) {
         int headerApImg;
         int headerWifiImg;
         int headerScanImg;
         int widgetLayout;
 
         //boolean deviceHasAP = true;
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
         boolean deviceHasAP = preferences.getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, true);
 
         // CHECK WHICH LAYOUT TO USE
@@ -356,6 +368,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 final PendingIntent hotSpotTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
                         hotSpotToggleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv.setOnClickPendingIntent(R.id.widget_hotspot_toggle, hotSpotTogglePendingIntent);
+            } else {
+                rv.setOnClickPendingIntent(R.id.widget_hotspot_toggle, null);
             }
 
         }
@@ -378,7 +392,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             case WifiManager.WIFI_STATE_DISABLED: {
                 headerWifiImg = R.drawable.ic_wifi_state_disabled;
                 headerScanImg = R.drawable.ic_wifi_scan_inactive;
-                bindWifiIntents = true;
                 scanningEnabled = false;
                 break;
             }
@@ -388,12 +401,18 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 bindWifiIntents = false;
                 break;
         }
+        //Log.e(TAG, "Scanning enabled 2: " + preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, true));
+        if (preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, true) == false) {
+            scanningEnabled = false;
+            headerScanImg = R.drawable.ic_wifi_scan_inactive;
+            //Log.e(TAG, "Scanning disabled!");
+        }
 
         rv.setImageViewResource(R.id.widget_wifi_toggle, headerWifiImg);
         rv.setImageViewResource(R.id.widget_wifi_scan, headerScanImg);
 
         if (bindWifiIntents) {
-
+            //Log.e(TAG, "Binding WIFI Intents");
             final Intent wifiToggleIntent = new Intent(context, WifiWidgetProvider.class);
             wifiToggleIntent.setAction(WifiWidgetProvider.WIFI_TOGGLE_ACTION);
             final PendingIntent wifiTogglePendingIntent = PendingIntent.getBroadcast(context, 0,
@@ -406,7 +425,13 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 final PendingIntent wifiScanPendingIntent = PendingIntent.getBroadcast(context, 0,
                         wifiScanIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv.setOnClickPendingIntent(R.id.widget_wifi_scan, wifiScanPendingIntent);
+                //Log.e(TAG, "Scanning enabled!");
+            } else {
+                rv.setOnClickPendingIntent(R.id.widget_wifi_scan, null);
             }
+        } else {
+            rv.setOnClickPendingIntent(R.id.widget_wifi_toggle, null);
+            rv.setOnClickPendingIntent(R.id.widget_wifi_scan, null);
         }
 
         return rv;

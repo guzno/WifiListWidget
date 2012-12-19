@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wifi List Widget</string>
+    <string name="app_name">AP List</string>
     <string name="hotspot_active">Hotspot On</string>
     <string name="hotspot_inactive">Hotspot Off</string>
     <string name="settings">Settings</string>

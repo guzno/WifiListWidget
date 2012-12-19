@@ -19,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
-            AlarmUtility.scheduleAlarm(context);
+            AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }

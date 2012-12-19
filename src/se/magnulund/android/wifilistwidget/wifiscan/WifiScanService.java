@@ -67,12 +67,12 @@ public class WifiScanService extends IntentService {
 
             if (intent.getBooleanExtra("new_scan_results", false)) {
                 ContentValues values = new ContentValues();
-                Log.e(TAG, "here/1");
+                //Log.e(TAG, "here/1");
                 HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
                 for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
                     wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
                 }
-                Log.e(TAG, "here/2");
+                //Log.e(TAG, "here/2");
 
                 WifiInfo currentConnection = wifiManager.getConnectionInfo();
                 String currentBSSID = "";
@@ -113,7 +113,7 @@ public class WifiScanService extends IntentService {
                         getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                     }
                 }
-                Log.e(TAG, "new wifi scan results");
+                //Log.e(TAG, "new wifi scan results");
             }
         }
 
