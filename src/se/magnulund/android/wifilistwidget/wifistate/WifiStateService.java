@@ -1,12 +1,17 @@
 package se.magnulund.android.wifilistwidget.wifistate;
 
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.RemoteViews;
+import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanReceiver;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 
@@ -80,6 +85,11 @@ public class WifiStateService extends IntentService {
                     default:
                         throw new UnsupportedOperationException("that's no numbar" + wifiState);
                 }
+
+                Log.e(TAG, "Wifi state changed, checking if widget is active");
+
+                WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_WIFI_STATE_CHANGED, wifiState);
+
             }
         }
     }

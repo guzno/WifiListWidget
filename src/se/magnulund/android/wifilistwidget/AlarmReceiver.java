@@ -3,6 +3,7 @@ package se.magnulund.android.wifilistwidget;
 import android.appwidget.AppWidgetManager;
 import android.content.*;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
@@ -52,6 +53,13 @@ public class AlarmReceiver extends BroadcastReceiver {
                     if (!receivedIntent.getBooleanExtra(AlarmUtility.REENABLE_SCANNING, true)){
                         AlarmUtility.scheduleScanDelayAlarm(context, false);
                     }
+                    break;
+                }
+                case AlarmUtility.ALARM_TYPE_WIFI_STATE: {
+                    break;
+                }
+                default: {
+                    Log.e(TAG, "unknown alarm");
                     break;
                 }
             }

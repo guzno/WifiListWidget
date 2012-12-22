@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
 import java.util.ArrayList;
@@ -113,7 +114,8 @@ public class WifiScanService extends IntentService {
                         getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                     }
                 }
-                //Log.e(TAG, "new wifi scan results");
+                WifiWidgetProvider.updateWidgets(getApplicationContext(), WifiWidgetProvider.UPDATE_WIFI_SCAN_RESULTS, 0);
+                Log.e(TAG, "new wifi scan results");
             }
         }
 

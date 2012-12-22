@@ -29,9 +29,11 @@ public class AlarmUtility {
 
     public static final String SCANNING_ENABLED = "scanning_enabled";
     public static final String REENABLE_SCANNING = "reenable_scanning";
+    public static final String LAST_WIFI_STATE = "last_wifi_state";
 
     public static final int ALARM_TYPE_BACKOFF = 1;
     public static final int ALARM_TYPE_SCAN_DELAY = 2;
+    public static final int ALARM_TYPE_WIFI_STATE = 3;
 
 
     private static PendingIntent createPendingIntentWithInfo(Context context, int requestCode, int attempt) {
@@ -71,6 +73,20 @@ public class AlarmUtility {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MILLISECOND, 500*attempt);
         Log.e(TAG, "registered new alarm(" + attempt + ") at time " + cal.getTime().toString());
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+    }
+
+    public static void scheduleWifiStateChecker(Context context, int wifiState) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra(LAST_WIFI_STATE, wifiState);
+        intent.putExtra(ALARM_IDENTIFIER, ALARM_TYPE_WIFI_STATE);
+
+        PendingIntent sender = PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MILLISECOND, 300);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
     }

@@ -3,11 +3,12 @@ package se.magnulund.android.wifilistwidget.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -42,19 +43,22 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public static String HOTSPOT_TOGGLE_ACTION = "se.magnulund.android.wifilistwidget.widget_listview.HOTSPOT_TOGGLE";
     public static String WIFI_SCAN_ACTION = "se.magnulund.android.wifilistwidget.widget_listview.WIFI_SCAN";
 
+    public static final int UPDATE_WIFI_STATE_CHANGED = 1;
+    public static final int UPDATE_WIFI_SCAN_RESULTS = 2;
+
     private static final int WIDGET_TYPE_LISTVIEW = 1;
     private static final int WIDGET_TYPE_TOGGLE = 2;
     private static final int WIDGET_TYPE_PENDING = 3;
 
-    private static HandlerThread sWorkerThread;
-    private static Handler sWorkerQueue;
-    private static WifiWidgetDataObserver sDataObserver;
+    //private static HandlerThread sWorkerThread;
+    //private static Handler sWorkerQueue;
+    //private static WifiWidgetDataObserver sDataObserver;
 
     public WifiWidgetProvider() {
         // Start the worker thread
-        sWorkerThread = new HandlerThread("WifiWidgetProvider-worker");
-        sWorkerThread.start();
-        sWorkerQueue = new Handler(sWorkerThread.getLooper());
+        //sWorkerThread = new HandlerThread("WifiWidgetProvider-worker");
+        //sWorkerThread.start();
+        //sWorkerQueue = new Handler(sWorkerThread.getLooper());
     }
 
     @Override
@@ -65,13 +69,13 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         // state of the data, we must listen for changes and update ourselves accordingly.
         Intent intent = new Intent(context, WifiStateService.class);
         context.startService(intent);
-        final ContentResolver r = context.getContentResolver();
+        /*final ContentResolver r = context.getContentResolver();
         if (sDataObserver == null) {
             final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
             final ComponentName cn = new ComponentName(context, WifiWidgetProvider.class);
             sDataObserver = new WifiWidgetDataObserver(mgr, cn, sWorkerQueue);
             r.registerContentObserver(ScanDataProvider.CONTENT_URI, true, sDataObserver);
-        }
+        }*/
         setWidgetActive(context, true);
     }
 
@@ -117,7 +121,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 context.getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
             }
 
-            AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
+            //AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
         } else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             Log.e(TAG, "HotSpot toggle pressed");
             WifiApManager wifiApManager = new WifiApManager(appContext);
@@ -279,7 +283,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 widgetType = WIDGET_TYPE_PENDING;
                 break;
         }
-        //Log.e(TAG, "WIDGET TYPE: " + widgetType);
+        Log.e(TAG, "WIDGET TYPE: " + widgetType);
         return widgetType;
     }
 
@@ -434,6 +438,38 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             rv.setOnClickPendingIntent(R.id.widget_wifi_scan, null);
         }
 
+
         return rv;
+    }
+
+    public static void updateWidgets(Context context, int updateType, int wifiState) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (preferences.getBoolean(WifiWidgetProvider.WIDGET_ACTIVE, false) == true) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widget);
+
+            for (int i = 0; i < appWidgetIds.length; ++i) {
+                Log.e(TAG, "updating widget " + i);
+                RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
+                appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+            }
+            switch (updateType) {
+                case UPDATE_WIFI_STATE_CHANGED: {
+                    AlarmUtility.scheduleWifiStateChecker(context, wifiState);
+                    break;
+                }
+                case UPDATE_WIFI_SCAN_RESULTS: {
+                    Log.e(TAG, "notify new scanresults");
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
+                    break;
+                }
+                default:
+                    break;
+            }
+
+
+        }
     }
 }
