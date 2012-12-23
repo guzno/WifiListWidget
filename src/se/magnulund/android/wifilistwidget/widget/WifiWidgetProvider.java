@@ -45,6 +45,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
     public static final int UPDATE_WIFI_STATE_CHANGED = 1;
     public static final int UPDATE_WIFI_SCAN_RESULTS = 2;
+    public static final int UPDATE_FROM_ALARM = 3;
 
     private static final int WIDGET_TYPE_LISTVIEW = 1;
     private static final int WIDGET_TYPE_TOGGLE = 2;
@@ -442,8 +443,10 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         return rv;
     }
 
-    public static void updateWidgets(Context context, int updateType, int wifiState) {
+    public static void updateWidgets(Context context, int updateType, Integer wifiState) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        SharedPreferences.Editor editor;
 
         if (preferences.getBoolean(WifiWidgetProvider.WIDGET_ACTIVE, false) == true) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -457,12 +460,21 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             }
             switch (updateType) {
                 case UPDATE_WIFI_STATE_CHANGED: {
-                    AlarmUtility.scheduleWifiStateChecker(context, wifiState);
+                    if (wifiState == WifiManager.WIFI_STATE_DISABLING) {
+                        AlarmUtility.scheduleWifiStateChecker(context, wifiState, 1);
+
+                    }
                     break;
                 }
                 case UPDATE_WIFI_SCAN_RESULTS: {
                     Log.e(TAG, "notify new scanresults");
+                    editor = preferences.edit();
+                    editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
+                    editor.commit();
                     appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
+                    break;
+                }
+                case UPDATE_FROM_ALARM: {
                     break;
                 }
                 default:

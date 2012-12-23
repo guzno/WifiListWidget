@@ -1,10 +1,12 @@
 package se.magnulund.android.wifilistwidget;
 
-import android.appwidget.AppWidgetManager;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.RemoteViews;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 
@@ -21,47 +23,76 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent receivedIntent) {
         int alarmType = receivedIntent.getIntExtra(AlarmUtility.ALARM_IDENTIFIER, -1);
+        boolean updateWidgets = true;
+        boolean restartAlarm = false;
 
-        if (alarmType == AlarmUtility.ALARM_TYPE_SCAN_DELAY
-                && receivedIntent.getBooleanExtra(AlarmUtility.REENABLE_SCANNING, false) ) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
-                editor.commit();
+        switch (alarmType) {
+            case AlarmUtility.ALARM_TYPE_BACKOFF: {
+                int attempt = receivedIntent.getIntExtra(AlarmUtility.IDENTIFIER_ALARM_ATTEMPT, -1);
+                AlarmUtility.scheduleAlarmWithBackoff(context, ++attempt);
+                break;
+            }
+            case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
+                if (receivedIntent.getBooleanExtra(AlarmUtility.RE_ENABLE_SCANNING, false)) {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    if (preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, false)) {
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
+                        editor.commit();
+                    } else {
+                        updateWidgets = false;
+                    }
+                } else {
+                    restartAlarm = true;
+                }
+                break;
+            }
+            case AlarmUtility.ALARM_TYPE_WIFI_STATE: {
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                if (wifiManager.getWifiState() == receivedIntent.getIntExtra(AlarmUtility.LAST_WIFI_STATE, -1)) {
+                    updateWidgets = false;
+                    restartAlarm = true;
+                }
+                break;
+            }
+            default: {
+                Log.e(TAG, "unknown alarm");
+                return;
+            }
         }
 
         try {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName thisWidget = new ComponentName(context, WifiWidgetProvider.class);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
-            for (int i = 0; i < appWidgetIds.length; ++i) {
-                RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
-                appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+            if (updateWidgets) {
+                WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_FROM_ALARM, null);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            switch (alarmType) {
-                case AlarmUtility.ALARM_TYPE_BACKOFF: {
-                    int attempt = receivedIntent.getIntExtra(AlarmUtility.IDENTIFIER_ALARM_ATTEMPT, -1);
-                    AlarmUtility.scheduleAlarmWithBackoff(context, ++attempt);
-                    break;
-                }
-                case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
-                    if (!receivedIntent.getBooleanExtra(AlarmUtility.REENABLE_SCANNING, true)){
-                        AlarmUtility.scheduleScanDelayAlarm(context, false);
+            if (restartAlarm) {
+                switch (alarmType) {
+                    case AlarmUtility.ALARM_TYPE_BACKOFF: {
+                        int attempt = receivedIntent.getIntExtra(AlarmUtility.IDENTIFIER_ALARM_ATTEMPT, -1);
+                        AlarmUtility.scheduleAlarmWithBackoff(context, ++attempt);
+                        break;
                     }
-                    break;
+                    case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
+                        AlarmUtility.scheduleScanDelayAlarm(context, true);
+                        break;
+                    }
+                    case AlarmUtility.ALARM_TYPE_WIFI_STATE: {
+                        if (restartAlarm) {
+                            int attempt = receivedIntent.getIntExtra(AlarmUtility.IDENTIFIER_ALARM_ATTEMPT, -1);
+                            AlarmUtility.scheduleWifiStateChecker(context, receivedIntent.getIntExtra(AlarmUtility.LAST_WIFI_STATE, -1), ++attempt);
+                        }
+                        break;
+                    }
+                    default: {
+                        Log.e(TAG, "unknown alarm");
+                        break;
+                    }
                 }
-                case AlarmUtility.ALARM_TYPE_WIFI_STATE: {
-                    break;
-                }
-                default: {
-                    Log.e(TAG, "unknown alarm");
-                    break;
-                }
+
             }
         }
     }

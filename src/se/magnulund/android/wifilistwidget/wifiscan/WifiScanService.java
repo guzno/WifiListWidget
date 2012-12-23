@@ -114,7 +114,7 @@ public class WifiScanService extends IntentService {
                         getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                     }
                 }
-                WifiWidgetProvider.updateWidgets(getApplicationContext(), WifiWidgetProvider.UPDATE_WIFI_SCAN_RESULTS, 0);
+                WifiWidgetProvider.updateWidgets(getApplicationContext(), WifiWidgetProvider.UPDATE_WIFI_SCAN_RESULTS, null);
                 Log.e(TAG, "new wifi scan results");
             }
         }
