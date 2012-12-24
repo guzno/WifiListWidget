@@ -25,29 +25,24 @@ public class AlarmReceiver extends BroadcastReceiver {
         int alarmType = receivedIntent.getIntExtra(AlarmUtility.ALARM_IDENTIFIER, -1);
         boolean updateWidgets = true;
         boolean restartAlarm = false;
+        int updateType;
+        Integer updateInfo = null;
 
         switch (alarmType) {
             case AlarmUtility.ALARM_TYPE_BACKOFF: {
-                int attempt = receivedIntent.getIntExtra(AlarmUtility.IDENTIFIER_ALARM_ATTEMPT, -1);
-                AlarmUtility.scheduleAlarmWithBackoff(context, ++attempt);
-                break;
+                restartAlarm = true;
+                updateType = WifiWidgetProvider.UPDATE_ALARM_TYPE_BACKOFF;
             }
             case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
-                if (receivedIntent.getBooleanExtra(AlarmUtility.RE_ENABLE_SCANNING, false)) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                    if (preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, false)) {
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
-                        editor.commit();
-                    } else {
-                        updateWidgets = false;
-                    }
-                } else {
+                updateType = WifiWidgetProvider.UPDATE_ALARM_TYPE_SCAN_DELAY;
+                updateInfo = receivedIntent.getIntExtra(AlarmUtility.UPDATE_INFO, -1);
+                if ( updateInfo == AlarmUtility.DISABLE_SCANNING ) {
                     restartAlarm = true;
                 }
                 break;
             }
             case AlarmUtility.ALARM_TYPE_WIFI_STATE: {
+                updateType = WifiWidgetProvider.UPDATE_ALARM_TYPE_WIFI_STATE;
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 if (wifiManager.getWifiState() == receivedIntent.getIntExtra(AlarmUtility.LAST_WIFI_STATE, -1)) {
                     updateWidgets = false;
@@ -63,7 +58,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         try {
             if (updateWidgets) {
-                WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_FROM_ALARM, null);
+                WifiWidgetProvider.updateWidgets(context, updateType, updateInfo);
             }
 
         } catch (Exception e) {
@@ -77,7 +72,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         break;
                     }
                     case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
-                        AlarmUtility.scheduleScanDelayAlarm(context, true);
+                        AlarmUtility.scheduleScanDelayAlarm(context, AlarmUtility.RE_ENABLE_SCANNING);
                         break;
                     }
                     case AlarmUtility.ALARM_TYPE_WIFI_STATE: {

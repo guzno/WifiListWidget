@@ -9,5 +9,6 @@
         android:minResizeHeight="110dp"
         android:widgetCategory="keyguard|home_screen"
         android:configure="se.magnulund.android.wifilistwidget.widget.WifiWidgetConfigurationActivity"
-        android:previewImage="@drawable/ic_signal_strength_best">
+        android:previewImage="@drawable/ic_signal_strength_best"
+        android:updatePeriodMillis="0">
 </appwidget-provider>

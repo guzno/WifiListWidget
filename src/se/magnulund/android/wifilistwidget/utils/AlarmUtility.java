@@ -26,9 +26,13 @@ public class AlarmUtility {
 
     public static final String IDENTIFIER_ALARM_ATTEMPT = "alarm_attempt";
     public static final String ALARM_IDENTIFIER = "alarm_identifier";
+    public static final String UPDATE_INFO = "update_info";
 
     public static final String SCANNING_ENABLED = "scanning_enabled";
-    public static final String RE_ENABLE_SCANNING = "reenable_scanning";
+
+    public static final int DISABLE_SCANNING = 0;
+    public static final int RE_ENABLE_SCANNING = 1;
+
     public static final String LAST_WIFI_STATE = "last_wifi_state";
 
     public static final int ALARM_TYPE_BACKOFF = 1;
@@ -50,7 +54,7 @@ public class AlarmUtility {
                 break;
             }
             case ALARM_TYPE_SCAN_DELAY: {
-                 scheduleScanDelayAlarm(context, false);
+                 scheduleScanDelayAlarm(context, DISABLE_SCANNING);
             }
             default:
                 break;
@@ -98,25 +102,36 @@ public class AlarmUtility {
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MILLISECOND, delay);
-
+        Log.e(TAG, "registered wifi state alarm (" + attempt + ") at time " + cal.getTime().toString());
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
     }
 
-    public static void scheduleScanDelayAlarm(Context context, boolean enableScanning) {
+    public static void scheduleScanDelayAlarm(Context context, int alarmAction) {
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(ALARM_IDENTIFIER, ALARM_TYPE_SCAN_DELAY);
-        intent.putExtra(RE_ENABLE_SCANNING, enableScanning);
+        intent.putExtra(UPDATE_INFO, alarmAction);
 
         PendingIntent sender = PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int delay = (enableScanning) ? 5000 : 100;
+        int delay;
+        switch (alarmAction) {
+            case DISABLE_SCANNING:
+                delay = 100;
+                break;
+            case RE_ENABLE_SCANNING:
+                delay = 5000;
+                break;
+            default:
+                delay = 100;
+                break;
+        }
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MILLISECOND, delay);
-
+        Log.e(TAG, "registered Scan delay alarm at time " + cal.getTime().toString());
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
     }
 }
