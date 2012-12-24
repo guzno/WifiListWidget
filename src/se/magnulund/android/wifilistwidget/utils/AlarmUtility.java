@@ -63,7 +63,7 @@ public class AlarmUtility {
     }
 
     public static void scheduleAlarmWithBackoff(Context context, int attempt) {
-        if (attempt > 5) {
+        if (attempt > 10) {
             Log.e(TAG, "alarm reached max retries - bailing out");
             return;
         }

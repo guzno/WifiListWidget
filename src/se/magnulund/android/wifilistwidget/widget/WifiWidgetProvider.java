@@ -51,6 +51,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public static final int UPDATE_ALARM_TYPE_BACKOFF = 3;
     public static final int UPDATE_ALARM_TYPE_SCAN_DELAY = 4;
     public static final int UPDATE_ALARM_TYPE_WIFI_STATE = 5;
+    public static final int UPDATE_SYSTEM_INITIATED = 6;
 
     private static final int WIDGET_TYPE_LISTVIEW = 1;
     private static final int WIDGET_TYPE_TOGGLE = 2;
@@ -83,6 +84,18 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             r.registerContentObserver(ScanDataProvider.CONTENT_URI, true, sDataObserver);
         }*/
         setWidgetActive(context, true);
+    }
+
+    private void setWidgetActive(Context context, Boolean active) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        if (preferences.getBoolean(MainActivity.MOBILE_NETWORK_CHECKED, false) == false) {
+            Log.e(TAG, "MOBILE NETWORKS NOT CHECKED, CHECKING...");
+            edit.putBoolean(MainActivity.MOBILE_NETWORK_CHECKED, true);
+            edit.putBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
+        }
+        edit.putBoolean(WIDGET_ACTIVE, active);
+        edit.commit();
     }
 
     @Override
@@ -155,23 +168,113 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Update each of the widgets with the remote adapter
+        updateWidgets(context, UPDATE_SYSTEM_INITIATED, null);
+        /*
         for (int i = 0; i < appWidgetIds.length; ++i) {
             RemoteViews rv = getRemoteViews(context, appWidgetIds[i]);
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
+        */
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
-    private void setWidgetActive(Context context, Boolean active) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        if (preferences.getBoolean(MainActivity.MOBILE_NETWORK_CHECKED, false) == false) {
-            Log.e(TAG, "MOBILE NETWORKS NOT CHECKED, CHECKING...");
-            edit.putBoolean(MainActivity.MOBILE_NETWORK_CHECKED, true);
-            edit.putBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
+    public static void updateWidgets(Context context, int updateType, Integer updateInfo) {
+
+
+        Log.e(TAG, "Update type: "+updateType);
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widget);
+
+        if (appWidgetIds.length > 0) {
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+            SharedPreferences.Editor editor;
+
+            // DO THINGS BEFORE UPDATING WIDGETS
+
+            switch (updateType) {
+                case UPDATE_WIFI_STATE_CHANGED: {
+                    break;
+                }
+                case UPDATE_WIFI_SCAN_RESULTS: {
+                    editor = preferences.edit();
+                    editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
+                    editor.commit();
+                    break;
+                }
+                case UPDATE_ALARM_TYPE_BACKOFF: {
+                    break;
+                }
+                case UPDATE_ALARM_TYPE_SCAN_DELAY: {
+                    editor = preferences.edit();
+
+                    switch (updateInfo) {
+                        case AlarmUtility.DISABLE_SCANNING: {
+                            editor.putBoolean(AlarmUtility.SCANNING_ENABLED, false);
+                            editor.commit();
+                            break;
+                        }
+                        case AlarmUtility.RE_ENABLE_SCANNING: {
+                            if (preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, false)){
+                                return;
+                            } else {
+                                editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
+                                editor.commit();
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case UPDATE_ALARM_TYPE_WIFI_STATE: {
+                    break;
+                }
+                case UPDATE_SYSTEM_INITIATED: {
+                    break;
+                }
+                default:
+                    Log.e(TAG, "Unknown update type: "+updateType);
+                    return;
+            }
+
+            // UPDATE WIDGETS
+
+            for (int i = 0; i < appWidgetIds.length; ++i) {
+                RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
+                appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+            }
+
+            // DO THINGS AFTER UPDATING WIDGETS
+
+            switch (updateType) {
+                case UPDATE_WIFI_STATE_CHANGED: {
+                    if (updateInfo == WifiManager.WIFI_STATE_DISABLING) {
+                        AlarmUtility.scheduleWifiStateChecker(context, updateInfo, 1);
+                    }
+                    break;
+                }
+                case UPDATE_WIFI_SCAN_RESULTS: {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
+                    break;
+                }
+                case UPDATE_ALARM_TYPE_BACKOFF: {
+                    break;
+                }
+                case UPDATE_ALARM_TYPE_SCAN_DELAY: {
+                    break;
+                }
+                case UPDATE_ALARM_TYPE_WIFI_STATE: {
+                    break;
+                }
+                case UPDATE_SYSTEM_INITIATED: {
+                    break;
+                }
+                default:
+                    break;
+            }
         }
-        edit.putBoolean(WIDGET_ACTIVE, active);
-        edit.commit();
     }
 
     public static RemoteViews getRemoteViews(Context context, int appWidgetID) {
@@ -440,89 +543,4 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         return rv;
     }
 
-    public static void updateWidgets(Context context, int updateType, Integer updateInfo) {
-
-
-        Log.e(TAG, "Update type: "+updateType);
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widget);
-
-        if (appWidgetIds.length > 0) {
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-            SharedPreferences.Editor editor;
-
-            switch (updateType) {
-                case UPDATE_WIFI_STATE_CHANGED: {
-                    break;
-                }
-                case UPDATE_WIFI_SCAN_RESULTS: {
-                    editor = preferences.edit();
-                    editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
-                    editor.commit();
-                    break;
-                }
-                case UPDATE_ALARM_TYPE_BACKOFF: {
-                    break;
-                }
-                case UPDATE_ALARM_TYPE_SCAN_DELAY: {
-                    editor = preferences.edit();
-
-                    switch (updateInfo) {
-                        case AlarmUtility.DISABLE_SCANNING: {
-                            editor.putBoolean(AlarmUtility.SCANNING_ENABLED, false);
-                            editor.commit();
-                            break;
-                        }
-                        case AlarmUtility.RE_ENABLE_SCANNING: {
-                            if (preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, false)){
-                                return;
-                            } else {
-                                editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
-                                editor.commit();
-                            }
-                            break;
-                        }
-                    }
-                    break;
-                }
-                case UPDATE_ALARM_TYPE_WIFI_STATE: {
-                    break;
-                }
-                default:
-                    break;
-            }
-
-            for (int i = 0; i < appWidgetIds.length; ++i) {
-                RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
-                appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
-            }
-
-            switch (updateType) {
-                case UPDATE_WIFI_STATE_CHANGED: {
-                    if (updateInfo == WifiManager.WIFI_STATE_DISABLING) {
-                        AlarmUtility.scheduleWifiStateChecker(context, updateInfo, 1);
-                    }
-                    break;
-                }
-                case UPDATE_WIFI_SCAN_RESULTS: {
-                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
-                    break;
-                }
-                case UPDATE_ALARM_TYPE_BACKOFF: {
-                    break;
-                }
-                case UPDATE_ALARM_TYPE_SCAN_DELAY: {
-                    break;
-                }
-                case UPDATE_ALARM_TYPE_WIFI_STATE: {
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-    }
 }
