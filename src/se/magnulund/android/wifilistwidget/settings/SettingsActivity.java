@@ -16,7 +16,7 @@ public class SettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
-        SettingsFragment settingsFragment = SettingsFragment.newInstance(extras.getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK));
+        SettingsFragment settingsFragment = SettingsFragment.newInstance(extras.getBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK));
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, settingsFragment)
                 .commit();

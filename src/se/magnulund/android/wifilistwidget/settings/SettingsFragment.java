@@ -19,8 +19,8 @@ public class SettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        if (getArguments().getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK) == false) {
-            Preference hotSpotToggle = findPreference(MainActivity.PREFS_SHOW_HOTSPOT_TOGGLE);
+        if (getArguments().getBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false) {
+            Preference hotSpotToggle = findPreference(Preferences.SHOW_MAIN_HOTSPOT_TOGGLE);
             hotSpotToggle.setEnabled(false);
             hotSpotToggle.setSummary("Only available on devices with mobile connections");
         }
@@ -30,7 +30,7 @@ public class SettingsFragment extends PreferenceFragment {
     public static SettingsFragment newInstance(Boolean hasMobileNetworks) {
         SettingsFragment settingsFragment = new SettingsFragment();
         Bundle args = new Bundle();
-        args.putBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetworks);
+        args.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetworks);
         settingsFragment.setArguments(args);
 
         return settingsFragment;
