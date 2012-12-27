@@ -32,6 +32,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             case AlarmUtility.ALARM_TYPE_BACKOFF: {
                 restartAlarm = true;
                 updateType = WifiWidgetProvider.UPDATE_ALARM_TYPE_BACKOFF;
+                break;
             }
             case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
                 updateType = WifiWidgetProvider.UPDATE_ALARM_TYPE_SCAN_DELAY;
