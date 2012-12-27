@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
 import se.magnulund.android.wifilistwidget.wifiap.WIFI_AP_STATE;
@@ -57,6 +58,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     private static final int WIDGET_TYPE_TOGGLE = 2;
     private static final int WIDGET_TYPE_PENDING = 3;
 
+    private static final int WIDGET_THEME_DARK = 1;
+    private static final int WIDGET_THEME_LIGHT = 2;
+
     //private static HandlerThread sWorkerThread;
     //private static Handler sWorkerQueue;
     //private static WifiWidgetDataObserver sDataObserver;
@@ -87,12 +91,11 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     }
 
     private void setWidgetActive(Context context, Boolean active) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences preferences = getPreferences(context);
         SharedPreferences.Editor edit = preferences.edit();
-        if (preferences.getBoolean(MainActivity.MOBILE_NETWORK_CHECKED, false) == false) {
+        if (preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false) {
             Log.e(TAG, "MOBILE NETWORKS NOT CHECKED, CHECKING...");
-            edit.putBoolean(MainActivity.MOBILE_NETWORK_CHECKED, true);
-            edit.putBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
+            edit.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
         }
         edit.putBoolean(WIDGET_ACTIVE, active);
         edit.commit();
@@ -181,7 +184,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public static void updateWidgets(Context context, int updateType, Integer updateInfo) {
 
 
-        Log.e(TAG, "Update type: "+updateType);
+        Log.e(TAG, "Update type: " + updateType);
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
@@ -189,7 +192,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
         if (appWidgetIds.length > 0) {
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+            SharedPreferences preferences = getPreferences(context.getApplicationContext());
             SharedPreferences.Editor editor;
 
             // DO THINGS BEFORE UPDATING WIDGETS
@@ -200,7 +203,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 }
                 case UPDATE_WIFI_SCAN_RESULTS: {
                     editor = preferences.edit();
-                    editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
+                    editor.putBoolean(Preferences.SCANNING_ENABLED, true);
                     editor.commit();
                     break;
                 }
@@ -212,15 +215,15 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
                     switch (updateInfo) {
                         case AlarmUtility.DISABLE_SCANNING: {
-                            editor.putBoolean(AlarmUtility.SCANNING_ENABLED, false);
+                            editor.putBoolean(Preferences.SCANNING_ENABLED, false);
                             editor.commit();
                             break;
                         }
                         case AlarmUtility.RE_ENABLE_SCANNING: {
-                            if (preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, false)){
+                            if (preferences.getBoolean(Preferences.SCANNING_ENABLED, false)) {
                                 return;
                             } else {
-                                editor.putBoolean(AlarmUtility.SCANNING_ENABLED, true);
+                                editor.putBoolean(Preferences.SCANNING_ENABLED, true);
                                 editor.commit();
                             }
                             break;
@@ -235,7 +238,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 default:
-                    Log.e(TAG, "Unknown update type: "+updateType);
+                    Log.e(TAG, "Unknown update type: " + updateType);
                     return;
             }
 
@@ -289,7 +292,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
         int widgetType = getWidgetType(wifiApState, wifiState);
 
-        final RemoteViews rv = getWidgetLayoutAndHeader(context, appContext, widgetType, wifiApState, wifiState);
+        final RemoteViews rv = getWidgetLayoutAndHeader(context, appContext, widgetType, appWidgetID, wifiApState, wifiState);
 
         switch (widgetType) {
             case WIDGET_TYPE_LISTVIEW: {
@@ -388,58 +391,74 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         return widgetType;
     }
 
-    private static RemoteViews getWidgetLayoutAndHeader(Context context, Context appContext, int widgetType, WIFI_AP_STATE wifiApState, int wifiState) {
+    private static RemoteViews getWidgetLayoutAndHeader(Context context, Context appContext, int widgetType, int appWidgetID, WIFI_AP_STATE wifiApState, int wifiState) {
         int headerApImg;
         int headerWifiImg;
         int headerScanImg;
         int widgetLayout;
 
         //boolean deviceHasAP = true;
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
-        boolean deviceHasAP = preferences.getBoolean(MainActivity.DEVICE_HAS_MOBILE_NETWORK, true);
+        //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+
+        SharedPreferences preferences = getPreferences(appContext);
+        int widgetTheme = preferences.getInt(Preferences.THEME_+appWidgetID, WIDGET_THEME_DARK);
+        boolean showAP = preferences.getBoolean(Preferences.SHOW_AP_BUTTON_+appWidgetID, true);
+        boolean deviceHasAP = preferences.getBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, true);
 
         // CHECK WHICH LAYOUT TO USE
-        if (deviceHasAP) {
-            switch (widgetType) {
-                case WIDGET_TYPE_LISTVIEW: {
-                    widgetLayout = R.layout.widget_listview;
-                    break;
+        switch (widgetTheme) {
+            case WIDGET_THEME_DARK: {
+                if (showAP && deviceHasAP) {
+                    switch (widgetType) {
+                        case WIDGET_TYPE_LISTVIEW: {
+                            widgetLayout = R.layout.widget_listview;
+                            break;
+                        }
+                        case WIDGET_TYPE_TOGGLE: {
+                            widgetLayout = R.layout.widget_toggle;
+                            break;
+                        }
+                        case WIDGET_TYPE_PENDING: {
+                            widgetLayout = R.layout.widget_pending;
+                            break;
+                        }
+                        default:
+                            widgetLayout = R.layout.widget_pending;
+                            break;
+                    }
+                } else {
+                    switch (widgetType) {
+                        case WIDGET_TYPE_LISTVIEW: {
+                            widgetLayout = R.layout.widget_listview_no_ap;
+                            break;
+                        }
+                        case WIDGET_TYPE_TOGGLE: {
+                            widgetLayout = R.layout.widget_toggle_no_ap;
+                            break;
+                        }
+                        case WIDGET_TYPE_PENDING: {
+                            widgetLayout = R.layout.widget_pending_no_ap;
+                            break;
+                        }
+                        default:
+                            widgetLayout = R.layout.widget_pending_no_ap;
+                            break;
+                    }
                 }
-                case WIDGET_TYPE_TOGGLE: {
-                    widgetLayout = R.layout.widget_toggle;
-                    break;
-                }
-                case WIDGET_TYPE_PENDING: {
-                    widgetLayout = R.layout.widget_pending;
-                    break;
-                }
-                default:
-                    widgetLayout = R.layout.widget_pending;
-                    break;
+                break;
             }
-        } else {
-            switch (widgetType) {
-                case WIDGET_TYPE_LISTVIEW: {
-                    widgetLayout = R.layout.widget_listview_no_ap;
-                    break;
-                }
-                case WIDGET_TYPE_TOGGLE: {
-                    widgetLayout = R.layout.widget_toggle_no_ap;
-                    break;
-                }
-                case WIDGET_TYPE_PENDING: {
-                    widgetLayout = R.layout.widget_pending_no_ap;
-                    break;
-                }
-                default:
-                    widgetLayout = R.layout.widget_pending_no_ap;
-                    break;
+            case WIDGET_THEME_LIGHT: {
+                widgetLayout = R.layout.widget_listview;
+                break;
+            }
+            default: {
+                widgetLayout = R.layout.widget_listview;
+                break;
             }
         }
 
 
         final RemoteViews rv = new RemoteViews(context.getPackageName(), widgetLayout);
-
         boolean bindAPIntent = false;
         boolean bindWifiIntents = true;
 
@@ -507,7 +526,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 break;
         }
         //Log.e(TAG, "Scanning enabled 2: " + preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, true));
-        if (preferences.contains(AlarmUtility.SCANNING_ENABLED) && preferences.getBoolean(AlarmUtility.SCANNING_ENABLED, true) == false) {
+        if (preferences.contains(Preferences.SCANNING_ENABLED) && preferences.getBoolean(Preferences.SCANNING_ENABLED, true) == false) {
             scanningEnabled = false;
             headerScanImg = R.drawable.ic_wifi_scan_inactive;
             Log.e(TAG, "Scanning disabled!");
@@ -541,6 +560,15 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
 
         return rv;
+    }
+
+    private static SharedPreferences sharedPreferences;
+
+    private static SharedPreferences getPreferences(Context appContext) {
+        if (sharedPreferences == null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+        }
+        return sharedPreferences;
     }
 
 }

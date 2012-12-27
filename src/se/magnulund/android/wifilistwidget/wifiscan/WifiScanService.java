@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
@@ -21,8 +22,6 @@ import java.util.List;
 public class WifiScanService extends IntentService {
 
     private static final String TAG = "WifiScanService";
-
-    public static final String KEY_PREF_MERGE_ACCESS_POINTS = "merge_access_points";
 
     public static final int WIFI_SIGNAL_THRESHOLD_BEST = -50;
     public static final int WIFI_SIGNAL_THRESHOLD_GOOD = -65;
@@ -82,7 +81,7 @@ public class WifiScanService extends IntentService {
                 }
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                Boolean mergeAPs = preferences.getBoolean(KEY_PREF_MERGE_ACCESS_POINTS, false);
+                Boolean mergeAPs = preferences.getBoolean(Preferences.MERGE_ACCESS_POINTS, false);
 
                 if (mergeAPs) {
                     HashMap<String, ScanResult> SSIDs;

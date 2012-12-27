@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
@@ -38,12 +39,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     private static final String TAG = "MainActivity";
 
-    public static final String PREFS_SHOW_HOTSPOT_TOGGLE = "show_hotspot_toggle";
-    public static final String DEVICE_HAS_MOBILE_NETWORK = "device_has_mobile_networks";
-    public static final String MOBILE_NETWORK_CHECKED = "mobile_network_checked";
-
     private ListView wifiList;
-    private List<WifiConfiguration> wifiConfigurations;
     SimpleCursorAdapter wifiAdapter;
     private WifiManager wifiManager;
 
@@ -63,8 +59,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        //AlarmUtility.scheduleAlarm(this);
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
 
@@ -87,7 +81,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             wifiApManager = new WifiApManager(MainActivity.this);
         }
 
-        hasMobileNetwork = preferences.getBoolean(DEVICE_HAS_MOBILE_NETWORK, deviceHasMobileNetwork(MainActivity.this));
+        hasMobileNetwork = preferences.getBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, deviceHasMobileNetwork(MainActivity.this));
         if (hasMobileNetwork) {
             wifiApManager = new WifiApManager(MainActivity.this);
         }
@@ -136,10 +130,9 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     protected void onPause() {
         super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
-        if ( preferences.getBoolean(MOBILE_NETWORK_CHECKED, false) == false ){
+        if ( preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false ){
             SharedPreferences.Editor edit = preferences.edit();
-            edit.putBoolean(DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
-            edit.putBoolean(MOBILE_NETWORK_CHECKED, true);
+            edit.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
             edit.commit();
         }
         if (isWidgetActive() == false) {
@@ -181,7 +174,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         MenuItem hotspotToggle = menu.findItem(R.id.hotspot_toggle);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (hasMobileNetwork && preferences.getBoolean(PREFS_SHOW_HOTSPOT_TOGGLE, true)) {
+        if (hasMobileNetwork && preferences.getBoolean(Preferences.SHOW_MAIN_HOTSPOT_TOGGLE, true)) {
             mobileHotSpotActive = wifiApManager.isWifiApEnabled();
             hotspotToggle.setChecked(mobileHotSpotActive);
             hotspotToggle.setIcon((mobileHotSpotActive) ? R.drawable.ic_menu_hotspot_pending : R.drawable.ic_menu_hotspot_inactive);
@@ -231,7 +224,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             }
             case R.id.menu_settings: {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                intent.putExtra(DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
+                intent.putExtra(Preferences.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
                 startActivity(intent);
                 return true;
             }

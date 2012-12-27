@@ -28,8 +28,6 @@ public class AlarmUtility {
     public static final String ALARM_IDENTIFIER = "alarm_identifier";
     public static final String UPDATE_INFO = "update_info";
 
-    public static final String SCANNING_ENABLED = "scanning_enabled";
-
     public static final int DISABLE_SCANNING = 0;
     public static final int RE_ENABLE_SCANNING = 1;
 

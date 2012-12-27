@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-            android:key="merge_access_points"
+            android:key="@string/prefs_merge_access_points"
             android:title="@string/merge_access_points"
             android:summary="@string/merge_access_points_summary"
             android:defaultValue="false"/>

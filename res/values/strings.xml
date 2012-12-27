@@ -21,4 +21,8 @@
     <string name="widget_wifi_scan">Scan for Wifi networks</string>
     <string name="widget_toggle_msg_hotspot">Click to turn off HotSpot</string>
     <string name="widget_toggle_msg_wifi">Click to turn on wifi</string>
+
+    // PREFERENCES
+    <string name="prefs_show_main_hotspot_toggle">show_main_hotspot_toggle</string>
+    <string name="prefs_merge_access_points">merge_access_points</string>
 </resources>
