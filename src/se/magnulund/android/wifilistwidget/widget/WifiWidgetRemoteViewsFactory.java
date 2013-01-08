@@ -39,7 +39,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
     public static final int WIFI_SIGNAL_POOR = 1;
 
     private Context mContext;
-    ArrayList<FilteredScanResult> filterScanResults = new ArrayList<FilteredScanResult>();
+    ArrayList<FilteredScanResult> filterScanResults;
     String currentBSSID = null;
     //private int mAppWidgetId;
 
@@ -65,20 +65,6 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         FilteredScanResult filteredScanResult = filterScanResults.get(position);
         ScanResult scanResult = filteredScanResult.getScanResult();
         WifiConfiguration wifiConfiguration = filteredScanResult.getWifiConfiguration();
-
-        /*
-        //ContentValues values = new ContentValues();
-        values.put(WifiScanDatabase.BSSID, scanResult.BSSID);
-        values.put(WifiScanDatabase.SSID, scanResult.SSID);
-        values.put(WifiScanDatabase.NETWORK_ID, wifiConfiguration.networkId);
-        values.put(WifiScanDatabase.CAPABILITIES, scanResult.capabilities);
-        values.put(WifiScanDatabase.FREQUENCY, scanResult.frequency);
-        values.put(WifiScanDatabase.LEVEL, scanResult.level);
-        values.put(WifiScanDatabase.SIGNALSTRENGTH, getSignalStrength(scanResult.level));
-        connected = (currentBSSID.equals(scanResult.BSSID)) ? 1 : 0;
-        values.put(WifiScanDatabase.CONNECTED, connected);
-        getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
-        */
 
         // Get the data for this position from the content provider
         String ssid = scanResult.SSID;
@@ -129,6 +115,9 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
     public void onDataSetChanged() {
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 
+        // init filtered results since the factory can be longlived and carry results from past runs otherwise
+        filterScanResults = new ArrayList<FilteredScanResult>();
+
         List<ScanResult> scanResults = wifiManager.getScanResults();
 
         HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
@@ -157,9 +146,6 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         }
 
         int connected = 0;
-
-        //
-        filterScanResults.clear();
 
         for (ScanResult scanResult : scanResults) {
             if (wifiConfigurations.containsKey("\"" + scanResult.SSID + "\"")) {
