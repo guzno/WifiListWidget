@@ -52,15 +52,8 @@
                        android:resource="@xml/widgetinfo"/>
         </receiver>
 
-        <receiver android:process=":remote" android:name=".AlarmReceiver"/>
-        <receiver android:process=":remote" android:name=".BootReceiver" android:enabled="true" android:exported="true"
-                  android:label="BootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".BootReceiver"/>
-        <receiver android:name=".AlarmReceiver"/>
+        <receiver android:name=".receivers.BootReceiver"/>
+        <receiver android:name=".receivers.AlarmReceiver"/>
 
         <!-- The service serving the RemoteViews to the collection widget_listview -->
         <service android:name=".widget.WifiWidgetService"

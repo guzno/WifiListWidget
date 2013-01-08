@@ -8,11 +8,11 @@
     <TextView android:id="@+id/filter_title"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
-              android:text="Config ye wigdget heahr" />
+              android:text="Config ye wigdget heahr"/>
 
     <Button android:id="@+id/save_button"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:hint="Saveh" />
+            android:hint="Saveh"/>
 
 </LinearLayout>

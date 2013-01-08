@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 
 public class ScanDataProvider extends ContentProvider {
 

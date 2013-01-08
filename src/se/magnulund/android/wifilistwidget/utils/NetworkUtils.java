@@ -3,7 +3,6 @@ package se.magnulund.android.wifilistwidget.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 
 /**
  * Created with IntelliJ IDEA.

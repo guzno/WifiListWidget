@@ -401,8 +401,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
 
         SharedPreferences preferences = getPreferences(appContext);
-        int widgetTheme = preferences.getInt(Preferences.THEME_+appWidgetID, WIDGET_THEME_DARK);
-        boolean showAP = preferences.getBoolean(Preferences.SHOW_AP_BUTTON_+appWidgetID, true);
+        int widgetTheme = preferences.getInt(Preferences.THEME_ + appWidgetID, WIDGET_THEME_DARK);
+        boolean showAP = preferences.getBoolean(Preferences.SHOW_AP_BUTTON_ + appWidgetID, true);
         boolean deviceHasAP = preferences.getBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, true);
 
         // CHECK WHICH LAYOUT TO USE

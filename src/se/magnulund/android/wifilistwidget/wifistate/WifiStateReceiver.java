@@ -1,8 +1,9 @@
 package se.magnulund.android.wifilistwidget.wifistate;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
-import android.os.IBinder;
 
 /**
  * Created with IntelliJ IDEA.

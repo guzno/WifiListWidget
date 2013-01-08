@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -33,7 +32,6 @@ import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -130,7 +128,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     protected void onPause() {
         super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
-        if ( preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false ){
+        if (preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false) {
             SharedPreferences.Editor edit = preferences.edit();
             edit.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
             edit.commit();

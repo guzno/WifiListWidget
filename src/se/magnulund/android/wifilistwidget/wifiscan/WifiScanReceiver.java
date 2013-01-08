@@ -1,9 +1,9 @@
 package se.magnulund.android.wifilistwidget.wifiscan;
 
-import android.content.*;
-import android.os.IBinder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
-import android.view.animation.ScaleAnimation;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +14,7 @@ import android.view.animation.ScaleAnimation;
  */
 public class WifiScanReceiver extends BroadcastReceiver {
     private static final String TAG = WifiScanReceiver.class.getSimpleName();
+
     @Override
     public void onReceive(Context context, Intent intent) {
 

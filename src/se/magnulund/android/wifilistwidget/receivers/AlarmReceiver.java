@@ -1,11 +1,9 @@
-package se.magnulund.android.wifilistwidget;
+package se.magnulund.android.wifilistwidget.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
@@ -37,7 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             case AlarmUtility.ALARM_TYPE_SCAN_DELAY: {
                 updateType = WifiWidgetProvider.UPDATE_ALARM_TYPE_SCAN_DELAY;
                 updateInfo = receivedIntent.getIntExtra(AlarmUtility.UPDATE_INFO, -1);
-                if ( updateInfo == AlarmUtility.DISABLE_SCANNING ) {
+                if (updateInfo == AlarmUtility.DISABLE_SCANNING) {
                     restartAlarm = true;
                 }
                 break;

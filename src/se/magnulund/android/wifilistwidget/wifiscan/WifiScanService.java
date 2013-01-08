@@ -50,7 +50,7 @@ public class WifiScanService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (wifiManager == null){
+        if (wifiManager == null) {
             wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         }
         if (wifiManager == null) {

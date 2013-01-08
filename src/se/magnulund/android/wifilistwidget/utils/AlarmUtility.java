@@ -4,12 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import se.magnulund.android.wifilistwidget.AlarmReceiver;
-import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.receivers.AlarmReceiver;
 
 import java.util.Calendar;
 
@@ -46,13 +43,13 @@ public class AlarmUtility {
     }
 
     public static void scheduleAlarm(Context context, int alarmType) {
-        switch (alarmType){
+        switch (alarmType) {
             case ALARM_TYPE_BACKOFF: {
                 scheduleAlarmWithBackoff(context, 1);
                 break;
             }
             case ALARM_TYPE_SCAN_DELAY: {
-                 scheduleScanDelayAlarm(context, DISABLE_SCANNING);
+                scheduleScanDelayAlarm(context, DISABLE_SCANNING);
             }
             default:
                 break;
@@ -75,7 +72,7 @@ public class AlarmUtility {
         PendingIntent sender = PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MILLISECOND, 500*attempt);
+        cal.add(Calendar.MILLISECOND, 500 * attempt);
         Log.e(TAG, "registered new alarm(" + attempt + ") at time " + cal.getTime().toString());
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
@@ -84,7 +81,7 @@ public class AlarmUtility {
     public static void scheduleWifiStateChecker(Context context, int wifiState, int attempt) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        if ( attempt > 15 ) {
+        if (attempt > 15) {
             Log.e(TAG, "Stopping wifi state alarm to conserve resources...");
             return;
         }
@@ -96,7 +93,7 @@ public class AlarmUtility {
 
         PendingIntent sender = PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int delay = ( attempt > 10 ) ? 1000 : 300;
+        int delay = (attempt > 10) ? 1000 : 300;
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MILLISECOND, delay);

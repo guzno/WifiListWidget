@@ -15,14 +15,14 @@
             android:layout_height="wrap_content"
             android:background="@drawable/widget_background">
         <ImageButton
-            android:id="@+id/widget_wifi_toggle"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_signal_strength_best"
-            android:background="@android:color/transparent"
-            android:layout_alignParentLeft="true"
-            android:contentDescription="@string/widget_wifi_toggle"/>
+                android:id="@+id/widget_wifi_toggle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_signal_strength_best"
+                android:background="@android:color/transparent"
+                android:layout_alignParentLeft="true"
+                android:contentDescription="@string/widget_wifi_toggle"/>
         <ImageButton
                 android:id="@+id/widget_wifi_scan"
                 android:layout_width="48dp"

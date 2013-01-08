@@ -16,7 +16,7 @@ public class ComponentManager {
 
     private static final String TAG = "ComponentManager";
 
-    public static int getComponentEnabledSetting(Context context, ComponentName componentName){
+    public static int getComponentEnabledSetting(Context context, ComponentName componentName) {
 
         return context.getPackageManager().getComponentEnabledSetting(componentName);
     }

@@ -2,7 +2,6 @@ package se.magnulund.android.wifilistwidget.settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import se.magnulund.android.wifilistwidget.MainActivity;
 
 /**
  * Created with IntelliJ IDEA.
