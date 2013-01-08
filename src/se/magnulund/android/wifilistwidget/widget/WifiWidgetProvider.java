@@ -183,7 +183,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
     public static void updateWidgets(Context context, int updateType, Integer updateInfo) {
 
-
         Log.e(TAG, "Update type: " + updateType);
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

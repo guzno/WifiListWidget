@@ -23,21 +23,12 @@ public class WifiScanService extends IntentService {
 
     private static final String TAG = "WifiScanService";
 
-    public static final int WIFI_SIGNAL_THRESHOLD_BEST = -50;
-    public static final int WIFI_SIGNAL_THRESHOLD_GOOD = -65;
-    public static final int WIFI_SIGNAL_THRESHOLD_OK = -75;
-
-    public static final int WIFI_SIGNAL_BEST = 4;
-    public static final int WIFI_SIGNAL_GOOD = 3;
-    public static final int WIFI_SIGNAL_OK = 2;
-    public static final int WIFI_SIGNAL_POOR = 1;
-
     public WifiScanService() {
         super("WifiListWidget_WifiScanService");
         //Log.e(TAG, "Constructed");
     }
 
-    private WifiManager wifiManager;
+    //private WifiManager wifiManager;
 
     /*
      ScanResult:
@@ -50,24 +41,28 @@ public class WifiScanService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        WifiWidgetProvider.updateWidgets(getApplicationContext(), WifiWidgetProvider.UPDATE_WIFI_SCAN_RESULTS, null);
+        Log.e(TAG, "new wifi scan results");
+
+        /*
         if (wifiManager == null) {
             wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         }
+
         if (wifiManager == null) {
             // once when enabling hotspot we received a null wifimanager - should handle more gracefully.
             Log.e(TAG, "once when enabling hotspot we received a null WifiManager - should handle more gracefully.", new Exception("null WifiManager"));
             return;
         }
 
-
         synchronized (WifiStateService.wifiManagerLock) {
             List<ScanResult> scanResults = wifiManager.getScanResults();
 
-            getContentResolver().delete(ScanDataProvider.CONTENT_URI_NO_NOTIFY, null, null);
+            //getContentResolver().delete(ScanDataProvider.CONTENT_URI_NO_NOTIFY, null, null);
 
             if (intent.getBooleanExtra("new_scan_results", false)) {
-                ContentValues values = new ContentValues();
                 //Log.e(TAG, "here/1");
+                /*
                 HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
                 for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
                     wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
@@ -97,10 +92,12 @@ public class WifiScanService extends IntentService {
 
                 int connected = 0;
 
+
                 for (ScanResult scanResult : scanResults) {
                     WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
 
                     if (wifiConfiguration != null) {
+                        //ContentValues values = new ContentValues();
                         values.put(WifiScanDatabase.BSSID, scanResult.BSSID);
                         values.put(WifiScanDatabase.SSID, scanResult.SSID);
                         values.put(WifiScanDatabase.NETWORK_ID, wifiConfiguration.networkId);
@@ -113,80 +110,10 @@ public class WifiScanService extends IntentService {
                         getContentResolver().insert(ScanDataProvider.CONTENT_URI, values);
                     }
                 }
-                WifiWidgetProvider.updateWidgets(getApplicationContext(), WifiWidgetProvider.UPDATE_WIFI_SCAN_RESULTS, null);
-                Log.e(TAG, "new wifi scan results");
+
             }
         }
+        */
 
     }
-
-    private int getSignalStrength(int level) {
-
-        int signalStrenth;
-        if (level >= WIFI_SIGNAL_THRESHOLD_BEST) {
-            signalStrenth = WIFI_SIGNAL_BEST;
-
-        } else if (level >= WIFI_SIGNAL_THRESHOLD_GOOD) {
-            signalStrenth = WIFI_SIGNAL_GOOD;
-
-        } else if (level >= WIFI_SIGNAL_THRESHOLD_OK) {
-            signalStrenth = WIFI_SIGNAL_OK;
-
-        } else {
-            signalStrenth = WIFI_SIGNAL_POOR;
-
-        }
-        return signalStrenth;
-    }
-
-    public static int getSignalStrengthIcon(int signalStrength, Boolean connected) {
-        int icon;
-        if (connected) {
-            switch (signalStrength) {
-                case WifiScanService.WIFI_SIGNAL_BEST:
-                    icon = R.drawable.ic_signal_strength_best_connected;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_GOOD:
-                    icon = R.drawable.ic_signal_strength_good_connected;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_OK:
-                    icon = R.drawable.ic_signal_strength_ok_connected;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_POOR:
-                    icon = R.drawable.ic_signal_strength_poor_connected;
-                    break;
-                default:
-                    icon = R.drawable.ic_signal_strength_poor_connected;
-                    break;
-            }
-        } else {
-            switch (signalStrength) {
-                case WifiScanService.WIFI_SIGNAL_BEST:
-                    icon = R.drawable.ic_signal_strength_best;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_GOOD:
-                    icon = R.drawable.ic_signal_strength_good;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_OK:
-                    icon = R.drawable.ic_signal_strength_ok;
-                    break;
-                case WifiScanService.WIFI_SIGNAL_POOR:
-                    icon = R.drawable.ic_signal_strength_poor;
-                    break;
-                default:
-                    icon = R.drawable.ic_signal_strength_poor;
-                    break;
-            }
-        }
-
-        return icon;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
-        //Log.e(TAG, "stopped");
-    }
-
-
 }

@@ -71,7 +71,7 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
         boolean connected = (c.getInt(columnIndex) == 1);
 
         ImageView imageView = (ImageView) v.findViewById(R.id.signal_strength);
-        imageView.setImageResource(WifiScanService.getSignalStrengthIcon(signalStrength, connected));
+        //imageView.setImageResource(WifiScanService.getSignalStrengthIcon(signalStrength, connected));
 
         return v;
     }
@@ -112,7 +112,7 @@ public class WifiCursorAdapter extends SimpleCursorAdapter {
         boolean connected = (c.getInt(columnIndex) == 1);
 
         ImageView imageView = (ImageView) v.findViewById(R.id.signal_strength);
-        imageView.setImageResource(WifiScanService.getSignalStrengthIcon(signalStrength, connected));
+        //imageView.setImageResource(WifiScanService.getSignalStrengthIcon(signalStrength, connected));
     }
 }
 
