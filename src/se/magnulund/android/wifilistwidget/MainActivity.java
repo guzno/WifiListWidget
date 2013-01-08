@@ -33,12 +33,12 @@ import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
     private ListView wifiList;
-    SimpleCursorAdapter wifiAdapter;
+    WifiFilteredScanResultsAdapter wifiAdapter;
     private WifiManager wifiManager;
 
     private TextView headerView;
@@ -60,11 +60,14 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
 
-        getLoaderManager().initLoader(0, null, this);
+        /*
         wifiAdapter = new WifiCursorAdapter(this,
                 R.layout.wifi_list_item, null,
                 new String[]{WifiScanDatabase.SSID, WifiScanDatabase.BSSID, WifiScanDatabase.SIGNALSTRENGTH, WifiScanDatabase.LEVEL},
                 new int[]{R.id.ssid, R.id.bssid, R.id.signal_strength, R.id.level}, 0);
+        */
+
+        wifiAdapter = new WifiFilteredScanResultsAdapter(this);
 
         if (headerView == null) {
             headerView = new TextView(MainActivity.this);
@@ -116,7 +119,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     @Override
     protected void onResume() {
-        super.onResume();    //To change body of overridden methods use File | Settings | File Templates.
+        super.onResume();
         if (isWidgetActive() == false) {
             Log.e(TAG, "Widget not active - starting service");
             Intent intent = new Intent(this, WifiStateService.class);
@@ -127,7 +130,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     @Override
     protected void onPause() {
-        super.onPause();    //To change body of overridden methods use File | Settings | File Templates.
+        super.onPause();
         if (preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false) {
             SharedPreferences.Editor edit = preferences.edit();
             edit.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetwork);
@@ -140,28 +143,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             startService(intent);
         }
 
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-        Uri uri = ScanDataProvider.CONTENT_URI;
-        return new CursorLoader(this, uri, WifiScanDatabase.WIFI_NETWORKS_SSID_PROJECTION, null, null, WifiScanDatabase.LEVEL + " DESC");
-    }
-
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        wifiAdapter.swapCursor(data);
-        if (mobileHotSpotActive == false) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat();
-            headerView.setText("Last scan: " + dateFormat.format(new Date()));
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        wifiAdapter.swapCursor(null);
     }
 
     @Override
@@ -182,7 +163,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             hotspotToggle.setEnabled(false);
         }
 
-        return super.onCreateOptionsMenu(menu);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -193,7 +174,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
                 if (mobileHotSpotActive) { //(wifiApManager.isWifiApEnabled() == false) {
                     wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
-                    getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
                     headerView.setText("Scan disabled when hotspot is active.");
                 } else {
                     wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), false);

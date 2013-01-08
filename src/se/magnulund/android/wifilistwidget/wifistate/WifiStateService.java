@@ -75,7 +75,7 @@ public class WifiStateService extends IntentService {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
+        super.onDestroy();
         //Log.e(TAG, "stopped");
     }
 

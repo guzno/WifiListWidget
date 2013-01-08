@@ -1,6 +1,5 @@
 package se.magnulund.android.wifilistwidget.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,9 +12,10 @@ import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.models.FilteredScanResult;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
+import se.magnulund.android.wifilistwidget.utils.MyUtil;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,18 +29,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    public static final int WIFI_SIGNAL_THRESHOLD_BEST = -50;
-    public static final int WIFI_SIGNAL_THRESHOLD_GOOD = -65;
-    public static final int WIFI_SIGNAL_THRESHOLD_OK = -75;
-
-    public static final int WIFI_SIGNAL_BEST = 4;
-    public static final int WIFI_SIGNAL_GOOD = 3;
-    public static final int WIFI_SIGNAL_OK = 2;
-    public static final int WIFI_SIGNAL_POOR = 1;
-
     private Context mContext;
     ArrayList<FilteredScanResult> filterScanResults;
-    String currentBSSID = null;
+    //String currentBSSID = null;
     //private int mAppWidgetId;
 
     public WifiWidgetRemoteViewsFactory(Context context, Intent intent) {
@@ -69,7 +60,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         // Get the data for this position from the content provider
         String ssid = scanResult.SSID;
         String bssid = scanResult.BSSID;
-        boolean connected = scanResult.BSSID.equals(currentBSSID);
+        boolean connected = filteredScanResult.isCurrentConnection();
         int level = scanResult.level;
         int networkID = wifiConfiguration.networkId;
 
@@ -78,7 +69,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
         rv.setTextViewText(R.id.widget_bssid, bssid);
 
-        rv.setImageViewResource(R.id.widget_signal_strength, getSignalStrengthIcon(getSignalStrength(level), connected));
+        rv.setImageViewResource(R.id.widget_signal_strength, MyUtil.getSignalStrengthIcon(MyUtil.getSignalStrength(level), connected));
 
         rv.setTextViewText(R.id.widget_level, "" + level + "");
 
@@ -113,130 +104,9 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
     }
 
     public void onDataSetChanged() {
+        filterScanResults = FilteredScanResult.getFilteredScanResults(mContext);
+
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 
-        // init filtered results since the factory can be longlived and carry results from past runs otherwise
-        filterScanResults = new ArrayList<FilteredScanResult>();
-
-        List<ScanResult> scanResults = wifiManager.getScanResults();
-
-        HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
-        for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
-            wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
-        }
-
-        WifiInfo currentConnection = wifiManager.getConnectionInfo();
-        if (currentConnection != null) {
-            currentBSSID = currentConnection.getBSSID();
-        }
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        Boolean mergeAPs = preferences.getBoolean(Preferences.MERGE_ACCESS_POINTS, false);
-
-        if (mergeAPs) {
-            HashMap<String, ScanResult> SSIDs;
-            SSIDs = new HashMap<String, ScanResult>();
-            for (ScanResult scanResult : scanResults) {
-                ScanResult otherAP = SSIDs.get(scanResult.SSID);
-                if (otherAP == null || scanResult.level > otherAP.level) {
-                    SSIDs.put(scanResult.SSID, scanResult);
-                }
-            }
-            scanResults = new ArrayList<ScanResult>(SSIDs.values());
-        }
-
-        int connected = 0;
-
-        for (ScanResult scanResult : scanResults) {
-            if (wifiConfigurations.containsKey("\"" + scanResult.SSID + "\"")) {
-                WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
-
-                filterScanResults.add(new FilteredScanResult(scanResult, wifiConfiguration));
-            }
-
-        }
-
     }
-
-    private class FilteredScanResult
-    {
-        ScanResult scanResult;
-        WifiConfiguration wifiConfiguration;
-
-        public FilteredScanResult(ScanResult scanResult, WifiConfiguration wifiConfiguration) {
-            this.scanResult = scanResult;
-            this.wifiConfiguration = wifiConfiguration;
-        }
-
-        public ScanResult getScanResult() {
-            return scanResult;
-        }
-
-        public WifiConfiguration getWifiConfiguration() {
-            return wifiConfiguration;
-        }
-    }
-
-    private int getSignalStrength(int level) {
-
-        int signalStrenth;
-        if (level >= WIFI_SIGNAL_THRESHOLD_BEST) {
-            signalStrenth = WIFI_SIGNAL_BEST;
-
-        } else if (level >= WIFI_SIGNAL_THRESHOLD_GOOD) {
-            signalStrenth = WIFI_SIGNAL_GOOD;
-
-        } else if (level >= WIFI_SIGNAL_THRESHOLD_OK) {
-            signalStrenth = WIFI_SIGNAL_OK;
-
-        } else {
-            signalStrenth = WIFI_SIGNAL_POOR;
-
-        }
-        return signalStrenth;
-    }
-
-    public static int getSignalStrengthIcon(int signalStrength, Boolean connected) {
-        int icon;
-        if (connected) {
-            switch (signalStrength) {
-                case WIFI_SIGNAL_BEST:
-                    icon = R.drawable.ic_signal_strength_best_connected;
-                    break;
-                case WIFI_SIGNAL_GOOD:
-                    icon = R.drawable.ic_signal_strength_good_connected;
-                    break;
-                case WIFI_SIGNAL_OK:
-                    icon = R.drawable.ic_signal_strength_ok_connected;
-                    break;
-                case WIFI_SIGNAL_POOR:
-                    icon = R.drawable.ic_signal_strength_poor_connected;
-                    break;
-                default:
-                    icon = R.drawable.ic_signal_strength_poor_connected;
-                    break;
-            }
-        } else {
-            switch (signalStrength) {
-                case WIFI_SIGNAL_BEST:
-                    icon = R.drawable.ic_signal_strength_best;
-                    break;
-                case WIFI_SIGNAL_GOOD:
-                    icon = R.drawable.ic_signal_strength_good;
-                    break;
-                case WIFI_SIGNAL_OK:
-                    icon = R.drawable.ic_signal_strength_ok;
-                    break;
-                case WIFI_SIGNAL_POOR:
-                    icon = R.drawable.ic_signal_strength_poor;
-                    break;
-                default:
-                    icon = R.drawable.ic_signal_strength_poor;
-                    break;
-            }
-        }
-
-        return icon;
-    }
-
 }

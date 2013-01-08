@@ -1,5 +1,6 @@
 <resources>
-    <item type="id" name="notificationUniqueId"/>
-    <item type="id" name="alarmRequestCode"/>
-    <item type="id" name="pendingIntentRequestCode"/>
+    <item type="id" name="notificationUniqueId" />
+    <item type="id" name="alarmRequestCode" />
+    <item type="id" name="pendingIntentRequestCode" />
+    <item type="id" name="holder_tag" />
 </resources>
