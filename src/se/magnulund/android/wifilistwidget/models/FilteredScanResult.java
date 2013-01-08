@@ -57,36 +57,41 @@ public class FilteredScanResult {
         WifiInfo currentConnection = wifiManager.getConnectionInfo();
 
         HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
-        for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
-            wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
-        }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Boolean mergeAPs = preferences.getBoolean(Preferences.MERGE_ACCESS_POINTS, false);
+        if (wifiConfigurations != null) {
 
-        if (mergeAPs) {
-            HashMap<String, ScanResult> SSIDs;
-            SSIDs = new HashMap<String, ScanResult>();
+            for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
+                wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
+            }
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            Boolean mergeAPs = preferences.getBoolean(Preferences.MERGE_ACCESS_POINTS, false);
+
+            if (mergeAPs) {
+                HashMap<String, ScanResult> SSIDs;
+                SSIDs = new HashMap<String, ScanResult>();
+                for (ScanResult scanResult : scanResults) {
+                    ScanResult otherAP = SSIDs.get(scanResult.SSID);
+                    if (otherAP == null || scanResult.level > otherAP.level) {
+                        SSIDs.put(scanResult.SSID, scanResult);
+                    }
+                }
+                scanResults = new ArrayList<ScanResult>(SSIDs.values());
+            }
+
             for (ScanResult scanResult : scanResults) {
-                ScanResult otherAP = SSIDs.get(scanResult.SSID);
-                if (otherAP == null || scanResult.level > otherAP.level) {
-                    SSIDs.put(scanResult.SSID, scanResult);
+                if (wifiConfigurations.containsKey("\"" + scanResult.SSID + "\"")) {
+                    WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
+
+                    FilteredScanResult filteredScanResult = new FilteredScanResult(scanResult, wifiConfiguration);
+                    if (scanResult.BSSID.equals(currentConnection.getBSSID())) {
+                        filteredScanResult.setCurrentConnection(true);
+                    }
+
+                    filterScanResults.add(filteredScanResult);
                 }
+
             }
-            scanResults = new ArrayList<ScanResult>(SSIDs.values());
-        }
-
-        for (ScanResult scanResult : scanResults) {
-            if (wifiConfigurations.containsKey("\"" + scanResult.SSID + "\"")) {
-                WifiConfiguration wifiConfiguration = wifiConfigurations.get("\"" + scanResult.SSID + "\"");
-
-                FilteredScanResult filteredScanResult = new FilteredScanResult(scanResult, wifiConfiguration);
-                if (scanResult.BSSID.equals(currentConnection.getBSSID())) {
-                    filteredScanResult.setCurrentConnection(true);
-                }
-                filterScanResults.add(filteredScanResult);
-            }
-
         }
 
         return filterScanResults;

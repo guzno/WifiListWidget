@@ -54,7 +54,6 @@ public class WifiFilteredScanResultsAdapter extends BaseAdapter {
         FilteredScanResult filteredScanResult = (FilteredScanResult) getItem(position);
 
         ScanResult scanResult = filteredScanResult.getScanResult();
-        WifiConfiguration wifiConfiguration = filteredScanResult.getWifiConfiguration();
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
