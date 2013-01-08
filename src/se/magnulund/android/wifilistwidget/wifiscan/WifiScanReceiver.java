@@ -17,11 +17,9 @@ public class WifiScanReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.e(TAG, "SCAN RECEIVED");
 
         intent.setClass(context, WifiScanService.class);
-        intent.putExtra("new_scan_results", true);
-
         context.startService(intent);
-        Log.e(TAG, "SCAN RECEIVED");
     }
 }

@@ -61,32 +61,16 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     private static final int WIDGET_THEME_DARK = 1;
     private static final int WIDGET_THEME_LIGHT = 2;
 
-    //private static HandlerThread sWorkerThread;
-    //private static Handler sWorkerQueue;
-    //private static WifiWidgetDataObserver sDataObserver;
+    private Boolean wifiEnabled;
+    private Boolean mobileHotSpotActive;
 
     public WifiWidgetProvider() {
-        // Start the worker thread
-        //sWorkerThread = new HandlerThread("WifiWidgetProvider-worker");
-        //sWorkerThread.start();
-        //sWorkerQueue = new Handler(sWorkerThread.getLooper());
     }
 
     @Override
     public void onEnabled(Context context) {
-        // Register for external updates to the data to trigger an update of the widget_listview.  When using
-        // content providers, the data is often updated via a background service, or in response to
-        // user interaction in the main app.  To ensure that the widget_listview always reflects the current
-        // state of the data, we must listen for changes and update ourselves accordingly.
         Intent intent = new Intent(context, WifiStateService.class);
         context.startService(intent);
-        /*final ContentResolver r = context.getContentResolver();
-        if (sDataObserver == null) {
-            final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-            final ComponentName cn = new ComponentName(context, WifiWidgetProvider.class);
-            sDataObserver = new WifiWidgetDataObserver(mgr, cn, sWorkerQueue);
-            r.registerContentObserver(ScanDataProvider.CONTENT_URI, true, sDataObserver);
-        }*/
         setWidgetActive(context, true);
     }
 
@@ -109,8 +93,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         setWidgetActive(context, false);
     }
 
-    private Boolean wifiEnabled;
-    private Boolean mobileHotSpotActive;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -137,10 +119,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             wifiManager.setWifiEnabled(wifiEnabled);
 
-            if (wifiEnabled == false) {
-                context.getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
-            }
-
             //AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
         } else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             WifiApManager wifiApManager = new WifiApManager(appContext);
@@ -152,7 +130,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 wifiApManager.setWifiEnabled(true);
                 wifiManager.startScan();
             } else {
-                context.getContentResolver().delete(ScanDataProvider.CONTENT_URI, null, null);
                 wifiApManager.setWifiApEnabled(wifiApManager.getWifiApConfiguration(), true);
             }
 
@@ -172,17 +149,11 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Update each of the widgets with the remote adapter
         updateWidgets(context, UPDATE_SYSTEM_INITIATED, null);
-        /*
-        for (int i = 0; i < appWidgetIds.length; ++i) {
-            RemoteViews rv = getRemoteViews(context, appWidgetIds[i]);
-            appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
-        }
-        */
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     public static void updateWidgets(Context context, int updateType, Integer updateInfo) {
-
 
         Log.e(TAG, "Update type: " + updateType);
 

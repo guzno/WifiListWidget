@@ -1,16 +1,25 @@
 package se.magnulund.android.wifilistwidget.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import se.magnulund.android.wifilistwidget.R;
-import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
+import se.magnulund.android.wifilistwidget.models.FilteredScanResult;
+import se.magnulund.android.wifilistwidget.settings.Preferences;
+import se.magnulund.android.wifilistwidget.utils.MyUtil;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,69 +30,46 @@ import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
  */
 public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;
-    private Cursor mCursor;
-    private int mAppWidgetId;
+    ArrayList<FilteredScanResult> filterScanResults;
+    //String currentBSSID = null;
+    //private int mAppWidgetId;
 
     public WifiWidgetRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+        //mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
+    @Override
     public void onCreate() {
-        // Since we reload the cursor in onDataSetChanged() which gets called immediately after
-        // onCreate(), we do nothing here.
     }
 
+    @Override
     public void onDestroy() {
-        if (mCursor != null) {
-            mCursor.close();
-        }
     }
 
-
+    @Override
     public int getCount() {
-        return mCursor.getCount();
+        return filterScanResults.size();
     }
 
     public RemoteViews getViewAt(int position) {
+        FilteredScanResult filteredScanResult = filterScanResults.get(position);
+        ScanResult scanResult = filteredScanResult.getScanResult();
+        WifiConfiguration wifiConfiguration = filteredScanResult.getWifiConfiguration();
+
         // Get the data for this position from the content provider
-        String ssid = "";
-        String bssid = "";
-        int signalStrength = 0;
-        boolean connected = false;
-        int level = 0;
-        int networkID = 0;
-        if (mCursor.moveToPosition(position)) {
-            int columnIndex = mCursor.getColumnIndex(WifiScanDatabase.SSID);
-            ssid = mCursor.getString(columnIndex);
-
-            columnIndex = mCursor.getColumnIndex(
-                    WifiScanDatabase.LEVEL);
-            level = mCursor.getInt(columnIndex);
-
-            columnIndex = mCursor.getColumnIndex(
-                    WifiScanDatabase.NETWORK_ID);
-            networkID = mCursor.getInt(columnIndex);
-
-            columnIndex = mCursor.getColumnIndex(
-                    WifiScanDatabase.BSSID);
-            bssid = mCursor.getString(columnIndex);
-
-            columnIndex = mCursor.getColumnIndex(
-                    WifiScanDatabase.SIGNALSTRENGTH);
-            signalStrength = mCursor.getInt(columnIndex);
-
-            columnIndex = mCursor.getColumnIndex(WifiScanDatabase.CONNECTED);
-            connected = (mCursor.getInt(columnIndex) == 1);
-        }
+        String ssid = scanResult.SSID;
+        String bssid = scanResult.BSSID;
+        boolean connected = filteredScanResult.isCurrentConnection();
+        int level = scanResult.level;
+        int networkID = wifiConfiguration.networkId;
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_wifi_list_item);
         rv.setTextViewText(R.id.widget_ssid, ssid);
 
         rv.setTextViewText(R.id.widget_bssid, bssid);
 
-        rv.setImageViewResource(R.id.widget_signal_strength, WifiScanService.getSignalStrengthIcon(signalStrength, connected));
+        rv.setImageViewResource(R.id.widget_signal_strength, MyUtil.getSignalStrengthIcon(MyUtil.getSignalStrength(level), connected));
 
         rv.setTextViewText(R.id.widget_level, "" + level + "");
 
@@ -102,25 +88,25 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         return null;
     }
 
+    @Override
     public int getViewTypeCount() {
-        // Technically, we have two types of views (the dark and light background views)
-        return 2;
+        return 1;
     }
 
+    @Override
     public long getItemId(int position) {
         return position;
     }
 
+    @Override
     public boolean hasStableIds() {
         return true;
     }
 
     public void onDataSetChanged() {
-        // Refresh the cursor
-        if (mCursor != null) {
-            mCursor.close();
-        }
-        mCursor = mContext.getContentResolver().query(ScanDataProvider.CONTENT_URI, WifiScanDatabase.WIFI_NETWORKS_SSID_PROJECTION, null, null, WifiScanDatabase.LEVEL + " DESC");
-    }
+        filterScanResults = FilteredScanResult.getFilteredScanResults(mContext);
 
+        WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+
+    }
 }
