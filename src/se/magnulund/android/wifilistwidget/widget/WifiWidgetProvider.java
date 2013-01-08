@@ -119,7 +119,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             wifiManager.setWifiEnabled(wifiEnabled);
 
-            //AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
         } else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
             WifiApManager wifiApManager = new WifiApManager(appContext);
 
