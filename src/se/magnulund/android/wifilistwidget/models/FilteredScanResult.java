@@ -14,14 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
-* Created with IntelliJ IDEA.
-* User: erikeelde
-* Date: 8/1/2013
-* Time: 22:22
-* To change this template use File | Settings | File Templates.
-*/
-public class FilteredScanResult
-{
+ * Created with IntelliJ IDEA.
+ * User: erikeelde
+ * Date: 8/1/2013
+ * Time: 22:22
+ * To change this template use File | Settings | File Templates.
+ */
+public class FilteredScanResult {
     ScanResult scanResult;
     WifiConfiguration wifiConfiguration;
     boolean isCurrentConnection = false;

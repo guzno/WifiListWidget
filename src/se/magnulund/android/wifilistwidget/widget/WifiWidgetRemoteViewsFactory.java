@@ -2,24 +2,17 @@ package se.magnulund.android.wifilistwidget.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import se.magnulund.android.wifilistwidget.R;
 import se.magnulund.android.wifilistwidget.models.FilteredScanResult;
-import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.utils.MyUtil;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

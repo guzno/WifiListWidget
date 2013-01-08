@@ -19,8 +19,6 @@ import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
 import se.magnulund.android.wifilistwidget.wifiap.WIFI_AP_STATE;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
-import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanReceiver;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateReceiver;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;

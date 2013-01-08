@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanService;
 
 /**
  * Created with IntelliJ IDEA.

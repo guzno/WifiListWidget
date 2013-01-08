@@ -67,7 +67,5 @@
                  android:enabled="true"
                  android:process=":remote"/>
 
-        <provider android:name=".wifiscan.ScanDataProvider"
-                  android:authorities="se.magnulund.provider.ScanData"/>
     </application>
 </manifest>

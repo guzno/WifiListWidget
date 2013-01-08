@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import se.magnulund.android.wifilistwidget.models.FilteredScanResult;
 import se.magnulund.android.wifilistwidget.utils.MyUtil;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 
 import java.util.ArrayList;
 
@@ -52,7 +51,7 @@ public class WifiFilteredScanResultsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View filterScanResultView;
 
-        FilteredScanResult filteredScanResult = (FilteredScanResult)getItem(position);
+        FilteredScanResult filteredScanResult = (FilteredScanResult) getItem(position);
 
         ScanResult scanResult = filteredScanResult.getScanResult();
         WifiConfiguration wifiConfiguration = filteredScanResult.getWifiConfiguration();
@@ -74,7 +73,7 @@ public class WifiFilteredScanResultsAdapter extends BaseAdapter {
 
         }
 
-        WifiFilteredScanResultsViewHolder holder = (WifiFilteredScanResultsViewHolder)filterScanResultView.getTag(R.id.holder_tag);
+        WifiFilteredScanResultsViewHolder holder = (WifiFilteredScanResultsViewHolder) filterScanResultView.getTag(R.id.holder_tag);
 
         holder.ssid.setText(scanResult.SSID);
 

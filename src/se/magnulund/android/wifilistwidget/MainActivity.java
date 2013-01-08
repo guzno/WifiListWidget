@@ -1,12 +1,12 @@
 package se.magnulund.android.wifilistwidget;
 
 import android.app.Activity;
-import android.app.LoaderManager;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,19 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
-import se.magnulund.android.wifilistwidget.wifiscan.ScanDataProvider;
-import se.magnulund.android.wifilistwidget.wifiscan.WifiScanDatabase;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends Activity {
 
@@ -60,13 +55,6 @@ public class MainActivity extends Activity {
 
         wifiList = (ListView) findViewById(R.id.wifi_list);
 
-        /*
-        wifiAdapter = new WifiCursorAdapter(this,
-                R.layout.wifi_list_item, null,
-                new String[]{WifiScanDatabase.SSID, WifiScanDatabase.BSSID, WifiScanDatabase.SIGNALSTRENGTH, WifiScanDatabase.LEVEL},
-                new int[]{R.id.ssid, R.id.bssid, R.id.signal_strength, R.id.level}, 0);
-        */
-
         wifiAdapter = new WifiFilteredScanResultsAdapter(this);
 
         if (headerView == null) {
@@ -92,14 +80,7 @@ public class MainActivity extends Activity {
         wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Cursor o = (Cursor) adapterView.getItemAtPosition(i);
-                if (o != null) {
-                    int networkId = o.getInt(o.getColumnIndex(WifiScanDatabase.NETWORK_ID));
-
-                    wifiManager.disconnect();
-                    wifiManager.enableNetwork(networkId, true);
-                    wifiManager.reconnect();
-                }
+                Toast.makeText(MainActivity.this, "Clicks need to be reimplemented.. *<|:(", Toast.LENGTH_SHORT).show();
             }
         });
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
