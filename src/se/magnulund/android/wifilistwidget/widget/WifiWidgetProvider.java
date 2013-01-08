@@ -214,7 +214,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             // UPDATE WIDGETS
 
             for (int i = 0; i < appWidgetIds.length; ++i) {
-                RemoteViews rv = WifiWidgetProvider.getRemoteViews(context, appWidgetIds[i]);
+                RemoteViews rv = getRemoteViews(context, appWidgetIds[i]);
                 appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
             }
 
