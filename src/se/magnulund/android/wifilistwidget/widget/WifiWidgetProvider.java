@@ -59,6 +59,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     private static final int WIDGET_THEME_DARK = 1;
     private static final int WIDGET_THEME_LIGHT = 2;
 
+    public static final String NETWORK_ID = "network_id";
+
     private Boolean wifiEnabled;
     private Boolean mobileHotSpotActive;
 
@@ -103,7 +105,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
         if (action.equals(CLICK_ACTION)) {
 
-            final int networkId = intent.getIntExtra(WifiScanDatabase.NETWORK_ID, -1);
+            final int networkId = intent.getIntExtra(WifiWidgetProvider.NETWORK_ID, -1);
             if (networkId > -1) {
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(networkId, true);

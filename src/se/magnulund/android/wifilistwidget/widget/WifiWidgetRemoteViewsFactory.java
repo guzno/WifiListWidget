@@ -69,7 +69,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
         final Bundle extras = new Bundle();
-        extras.putInt(WifiScanDatabase.NETWORK_ID, networkID);
+        extras.putInt(WifiWidgetProvider.NETWORK_ID, networkID);
         fillInIntent.putExtras(extras);
         rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
 
