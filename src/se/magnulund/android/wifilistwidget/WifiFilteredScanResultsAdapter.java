@@ -66,13 +66,15 @@ public class WifiFilteredScanResultsAdapter extends BaseAdapter {
             holder.bssid = (TextView) filterScanResultView.findViewById(R.id.bssid);
             holder.level = (TextView) filterScanResultView.findViewById(R.id.level);
             holder.signalStrength = (ImageView) filterScanResultView.findViewById(R.id.signal_strength);
+
             filterScanResultView.setTag(R.id.holder_tag, holder);
+
         } else {
             filterScanResultView = convertView;
 
         }
 
-        WifiFilteredScanResultsViewHolder holder = (WifiFilteredScanResultsViewHolder)convertView.getTag(R.id.holder_tag);
+        WifiFilteredScanResultsViewHolder holder = (WifiFilteredScanResultsViewHolder)filterScanResultView.getTag(R.id.holder_tag);
 
         holder.ssid.setText(scanResult.SSID);
 
