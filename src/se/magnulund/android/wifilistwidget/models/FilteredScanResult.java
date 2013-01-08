@@ -58,7 +58,7 @@ public class FilteredScanResult {
 
         HashMap<String, WifiConfiguration> wifiConfigurations = new HashMap<String, WifiConfiguration>();
 
-        if (wifiConfigurations != null) {
+        if (wifiManager.getConfiguredNetworks() != null) {
 
             for (WifiConfiguration wifiConfiguration : wifiManager.getConfiguredNetworks()) {
                 wifiConfigurations.put(wifiConfiguration.SSID, wifiConfiguration);
