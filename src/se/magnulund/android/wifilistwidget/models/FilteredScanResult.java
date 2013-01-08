@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +21,12 @@ import java.util.List;
  * Time: 22:22
  * To change this template use File | Settings | File Templates.
  */
-public class FilteredScanResult {
+public class FilteredScanResult implements Comparable<FilteredScanResult> {
+    @Override
+    public int compareTo(FilteredScanResult another) {
+        return another.scanResult.level - scanResult.level;
+    }
+
     ScanResult scanResult;
     WifiConfiguration wifiConfiguration;
     boolean isCurrentConnection = false;
@@ -45,6 +51,8 @@ public class FilteredScanResult {
     public boolean isCurrentConnection() {
         return isCurrentConnection;
     }
+
+
 
     public static ArrayList<FilteredScanResult> getFilteredScanResults(Context context) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -93,6 +101,8 @@ public class FilteredScanResult {
 
             }
         }
+
+        Collections.sort(filterScanResults);
 
         return filterScanResults;
     }
