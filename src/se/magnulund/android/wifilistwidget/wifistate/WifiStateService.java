@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import se.magnulund.android.wifilistwidget.supplicantchange.SupplicantChangeReceiver;
+import se.magnulund.android.wifilistwidget.supplicantstate.SupplicantStateReceiver;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiscan.WifiScanReceiver;
@@ -27,6 +29,8 @@ public class WifiStateService extends IntentService {
         if (intent.getBooleanExtra("stop_services", false)) {
             ComponentManager.disableComponent(context, WifiStateReceiver.class);
             ComponentManager.disableComponent(context, WifiScanReceiver.class);
+            ComponentManager.disableComponent(context, SupplicantChangeReceiver.class);
+            ComponentManager.disableComponent(context, SupplicantStateReceiver.class);
         } else {
 
             ComponentManager.enableComponent(context, WifiStateReceiver.class);
@@ -42,19 +46,25 @@ public class WifiStateService extends IntentService {
 
             switch (wifiState) {
                 case WifiManager.WIFI_STATE_ENABLED:
-                    Log.e(TAG, "WIFI_STATE_ENABLED");
+                    //Log.e(TAG, "WIFI_STATE_ENABLED");
                     ComponentManager.enableComponent(context, WifiScanReceiver.class);
+                    ComponentManager.enableComponent(context, SupplicantChangeReceiver.class);
+                    ComponentManager.enableComponent(context, SupplicantStateReceiver.class);
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:
-                    Log.e(TAG, "WIFI_STATE_ENABLING");
+                    //Log.e(TAG, "WIFI_STATE_ENABLING");
                     break;
                 case WifiManager.WIFI_STATE_DISABLING:
-                    Log.e(TAG, "WIFI_STATE_DISABLING");
+                    //Log.e(TAG, "WIFI_STATE_DISABLING");
                     ComponentManager.disableComponent(context, WifiScanReceiver.class);
+                    ComponentManager.disableComponent(context, SupplicantChangeReceiver.class);
+                    ComponentManager.disableComponent(context, SupplicantStateReceiver.class);
                     break;
                 case WifiManager.WIFI_STATE_DISABLED:
-                    Log.e(TAG, "WIFI_STATE_DISABLED");
+                    //Log.e(TAG, "WIFI_STATE_DISABLED");
                     ComponentManager.disableComponent(context, WifiScanReceiver.class);
+                    ComponentManager.disableComponent(context, SupplicantChangeReceiver.class);
+                    ComponentManager.disableComponent(context, SupplicantStateReceiver.class);
 
                     // Clear list of APs
                     intent.setClass(context, WifiScanService.class);
@@ -66,7 +76,7 @@ public class WifiStateService extends IntentService {
                     throw new UnsupportedOperationException("that's no numbar" + wifiState);
             }
 
-            Log.e(TAG, "Wifi state changed, checking if widget is active");
+            //Log.e(TAG, "Wifi state changed, checking if widget is active");
 
             WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_WIFI_STATE_CHANGED, wifiState);
 

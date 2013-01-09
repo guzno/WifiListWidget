@@ -3,6 +3,7 @@ package se.magnulund.android.wifilistwidget.supplicantstate;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,8 +13,12 @@ import android.content.Intent;
  * To change this template use File | Settings | File Templates.
  */
 public class SupplicantStateReceiver extends BroadcastReceiver {
+
+    private static final String TAG = SupplicantStateReceiver.class.getSimpleName();
     @Override
     public void onReceive(Context context, Intent intent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //Log.e(TAG, "SUPP_STATE_CHANGED");
+        intent.setClass(context, SupplicantStateService.class);
+        context.startService(intent);
     }
 }

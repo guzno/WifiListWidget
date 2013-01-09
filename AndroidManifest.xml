@@ -43,6 +43,18 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".supplicantchange.SupplicantChangeReceiver" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".supplicantstate.SupplicantStateReceiver" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.net.wifi.supplicant.STATE_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".widget.WifiWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -64,6 +76,12 @@
                  android:enabled="true"
                  android:process=":remote"/>
         <service android:name=".wifiscan.WifiScanService"
+                 android:enabled="true"
+                 android:process=":remote"/>
+        <service android:name=".supplicantchange.SupplicantChangeService"
+                 android:enabled="true"
+                 android:process=":remote"/>
+        <service android:name=".supplicantstate.SupplicantStateService"
                  android:enabled="true"
                  android:process=":remote"/>
 

@@ -101,7 +101,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         Context appContext = context.getApplicationContext();
 
         WifiManager wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
-        Log.e(TAG, "Action: " + action);
+        //Log.e(TAG, "Action: " + action);
 
         if (action.equals(CLICK_ACTION)) {
 
@@ -154,7 +154,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
     public static void updateWidgets(Context context, int updateType, Integer updateInfo) {
 
-        Log.e(TAG, "Update type: " + updateType);
+        //Log.e(TAG, "Update type: " + updateType);
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
@@ -357,7 +357,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 widgetType = WIDGET_TYPE_PENDING;
                 break;
         }
-        Log.e(TAG, "WIDGET TYPE: " + widgetType);
+        //Log.e(TAG, "WIDGET TYPE: " + widgetType);
         return widgetType;
     }
 
@@ -499,7 +499,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         if (preferences.contains(Preferences.SCANNING_ENABLED) && preferences.getBoolean(Preferences.SCANNING_ENABLED, true) == false) {
             scanningEnabled = false;
             headerScanImg = R.drawable.ic_wifi_scan_inactive;
-            Log.e(TAG, "Scanning disabled!");
+            //Log.e(TAG, "Scanning disabled!");
         }
 
         rv.setImageViewResource(R.id.widget_wifi_toggle, headerWifiImg);
