@@ -14,7 +14,7 @@ import android.util.Log;
  */
 public class SupplicantChangeService extends IntentService {
 
-    private static final String TAG = "SupplicantChangeService";
+    private static final String TAG = "ConnectivityChangeService";
 
     public SupplicantChangeService() {
         super("wifilistwidget_SupplicantChangeService");

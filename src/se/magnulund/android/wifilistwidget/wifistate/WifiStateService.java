@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import se.magnulund.android.wifilistwidget.connectivitychange.ConnectivityChangeReceiver;
 import se.magnulund.android.wifilistwidget.supplicantchange.SupplicantChangeReceiver;
 import se.magnulund.android.wifilistwidget.supplicantstate.SupplicantStateReceiver;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
@@ -31,9 +32,11 @@ public class WifiStateService extends IntentService {
             ComponentManager.disableComponent(context, WifiScanReceiver.class);
             ComponentManager.disableComponent(context, SupplicantChangeReceiver.class);
             ComponentManager.disableComponent(context, SupplicantStateReceiver.class);
+            ComponentManager.disableComponent(context, ConnectivityChangeReceiver.class);
         } else {
 
             ComponentManager.enableComponent(context, WifiStateReceiver.class);
+
 
             int wifiState = intent.getIntExtra(WifiStateReceiver.WIFI_STATE, -1);
             if (wifiState == -1) {
@@ -50,6 +53,7 @@ public class WifiStateService extends IntentService {
                     ComponentManager.enableComponent(context, WifiScanReceiver.class);
                     ComponentManager.enableComponent(context, SupplicantChangeReceiver.class);
                     ComponentManager.enableComponent(context, SupplicantStateReceiver.class);
+                    ComponentManager.enableComponent(context, ConnectivityChangeReceiver.class);
                     break;
                 case WifiManager.WIFI_STATE_ENABLING:
                     //Log.e(TAG, "WIFI_STATE_ENABLING");
@@ -59,12 +63,14 @@ public class WifiStateService extends IntentService {
                     ComponentManager.disableComponent(context, WifiScanReceiver.class);
                     ComponentManager.disableComponent(context, SupplicantChangeReceiver.class);
                     ComponentManager.disableComponent(context, SupplicantStateReceiver.class);
+                    ComponentManager.disableComponent(context, ConnectivityChangeReceiver.class);
                     break;
                 case WifiManager.WIFI_STATE_DISABLED:
                     //Log.e(TAG, "WIFI_STATE_DISABLED");
                     ComponentManager.disableComponent(context, WifiScanReceiver.class);
                     ComponentManager.disableComponent(context, SupplicantChangeReceiver.class);
                     ComponentManager.disableComponent(context, SupplicantStateReceiver.class);
+                    ComponentManager.disableComponent(context, ConnectivityChangeReceiver.class);
 
                     // Clear list of APs
                     intent.setClass(context, WifiScanService.class);

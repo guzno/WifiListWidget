@@ -55,6 +55,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".connectivitychange.ConnectivityChangeReceiver" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".widget.WifiWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -82,6 +88,9 @@
                  android:enabled="true"
                  android:process=":remote"/>
         <service android:name=".supplicantstate.SupplicantStateService"
+                 android:enabled="true"
+                 android:process=":remote"/>
+        <service android:name=".connectivitychange.ConnectivityChangeService"
                  android:enabled="true"
                  android:process=":remote"/>
 
