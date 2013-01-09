@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
+import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -23,6 +26,8 @@ public class ConnectivityChangeService extends IntentService {
 
     private static final String TAG = "ConnectivityChangeService";
 
+    public static final int WALLED_GARDEN = 1;
+
     public ConnectivityChangeService() {
         super("wifilistwidget_ConnectivityChangeService");
     }
@@ -39,7 +44,13 @@ public class ConnectivityChangeService extends IntentService {
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if ( networkInfo != null  && networkInfo.isConnected() && networkInfo.isAvailable() ){
                     Log.e(TAG, "WIFI NETWORK ALIVE AND KICKIN'");
-                    Log.e(TAG, "Walled garden connection: " + isWalledGardenConnection());
+                    Integer walledGarden = ( isWalledGardenConnection() ) ? WALLED_GARDEN : null;
+                    Log.e(TAG, "Walled garden connection: " + walledGarden);
+                    if (walledGarden != null && walledGarden == WALLED_GARDEN){
+                        Log.e(TAG, "trying to toast");
+                        Toast.makeText(context, R.string.walled_garden, Toast.LENGTH_LONG).show();
+                    }
+                    //WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, walledGarden);
                 }
             }
         }

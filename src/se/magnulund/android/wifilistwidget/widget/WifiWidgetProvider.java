@@ -12,8 +12,10 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.connectivitychange.ConnectivityChangeService;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
@@ -51,6 +53,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public static final int UPDATE_ALARM_TYPE_SCAN_DELAY = 4;
     public static final int UPDATE_ALARM_TYPE_WIFI_STATE = 5;
     public static final int UPDATE_SYSTEM_INITIATED = 6;
+    public static final int UPDATE_CONNECTION_CHANGE = 7;
 
     private static final int WIDGET_TYPE_LISTVIEW = 1;
     private static final int WIDGET_TYPE_TOGGLE = 2;
@@ -207,6 +210,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 case UPDATE_SYSTEM_INITIATED: {
                     break;
                 }
+                case UPDATE_CONNECTION_CHANGE:{
+                    break;
+                }
                 default:
                     Log.e(TAG, "Unknown update type: " + updateType);
                     return;
@@ -242,6 +248,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 case UPDATE_SYSTEM_INITIATED: {
+                    break;
+                }
+                case UPDATE_CONNECTION_CHANGE:{
                     break;
                 }
                 default:

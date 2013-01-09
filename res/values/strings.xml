@@ -24,4 +24,6 @@
 
     <string name="prefs_show_main_hotspot_toggle">show_main_hotspot_toggle</string>
     <string name="prefs_merge_access_points">merge_access_points</string>
+
+    <string name="walled_garden">Connected to a walled garden connection… better do something now…</string>
 </resources>
