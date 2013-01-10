@@ -12,9 +12,9 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.connectivitychange.ConnectivityChangeService;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
@@ -84,13 +84,21 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
     private void setWidgetActive(Context context, Boolean active) {
         SharedPreferences preferences = getPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        if (preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false) {
-            Log.e(TAG, "MOBILE NETWORKS NOT CHECKED, CHECKING...");
-            edit.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
+        SharedPreferences.Editor editor = preferences.edit();
+        if (active) {
+
+            if (preferences.contains(Preferences.DEVICE_HAS_MOBILE_NETWORK) == false) {
+                Log.e(TAG, "MOBILE NETWORKS NOT CHECKED, CHECKING...");
+                editor.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, MainActivity.deviceHasMobileNetwork(context));
+            }
+            if (preferences.contains(Preferences.WALLED_GARDEN_CHECK_DONE) == false) {
+                Intent intent = new Intent(context, ConnectivityChangeService.class);
+                intent.putExtra(ConnectivityChangeService.FIRST_RUN_CHECK, true);
+                context.startService(intent);
+            }
         }
-        edit.putBoolean(WIDGET_ACTIVE, active);
-        edit.commit();
+        editor.putBoolean(WIDGET_ACTIVE, active);
+        editor.commit();
     }
 
     @Override
@@ -210,21 +218,22 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 }
                 case UPDATE_ALARM_TYPE_SCAN_DELAY: {
                     editor = preferences.edit();
-
-                    switch (updateInfo) {
-                        case AlarmUtility.DISABLE_SCANNING: {
-                            editor.putBoolean(Preferences.SCANNING_ENABLED, false);
-                            editor.commit();
-                            break;
-                        }
-                        case AlarmUtility.RE_ENABLE_SCANNING: {
-                            if (preferences.getBoolean(Preferences.SCANNING_ENABLED, false)) {
-                                return;
-                            } else {
-                                editor.putBoolean(Preferences.SCANNING_ENABLED, true);
+                    if (updateInfo != null) {
+                        switch (updateInfo) {
+                            case AlarmUtility.DISABLE_SCANNING: {
+                                editor.putBoolean(Preferences.SCANNING_ENABLED, false);
                                 editor.commit();
+                                break;
                             }
-                            break;
+                            case AlarmUtility.RE_ENABLE_SCANNING: {
+                                if (preferences.getBoolean(Preferences.SCANNING_ENABLED, false)) {
+                                    return;
+                                } else {
+                                    editor.putBoolean(Preferences.SCANNING_ENABLED, true);
+                                    editor.commit();
+                                }
+                                break;
+                            }
                         }
                     }
                     break;
