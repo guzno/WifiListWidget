@@ -8,13 +8,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import se.magnulund.android.wifilistwidget.connectivitychange.ConnectivityChangeService;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +29,10 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
     @Override
     public int compareTo(FilteredScanResult another) {
         if (isCurrentConnection()) {
-            return -1000;
+            Log.e(TAG, "current conc");
+            return -1;
+        } else if (another.isCurrentConnection()) {
+            return 1;
         } else {
             return another.scanResult.level - scanResult.level;
         }
@@ -116,7 +114,7 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
                     if (scanResult.BSSID.equals(currentConnection.getBSSID())) {
                         filteredScanResult.setCurrentConnection(true);
                         filteredScanResult.setWalledGarden(isWalledGardenConnection(context));
-                        Log.e(TAG, "Walled garden: "+filteredScanResult.isWalledGarden());
+                        Log.e(TAG, "Walled garden: " + filteredScanResult.isWalledGarden());
                     }
 
                     filterScanResults.add(filteredScanResult);
