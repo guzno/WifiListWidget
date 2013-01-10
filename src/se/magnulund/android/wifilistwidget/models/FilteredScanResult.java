@@ -29,7 +29,6 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
     @Override
     public int compareTo(FilteredScanResult another) {
         if (isCurrentConnection()) {
-            Log.e(TAG, "current conc");
             return -1;
         } else if (another.isCurrentConnection()) {
             return 1;
@@ -42,6 +41,7 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
     WifiConfiguration wifiConfiguration;
     boolean isCurrentConnection = false;
     boolean isWalledGarden = false;
+    String redirectURL = "";
 
     public FilteredScanResult(ScanResult scanResult, WifiConfiguration wifiConfiguration) {
         this.scanResult = scanResult;
@@ -70,6 +70,14 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
 
     public boolean isWalledGarden() {
         return isWalledGarden;
+    }
+
+    public void setRedirectURL(String redirectURL) {
+        this.redirectURL = redirectURL;
+    }
+
+    public String getRedirectURL() {
+        return redirectURL;
     }
 
 
@@ -113,8 +121,8 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
                     FilteredScanResult filteredScanResult = new FilteredScanResult(scanResult, wifiConfiguration);
                     if (scanResult.BSSID.equals(currentConnection.getBSSID())) {
                         filteredScanResult.setCurrentConnection(true);
-                        filteredScanResult.setWalledGarden(isWalledGardenConnection(context));
-                        Log.e(TAG, "Walled garden: " + filteredScanResult.isWalledGarden());
+                        filteredScanResult.setWalledGarden( preferences.getBoolean(Preferences.WALLED_GARDEN_CONNECTION, false) );
+                        filteredScanResult.setRedirectURL( preferences.getString(Preferences.WALLED_GARDEN_REDIRECT_URL, "") );
                     }
 
                     filterScanResults.add(filteredScanResult);
@@ -126,10 +134,5 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
         Collections.sort(filterScanResults);
 
         return filterScanResults;
-    }
-
-    private static boolean isWalledGardenConnection(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getBoolean(Preferences.WALLED_GARDEN_CONNECTION, false);
     }
 }

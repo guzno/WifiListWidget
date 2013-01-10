@@ -22,6 +22,6 @@ public class SupplicantChangeService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.e(TAG, "Supplicant connected: "+intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false));
+        //Log.e(TAG, "Supplicant connected: "+intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false));
     }
 }

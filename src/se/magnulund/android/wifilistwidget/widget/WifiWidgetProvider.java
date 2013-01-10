@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
@@ -61,7 +62,12 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     private static final int WIDGET_THEME_DARK = 1;
     private static final int WIDGET_THEME_LIGHT = 2;
 
+    public static final String CLICK_TYPE = "click_type";
+    public static final int ITEM_CLICK_CONNECT = 1;
+    public static final int ITEM_CLICK_REDIRECT = 2;
+
     public static final String NETWORK_ID = "network_id";
+    public static final String REDIRECT_URL = "redirect_url";
 
     private Boolean wifiEnabled;
     private Boolean mobileHotSpotActive;
@@ -106,14 +112,31 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         //Log.e(TAG, "Action: " + action);
 
         if (action.equals(CLICK_ACTION)) {
+            switch (intent.getIntExtra(CLICK_TYPE, -1)) {
+                case ITEM_CLICK_CONNECT: {
+                    final int networkId = intent.getIntExtra(WifiWidgetProvider.NETWORK_ID, -1);
+                    if (networkId > -1) {
+                        wifiManager.disconnect();
+                        wifiManager.enableNetwork(networkId, true);
+                        wifiManager.reconnect();
 
-            final int networkId = intent.getIntExtra(WifiWidgetProvider.NETWORK_ID, -1);
-            if (networkId > -1) {
-                wifiManager.disconnect();
-                wifiManager.enableNetwork(networkId, true);
-                wifiManager.reconnect();
+                        //AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
+                    }
 
-                AlarmUtility.scheduleAlarm(context, AlarmUtility.ALARM_TYPE_BACKOFF);
+                    break;
+                }
+                case ITEM_CLICK_REDIRECT: {
+                    String redirectUrl = intent.getStringExtra(REDIRECT_URL);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(redirectUrl));
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(i);
+                    break;
+                }
+                default: {
+                    Log.e(TAG, "unknown click action");
+                    break;
+                }
             }
         } else if (action.equals(WIFI_TOGGLE_ACTION)) {
 
@@ -218,7 +241,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 case UPDATE_CONNECTION_LOST: {
-
+                    break;
                 }
                 default:
                     Log.e(TAG, "Unknown update type: " + updateType);
@@ -260,6 +283,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 case UPDATE_CONNECTION_CHANGE: {
+                    break;
+                }
+                case UPDATE_CONNECTION_LOST: {
                     break;
                 }
                 default:

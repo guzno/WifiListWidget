@@ -36,7 +36,6 @@ public class ConnectivityChangeService extends IntentService {
 
         int networkType = intent.getIntExtra(ConnectivityManager.EXTRA_NETWORK_TYPE, -1);
         if (networkType == ConnectivityManager.TYPE_WIFI) {
-            Log.e(TAG, "onWifi");
             Context context = getApplicationContext();
 
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -46,19 +45,15 @@ public class ConnectivityChangeService extends IntentService {
             SharedPreferences.Editor editor = preferences.edit();
 
             if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) == true) {
-                Log.e(TAG, "Connectivity lost.");
                 editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false);
                 editor.commit();
                 WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_LOST, null);
             } else if (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable()) {
-                Log.e(TAG, "WIFI NETWORK ALIVE AND KICKIN'");
 
                 if (preferences.getBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false) == false) {
+                    isWalledGardenConnection(editor);
                     editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
-                    boolean walledGarden = isWalledGardenConnection();
-                    editor.putBoolean(Preferences.WALLED_GARDEN_CONNECTION, walledGarden);
-                    Log.e(TAG, "walled in... : " + walledGarden);
-                    editor.commit();
+
                 }
                 WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, null);
             }
@@ -66,33 +61,42 @@ public class ConnectivityChangeService extends IntentService {
         }
     }
 
-    private static final String WALLED_GARDEN_URL = "http://clients3.google.com/generate_204";
+    private static final String WALLED_GARDEN_URL = "clients3.google.com/generate_204";
+    private static final String LANDING_PAGE_URL = "www.google.com";
     private static final int WALLED_GARDEN_SOCKET_TIMEOUT_MS = 10000;
 
-    private boolean isWalledGardenConnection() {
+    private void isWalledGardenConnection(SharedPreferences.Editor editor) {
         HttpURLConnection urlConnection = null;
+        boolean walledGarden;
+        String redirectURL = "";
         try {
-            URL url = new URL(WALLED_GARDEN_URL); // "http://clients3.google.com/generate_204"
+            URL url = new URL("http://"+WALLED_GARDEN_URL); // "http://clients3.google.com/generate_204"
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setConnectTimeout(WALLED_GARDEN_SOCKET_TIMEOUT_MS);
             urlConnection.setReadTimeout(WALLED_GARDEN_SOCKET_TIMEOUT_MS);
             urlConnection.setUseCaches(false);
             urlConnection.getInputStream();
+            redirectURL = urlConnection.getHeaderField("Location").replace(WALLED_GARDEN_URL, LANDING_PAGE_URL);
             // We got a valid response, but not from the real google
-            return urlConnection.getResponseCode() != 204;
+            walledGarden = urlConnection.getResponseCode() != 204;
         } catch (MalformedURLException e) {
             Log.e(TAG, "Bad url exception: "
                     + e);
-            return false;
+            walledGarden = false;
         } catch (IOException e) {
             Log.e(TAG, "Walled garden check - probably not a portal: exception "
                     + e);
-            return false;
+            walledGarden = false;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }
+
+        editor.putBoolean(Preferences.WALLED_GARDEN_CONNECTION, walledGarden);
+        editor.putString(Preferences.WALLED_GARDEN_REDIRECT_URL, redirectURL);
+        Log.e(TAG, "walled in to: " + redirectURL);
+        editor.commit();
     }
 }

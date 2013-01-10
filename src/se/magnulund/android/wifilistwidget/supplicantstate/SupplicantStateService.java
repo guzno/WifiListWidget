@@ -24,7 +24,7 @@ public class SupplicantStateService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         SupplicantState supplicantState = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-        Log.e(TAG, "Supplicant state: "+supplicantState.toString());
+        /*Log.e(TAG, "Supplicant state: "+supplicantState.toString());
         String state = "";
         switch (supplicantState) {
             case ASSOCIATED: {
@@ -80,6 +80,6 @@ public class SupplicantStateService extends IntentService {
                 break;
             }
 
-        }
+        }*/
     }
 }

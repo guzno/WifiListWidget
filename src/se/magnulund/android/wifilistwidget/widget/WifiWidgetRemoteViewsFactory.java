@@ -56,13 +56,17 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         boolean connected = filteredScanResult.isCurrentConnection();
         int level = scanResult.level;
         int networkID = wifiConfiguration.networkId;
+        String redirectURL = filteredScanResult.getRedirectURL();
 
         int listItemLayout;
+        int clickType;
 
         if ( connected && filteredScanResult.isWalledGarden()) {
             listItemLayout = R.layout.widget_wifi_list_item_walled_garden;
+            clickType = WifiWidgetProvider.ITEM_CLICK_REDIRECT;
         } else {
             listItemLayout = R.layout.widget_wifi_list_item;
+            clickType = WifiWidgetProvider.ITEM_CLICK_CONNECT;
         }
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), listItemLayout);
@@ -77,7 +81,9 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         // Set the click intent so that we can handle it and show a toast message
         final Intent fillInIntent = new Intent();
         final Bundle extras = new Bundle();
+        extras.putInt(WifiWidgetProvider.CLICK_TYPE, clickType);
         extras.putInt(WifiWidgetProvider.NETWORK_ID, networkID);
+        extras.putString(WifiWidgetProvider.REDIRECT_URL, redirectURL);
         fillInIntent.putExtras(extras);
         rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
 

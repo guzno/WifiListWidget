@@ -17,6 +17,8 @@ public class Preferences {
 
     public static final String WALLED_GARDEN_CHECK_DONE = "walled_garden_check_done";
     public static final String WALLED_GARDEN_CONNECTION = "walled_garden_connection";
+    public static final String WALLED_GARDEN_REDIRECT_URL = "walled_garden_redirect_url";
+
 
     // WIDGET SPECIFIC PREFS, PREFIXED BY WIDGET ID
 
