@@ -56,10 +56,9 @@ public class ConnectivityChangeService extends IntentService {
             } else if (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable()) {
 
                 isWalledGardenConnection(context, preferences);
-
+                editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
                 WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, null);
             }
-
         }
     }
 
@@ -115,7 +114,6 @@ public class ConnectivityChangeService extends IntentService {
                     urlConnection.disconnect();
                     editor.putBoolean(Preferences.WALLED_GARDEN_CONNECTION, walledGarden);
                     editor.putString(Preferences.WALLED_GARDEN_REDIRECT_URL, redirectURL);
-                    editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
                     editor.commit();
                 }
             }
