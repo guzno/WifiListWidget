@@ -57,6 +57,7 @@ public class ConnectivityChangeService extends IntentService {
 
                 isWalledGardenConnection(context, preferences);
                 editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
+                editor.commit();
                 WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, null);
             }
         }
@@ -95,10 +96,10 @@ public class ConnectivityChangeService extends IntentService {
                 // We got a valid response, but not from the real google
                 walledGarden = urlConnection.getResponseCode() != 204;
             } catch (MalformedURLException e) {
-                Log.e(TAG, "Bad url exception: "
+                Log.e(TAG, "Bad url exception:"
                         + e);
             } catch (IOException e) {
-                Log.e(TAG, "Walled garden check - probably not a portal: exception "
+                Log.e(TAG, "Walled garden check - probably not a portal: exception"
                         + e);
             } finally {
                 if (urlConnection != null) {
