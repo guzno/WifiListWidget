@@ -12,10 +12,8 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
-import se.magnulund.android.wifilistwidget.connectivitychange.ConnectivityChangeService;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.utils.AlarmUtility;
 import se.magnulund.android.wifilistwidget.utils.ComponentManager;
@@ -54,6 +52,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
     public static final int UPDATE_ALARM_TYPE_WIFI_STATE = 5;
     public static final int UPDATE_SYSTEM_INITIATED = 6;
     public static final int UPDATE_CONNECTION_CHANGE = 7;
+    public static final int UPDATE_CONNECTION_LOST = 8;
 
     private static final int WIDGET_TYPE_LISTVIEW = 1;
     private static final int WIDGET_TYPE_TOGGLE = 2;
@@ -163,6 +162,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widget);
 
+        boolean updateListview = false;
+
         if (appWidgetIds.length > 0) {
 
             SharedPreferences preferences = getPreferences(context.getApplicationContext());
@@ -178,6 +179,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     editor = preferences.edit();
                     editor.putBoolean(Preferences.SCANNING_ENABLED, true);
                     editor.commit();
+                    updateListview = true;
                     break;
                 }
                 case UPDATE_ALARM_TYPE_BACKOFF: {
@@ -208,10 +210,15 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 case UPDATE_SYSTEM_INITIATED: {
+                    updateListview = true;
                     break;
                 }
-                case UPDATE_CONNECTION_CHANGE:{
+                case UPDATE_CONNECTION_CHANGE: {
+                    updateListview = true;
                     break;
+                }
+                case UPDATE_CONNECTION_LOST: {
+
                 }
                 default:
                     Log.e(TAG, "Unknown update type: " + updateType);
@@ -223,6 +230,9 @@ public class WifiWidgetProvider extends AppWidgetProvider {
             for (int i = 0; i < appWidgetIds.length; ++i) {
                 RemoteViews rv = getRemoteViews(context, appWidgetIds[i]);
                 appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+                if (updateListview) {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
+                }
             }
 
             // DO THINGS AFTER UPDATING WIDGETS
@@ -235,7 +245,6 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 case UPDATE_WIFI_SCAN_RESULTS: {
-                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
                     break;
                 }
                 case UPDATE_ALARM_TYPE_BACKOFF: {
@@ -250,7 +259,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                 case UPDATE_SYSTEM_INITIATED: {
                     break;
                 }
-                case UPDATE_CONNECTION_CHANGE:{
+                case UPDATE_CONNECTION_CHANGE: {
                     break;
                 }
                 default:

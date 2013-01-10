@@ -57,7 +57,15 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
         int level = scanResult.level;
         int networkID = wifiConfiguration.networkId;
 
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_wifi_list_item);
+        int listItemLayout;
+
+        if ( connected && filteredScanResult.isWalledGarden()) {
+            listItemLayout = R.layout.widget_wifi_list_item_walled_garden;
+        } else {
+            listItemLayout = R.layout.widget_wifi_list_item;
+        }
+
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), listItemLayout);
         rv.setTextViewText(R.id.widget_ssid, ssid);
 
         rv.setTextViewText(R.id.widget_bssid, bssid);
@@ -83,7 +91,7 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
     @Override
     public int getViewTypeCount() {
-        return 1;
+        return 2;
     }
 
     @Override

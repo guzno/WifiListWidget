@@ -15,6 +15,9 @@ public class Preferences {
     public static final String SCANNING_ENABLED = "scanning_enabled";
     public static final String MERGE_ACCESS_POINTS = "merge_access_points";
 
+    public static final String WALLED_GARDEN_CHECK_DONE = "walled_garden_check_done";
+    public static final String WALLED_GARDEN_CONNECTION = "walled_garden_connection";
+
     // WIDGET SPECIFIC PREFS, PREFIXED BY WIDGET ID
 
     public static final String SHOW_AP_BUTTON_ = "show_sp_button_";

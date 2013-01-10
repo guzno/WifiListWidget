@@ -7,8 +7,14 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import se.magnulund.android.wifilistwidget.connectivitychange.ConnectivityChangeService;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,14 +28,22 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class FilteredScanResult implements Comparable<FilteredScanResult> {
+
+    private static final String TAG = "FilteredScanResult";
+
     @Override
     public int compareTo(FilteredScanResult another) {
-        return another.scanResult.level - scanResult.level;
+        if (isCurrentConnection()) {
+            return -1000;
+        } else {
+            return another.scanResult.level - scanResult.level;
+        }
     }
 
     ScanResult scanResult;
     WifiConfiguration wifiConfiguration;
     boolean isCurrentConnection = false;
+    boolean isWalledGarden = false;
 
     public FilteredScanResult(ScanResult scanResult, WifiConfiguration wifiConfiguration) {
         this.scanResult = scanResult;
@@ -52,6 +66,13 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
         return isCurrentConnection;
     }
 
+    public void setWalledGarden(boolean walledGarden) {
+        isWalledGarden = walledGarden;
+    }
+
+    public boolean isWalledGarden() {
+        return isWalledGarden;
+    }
 
 
     public static ArrayList<FilteredScanResult> getFilteredScanResults(Context context) {
@@ -94,6 +115,8 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
                     FilteredScanResult filteredScanResult = new FilteredScanResult(scanResult, wifiConfiguration);
                     if (scanResult.BSSID.equals(currentConnection.getBSSID())) {
                         filteredScanResult.setCurrentConnection(true);
+                        filteredScanResult.setWalledGarden(isWalledGardenConnection(context));
+                        Log.e(TAG, "Walled garden: "+filteredScanResult.isWalledGarden());
                     }
 
                     filterScanResults.add(filteredScanResult);
@@ -105,5 +128,10 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
         Collections.sort(filterScanResults);
 
         return filterScanResults;
+    }
+
+    private static boolean isWalledGardenConnection(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(Preferences.WALLED_GARDEN_CONNECTION, false);
     }
 }

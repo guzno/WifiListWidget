@@ -3,11 +3,12 @@ package se.magnulund.android.wifilistwidget.connectivitychange;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
-import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 
 import java.io.IOException;
@@ -26,33 +27,42 @@ public class ConnectivityChangeService extends IntentService {
 
     private static final String TAG = "ConnectivityChangeService";
 
-    public static final int WALLED_GARDEN = 1;
-
     public ConnectivityChangeService() {
         super("wifilistwidget_ConnectivityChangeService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) == true) {
-            Log.e(TAG, "Connectivity lost.");
-        } else {
-            int networkType = intent.getIntExtra(ConnectivityManager.EXTRA_NETWORK_TYPE, -1);
-            if (networkType == ConnectivityManager.TYPE_WIFI) {
-                Context context = getApplicationContext();
-                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                if ( networkInfo != null  && networkInfo.isConnected() && networkInfo.isAvailable() ){
-                    Log.e(TAG, "WIFI NETWORK ALIVE AND KICKIN'");
-                    Integer walledGarden = ( isWalledGardenConnection() ) ? WALLED_GARDEN : null;
-                    Log.e(TAG, "Walled garden connection: " + walledGarden);
-                    if (walledGarden != null && walledGarden == WALLED_GARDEN){
-                        Log.e(TAG, "trying to toast");
-                        Toast.makeText(context, R.string.walled_garden, Toast.LENGTH_LONG).show();
-                    }
-                    //WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, walledGarden);
+
+        int networkType = intent.getIntExtra(ConnectivityManager.EXTRA_NETWORK_TYPE, -1);
+        if (networkType == ConnectivityManager.TYPE_WIFI) {
+            Log.e(TAG, "onWifi");
+            Context context = getApplicationContext();
+
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = preferences.edit();
+
+            if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) == true) {
+                Log.e(TAG, "Connectivity lost.");
+                editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false);
+                editor.commit();
+                WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_LOST, null);
+            } else if (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable()) {
+                Log.e(TAG, "WIFI NETWORK ALIVE AND KICKIN'");
+
+                if (preferences.getBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false) == false) {
+                    editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
+                    boolean walledGarden = isWalledGardenConnection();
+                    editor.putBoolean(Preferences.WALLED_GARDEN_CONNECTION, walledGarden);
+                    Log.e(TAG, "walled in... : " + walledGarden);
+                    editor.commit();
                 }
+                WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, null);
             }
+
         }
     }
 
@@ -76,8 +86,8 @@ public class ConnectivityChangeService extends IntentService {
                     + e);
             return false;
         } catch (IOException e) {
-                Log.e(TAG, "Walled garden check - probably not a portal: exception "
-                        + e);
+            Log.e(TAG, "Walled garden check - probably not a portal: exception "
+                    + e);
             return false;
         } finally {
             if (urlConnection != null) {
