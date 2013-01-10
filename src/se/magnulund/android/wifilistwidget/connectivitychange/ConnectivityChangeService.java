@@ -55,17 +55,8 @@ public class ConnectivityChangeService extends IntentService {
                 WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_LOST, null);
             } else if (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable()) {
 
-                boolean walledGardenChecked = preferences.getBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false);
-                boolean isWalledGarden = preferences.getBoolean(Preferences.WALLED_GARDEN_CONNECTION, false);
+                isWalledGardenConnection(context, preferences);
 
-                boolean checkIfLoggedIn = ( walledGardenChecked && isWalledGarden );
-
-                if ( walledGardenChecked == false || checkIfLoggedIn ) {
-
-                    isWalledGardenConnection(editor);
-                    editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
-
-                }
                 WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, null);
             }
 
@@ -76,41 +67,57 @@ public class ConnectivityChangeService extends IntentService {
     private static final String LANDING_PAGE_URL = "www.google.com";
     private static final int WALLED_GARDEN_SOCKET_TIMEOUT_MS = 10000;
 
-    private static void isWalledGardenConnection(SharedPreferences.Editor editor) {
-        HttpURLConnection urlConnection = null;
-        boolean walledGarden = false;
-        String redirectURL = "";
-        try {
-            URL url = new URL("http://"+WALLED_GARDEN_URL); // "http://clients3.google.com/generate_204"
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setInstanceFollowRedirects(false);
-            urlConnection.setConnectTimeout(WALLED_GARDEN_SOCKET_TIMEOUT_MS);
-            urlConnection.setReadTimeout(WALLED_GARDEN_SOCKET_TIMEOUT_MS);
-            urlConnection.setUseCaches(false);
-            urlConnection.getInputStream();
-            // We got a valid response, but not from the real google
-            walledGarden = urlConnection.getResponseCode() != 204;
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "Bad url exception: "
-                    + e);
-        } catch (IOException e) {
-            Log.e(TAG, "Walled garden check - probably not a portal: exception "
-                    + e);
-        } finally {
-            if (urlConnection != null) {
-                if (walledGarden) {
-                    redirectURL = urlConnection.getHeaderField("Location");
-                    if ( redirectURL == null ) {
-                        redirectURL = "http://"+LANDING_PAGE_URL;
-                    } else {
-                        redirectURL = redirectURL.replace(WALLED_GARDEN_URL, LANDING_PAGE_URL);
-                        Log.e(TAG, "walled in to: " + redirectURL);
+    public static void isWalledGardenConnection(Context context, SharedPreferences preferences) {
+
+        if (preferences == null ){
+            preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        }
+
+        SharedPreferences.Editor editor = preferences.edit();
+
+        boolean walledGardenChecked = preferences.getBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false);
+        boolean isWalledGarden = preferences.getBoolean(Preferences.WALLED_GARDEN_CONNECTION, false);
+
+        boolean checkIfLoggedIn = (walledGardenChecked && isWalledGarden);
+
+        if (walledGardenChecked == false || checkIfLoggedIn) {
+
+            HttpURLConnection urlConnection = null;
+            boolean walledGarden = false;
+            String redirectURL = "";
+            try {
+                URL url = new URL("http://" + WALLED_GARDEN_URL); // "http://clients3.google.com/generate_204"
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setInstanceFollowRedirects(false);
+                urlConnection.setConnectTimeout(WALLED_GARDEN_SOCKET_TIMEOUT_MS);
+                urlConnection.setReadTimeout(WALLED_GARDEN_SOCKET_TIMEOUT_MS);
+                urlConnection.setUseCaches(false);
+                urlConnection.getInputStream();
+                // We got a valid response, but not from the real google
+                walledGarden = urlConnection.getResponseCode() != 204;
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "Bad url exception: "
+                        + e);
+            } catch (IOException e) {
+                Log.e(TAG, "Walled garden check - probably not a portal: exception "
+                        + e);
+            } finally {
+                if (urlConnection != null) {
+                    if (walledGarden) {
+                        redirectURL = urlConnection.getHeaderField("Location");
+                        if (redirectURL == null) {
+                            redirectURL = "http://" + LANDING_PAGE_URL;
+                        } else {
+                            redirectURL = redirectURL.replace(WALLED_GARDEN_URL, LANDING_PAGE_URL);
+                            Log.e(TAG, "walled in to: " + redirectURL);
+                        }
                     }
+                    urlConnection.disconnect();
+                    editor.putBoolean(Preferences.WALLED_GARDEN_CONNECTION, walledGarden);
+                    editor.putString(Preferences.WALLED_GARDEN_REDIRECT_URL, redirectURL);
+                    editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
+                    editor.commit();
                 }
-                editor.putBoolean(Preferences.WALLED_GARDEN_CONNECTION, walledGarden);
-                editor.putString(Preferences.WALLED_GARDEN_REDIRECT_URL, redirectURL);
-                editor.commit();
-                urlConnection.disconnect();
             }
         }
     }
