@@ -112,8 +112,5 @@ public class WifiWidgetRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
     public void onDataSetChanged() {
         filterScanResults = FilteredScanResult.getFilteredScanResults(mContext);
-
-        WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-
     }
 }

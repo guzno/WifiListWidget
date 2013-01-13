@@ -45,5 +45,4 @@ public class WifiWidgetConfigurationActivity extends Activity {
             throw new RuntimeException("I want to be instantiated by a widget_listview.");
         }
     }
-
 }

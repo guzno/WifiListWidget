@@ -82,8 +82,6 @@ public class WifiStateService extends IntentService {
                     throw new UnsupportedOperationException("that's no numbar" + wifiState);
             }
 
-            //Log.e(TAG, "Wifi state changed, checking if widget is active");
-
             WifiWidgetProvider.updateWidgets(context, WifiWidgetProvider.UPDATE_WIFI_STATE_CHANGED, wifiState);
 
         }
@@ -92,7 +90,6 @@ public class WifiStateService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //Log.e(TAG, "stopped");
     }
 
 

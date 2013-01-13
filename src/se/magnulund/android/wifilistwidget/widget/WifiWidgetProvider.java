@@ -186,7 +186,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
         ComponentName widget = new ComponentName(context, WifiWidgetProvider.class);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widget);
 
-        boolean updateListview = false;
+        boolean updateListView = false;
 
         if (appWidgetIds.length > 0) {
 
@@ -203,7 +203,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     editor = preferences.edit();
                     editor.putBoolean(Preferences.SCANNING_ENABLED, true);
                     editor.commit();
-                    updateListview = true;
+                    updateListView = true;
                     break;
                 }
                 case UPDATE_ALARM_TYPE_BACKOFF: {
@@ -219,12 +219,8 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                                 break;
                             }
                             case AlarmUtility.RE_ENABLE_SCANNING: {
-                                if (preferences.getBoolean(Preferences.SCANNING_ENABLED, false)) {
-                                    return;
-                                } else {
-                                    editor.putBoolean(Preferences.SCANNING_ENABLED, true);
-                                    editor.commit();
-                                }
+                                editor.putBoolean(Preferences.SCANNING_ENABLED, true);
+                                editor.commit();
                                 break;
                             }
                         }
@@ -235,11 +231,11 @@ public class WifiWidgetProvider extends AppWidgetProvider {
                     break;
                 }
                 case UPDATE_SYSTEM_INITIATED: {
-                    updateListview = true;
+                    updateListView = true;
                     break;
                 }
                 case UPDATE_CONNECTION_CHANGE: {
-                    updateListview = true;
+                    updateListView = true;
                     break;
                 }
                 case UPDATE_CONNECTION_LOST: {
@@ -252,10 +248,12 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
             // UPDATE WIDGETS
 
-            for (int i = 0; i < appWidgetIds.length; ++i) {
-                RemoteViews rv = WidgetRemoteViews.getRemoteViews(context, appWidgetIds[i]);
-                appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
-                if (updateListview) {
+            for (int appWidgetId : appWidgetIds) {
+                WidgetRemoteViews widgetRemoteViews = new WidgetRemoteViews(context, appWidgetId);
+                widgetRemoteViews.setupRemoteViews();
+                RemoteViews rv = widgetRemoteViews.createRemoteViews();
+                appWidgetManager.updateAppWidget(appWidgetId, rv);
+                if (updateListView) {
                     appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
                 }
             }
