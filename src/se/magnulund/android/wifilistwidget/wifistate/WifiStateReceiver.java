@@ -6,22 +6,19 @@ import android.content.Intent;
 import android.net.wifi.WifiManager;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gustav
- * Date: 20/11/2012
- * Time: 23:39
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: Gustav Date: 20/11/2012 Time: 23:39 To
+ * change this template use File | Settings | File Templates.
  */
 public class WifiStateReceiver extends BroadcastReceiver {
-    public static final String WIFI_STATE = "wifi_state";
+	public static final String WIFI_STATE = "wifi_state";
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
 
-        intent.setClass(context, WifiStateService.class);
-        intent.putExtra(WifiStateReceiver.WIFI_STATE, wifiState);
+		intent.setClass(context, WifiStateService.class);
+		intent.putExtra(WifiStateReceiver.WIFI_STATE, wifiState);
 
-        context.startService(intent);
-    }
+		context.startService(intent);
+	}
 }

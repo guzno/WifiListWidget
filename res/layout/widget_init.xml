@@ -4,21 +4,18 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/WidgetTheme.Dark"
-        android:background="@drawable/widget_background"
+        android:background="@android:color/transparent"
         android:layout_marginTop="@dimen/widget_margin_top"
         android:layout_marginBottom="@dimen/widget_margin_bottom"
         android:layout_marginLeft="@dimen/widget_margin_left"
         android:layout_marginRight="@dimen/widget_margin_right">
     <RelativeLayout
             android:id="@+id/widget_header"
-            style="@style/WidgetTheme.Dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/widget_heading_background_dark">
         <ImageButton
                 android:id="@+id/widget_wifi_toggle"
-                style="@style/WidgetTheme.Dark"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="centerInside"
@@ -26,24 +23,31 @@
                 android:background="@android:color/transparent"
                 android:layout_alignParentLeft="true"
                 android:contentDescription="@string/widget_wifi_toggle"/>
-        <ImageButton android:id="@+id/widget_wifi_scan"
-                     style="@style/WidgetTheme.Dark"
-                     android:layout_width="48dp"
-                     android:layout_height="48dp"
-                     android:src="@drawable/ic_wifi_scan_active"
-                     android:scaleType="centerInside"
-                     android:layout_alignParentRight="true"
-                     android:background="@android:color/transparent"
-                     android:contentDescription="@string/widget_wifi_scan"
-                />
+        <ImageButton
+                android:id="@+id/widget_wifi_scan"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_wifi_scan_active"
+                android:background="@android:color/transparent"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/widget_wifi_scan"/>
+        <ImageButton
+                android:id="@+id/widget_hotspot_toggle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_menu_hotspot_inactive"
+                android:scaleType="centerInside"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/widget_hotspot_toggle"/>
     </RelativeLayout>
     <RelativeLayout
-            style="@style/WidgetTheme.Dark"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_below="@id/widget_header"
+            android:background="@color/list_background_dark"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/widget_list_background_dark"
-            />
+            android:layout_marginRight="5dp">
+    </RelativeLayout>
 </RelativeLayout>

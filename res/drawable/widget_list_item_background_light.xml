@@ -6,7 +6,7 @@
             android:width="0dp"
             android:color="@android:color/transparent"/>
     <solid
-            android:color="@android:color/transparent"/>
+        android:color="@color/list_item_background_light"/>
 
     <corners
             android:radius="0dp"/>

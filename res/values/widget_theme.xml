@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+        >
+
+    <style name="WidgetTheme.Dark" parent="android:Theme.Holo">
+        <item name="APLwidgetBackground">@drawable/widget_background</item>
+        <item name="APLwidgetHeaderBackground">@drawable/widget_heading_background_dark</item>
+        <item name="APLwidgetContentBackground">@drawable/widget_list_background_dark</item>
+        <item name="APLlistItemBackground">@drawable/widget_list_item_background_dark</item>
+        <item name="android:textColorPrimary">@color/list_item_heading_dark</item>
+        <item name="android:textColorSecondary">@color/list_item_sub_heading_dark</item>
+    </style>
+
+    <style name="WidgetTheme.Light" parent="android:Theme.Holo.Light">
+        <item name="APLwidgetBackground">@drawable/widget_background</item>
+        <item name="APLwidgetHeaderBackground">@drawable/widget_heading_background_light</item>
+        <item name="APLwidgetContentBackground">@drawable/widget_list_background_light</item>
+        <item name="APLlistItemBackground">@drawable/widget_list_item_background_light</item>
+        <item name="android:textColorPrimary">@color/list_item_heading_light</item>
+        <item name="android:textColorSecondary">@color/list_item_sub_heading_light</item>
+    </style>
+</resources>

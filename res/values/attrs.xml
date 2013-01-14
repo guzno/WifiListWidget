@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="APLwidgetBackground" format="reference|color"/>
+    <attr name="APLwidgetHeaderBackground" format="reference|color"/>
+    <attr name="APLwidgetContentBackground" format="reference|color"/>
+    <attr name="APLlistItemBackground" format="reference|color"/>
+</resources>

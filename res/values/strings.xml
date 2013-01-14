@@ -4,6 +4,10 @@
     <string name="hotspot_active">Hotspot On</string>
     <string name="hotspot_inactive">Hotspot Off</string>
     <string name="settings">Settings</string>
+    <string name="general_settings_group">General Settings</string>
+    <string name="widget_settings_group">Widget Settings</string>
+    <string name="general_settings_group_key">general_settings</string>
+    <string name="widget_settings_group_key">widget_settings</string>
     <string name="merge_access_points">Merge Access Points</string>
     <string name="merge_access_points_summary">Only show the access point with best reception for each wifi network
     </string>
@@ -26,6 +30,16 @@
     <string name="prefs_merge_access_points">merge_access_points</string>
 
     <string name="walled_garden">This connection requires login.\nClick to launch browser.</string>
+
+    <string-array name="theme_names">
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 
 
 </resources>

@@ -2,23 +2,27 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/widget_item"
+                style="@style/WidgetTheme.Dark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:background="@android:color/background_dark">
+                android:background="@drawable/widget_list_item_background_dark">
     <TextView
             android:id="@+id/widget_ssid"
+            style="@style/WidgetTheme.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_large"
             android:paddingTop="6dp"
             android:text="@string/wifi_list_item_ssid"
+            android:textColor="?android:attr/textColorPrimary"
             />
     <ImageView
             android:id="@+id/widget_signal_strength"
+            style="@style/WidgetTheme.Dark"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentRight="true"
@@ -26,28 +30,33 @@
             android:contentDescription="@string/wifi_list_item_signal_strength_desc"/>
     <TextView
             android:id="@+id/widget_bssid"
+            style="@style/WidgetTheme.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_ssid"
             android:layout_alignParentLeft="true"
             android:paddingLeft="4dp"
             android:textSize="@dimen/text_medium"
-            android:textColor="@color/list_item_sub_heading"
+            android:textColor="?android:attr/textColorSecondary"
             android:text="@string/wifi_list_item_bssid"/>
     <TextView
             android:id="@+id/widget_level_label"
+            style="@style/WidgetTheme.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_signal_strength"
             android:layout_alignParentRight="true"
             android:textSize="@dimen/text_small"
-            android:text="@string/wifi_list_item_level_label"/>
+            android:text="@string/wifi_list_item_level_label"
+            android:textColor="?android:attr/textColorPrimary"/>
     <TextView
             android:id="@+id/widget_level"
+            style="@style/WidgetTheme.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_signal_strength"
             android:layout_toLeftOf="@id/widget_level_label"
             android:textSize="@dimen/text_small"
-            android:text="@string/wifi_list_item_level"/>
+            android:text="@string/wifi_list_item_level"
+            android:textColor="?android:attr/textColorPrimary"/>
 </RelativeLayout>

@@ -4,18 +4,21 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
+        style="@style/WidgetTheme.Dark"
+        android:background="@drawable/widget_background"
         android:layout_marginTop="@dimen/widget_margin_top"
         android:layout_marginBottom="@dimen/widget_margin_bottom"
         android:layout_marginLeft="@dimen/widget_margin_left"
         android:layout_marginRight="@dimen/widget_margin_right">
     <RelativeLayout
             android:id="@+id/widget_header"
+            style="@style/WidgetTheme.Dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/widget_background">
+            android:background="@drawable/widget_heading_background_dark">
         <ImageButton
                 android:id="@+id/widget_wifi_toggle"
+                style="@style/WidgetTheme.Dark"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="centerInside"
@@ -24,6 +27,7 @@
                 android:layout_alignParentLeft="true"
                 android:contentDescription="@string/widget_wifi_toggle"/>
         <ImageButton android:id="@+id/widget_wifi_scan"
+                     style="@style/WidgetTheme.Dark"
                      android:layout_width="48dp"
                      android:layout_height="48dp"
                      android:src="@drawable/ic_wifi_scan_active"
@@ -34,14 +38,17 @@
                 />
     </RelativeLayout>
     <RelativeLayout
+            style="@style/WidgetTheme.Dark"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_below="@id/widget_header"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@android:color/background_dark"
+            android:background="@drawable/widget_list_background_dark"
             >
+
         <TextView android:id="@+id/widget_main_toggle_text"
+                  style="@style/WidgetTheme.Dark"
                   android:layout_height="wrap_content"
                   android:layout_width="match_parent"
                   android:gravity="center"
@@ -51,6 +58,7 @@
                   android:layout_alignParentBottom="true"
                   android:layout_marginBottom="18dp"/>
         <ImageButton android:id="@+id/widget_main_toggle"
+                     style="@style/WidgetTheme.Dark"
                      android:layout_height="match_parent"
                      android:layout_width="match_parent"
                      android:scaleType="centerInside"

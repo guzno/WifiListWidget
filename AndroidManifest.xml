@@ -13,7 +13,8 @@
     <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher"
-                 android:name="se.magnulund.android.wifilistwidget.WifiListWidgetApplication">
+                 android:name="se.magnulund.android.wifilistwidget.WifiListWidgetApplication"
+            android:theme="@style/WidgetTheme.Dark">
         <activity android:name="MainActivity"
                   android:label="@string/app_name">
             <intent-filter>

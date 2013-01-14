@@ -2,47 +2,70 @@ package se.magnulund.android.wifilistwidget.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
+import se.magnulund.android.wifilistwidget.MainActivity;
 import se.magnulund.android.wifilistwidget.R;
+import se.magnulund.android.wifilistwidget.settings.MainSettingsFragment;
+import se.magnulund.android.wifilistwidget.settings.Preferences;
+import se.magnulund.android.wifilistwidget.settings.WidgetSettingsFragment;
 
 /**
- * Created with IntelliJ IDEA.
- * User: erikeelde
- * Date: 4/12/2012
- * Time: 22:47
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: erikeelde Date: 4/12/2012 Time: 22:47 To
+ * change this template use File | Settings | File Templates.
  */
 public class WifiWidgetConfigurationActivity extends Activity {
-    private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+	private static final String TAG = "WifiWidgetConfigurationActivity";
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        setResult(RESULT_CANCELED);
+		Context context = getApplicationContext();
 
-        setContentView(R.layout.wifi_widget_configuration_activity_layout);
+		PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
 
-        findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent resultValue = new Intent();
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                setResult(RESULT_OK, resultValue);
-                finish();
-            }
-        });
+		setResult(RESULT_CANCELED);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
+		setContentView(R.layout.wifi_widget_configuration_activity_layout);
 
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            throw new RuntimeException("I want to be instantiated by a widget_listview.");
-        }
-    }
+		boolean hasMobileNetworks = MainActivity
+				.deviceHasMobileNetwork(context);
+
+		findViewById(R.id.save_button).setOnClickListener(
+				new View.OnClickListener() {
+					public void onClick(View v) {
+						Intent resultValue = new Intent();
+						Log.e(TAG, "sending ID: " + appWidgetId);
+						resultValue.putExtra(
+								AppWidgetManager.EXTRA_APPWIDGET_ID,
+								appWidgetId);
+						setResult(RESULT_OK, resultValue);
+						finish();
+					}
+				});
+
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+					AppWidgetManager.INVALID_APPWIDGET_ID);
+		}
+
+		Log.e(TAG, "ID: " + appWidgetId);
+
+		if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+			throw new RuntimeException(
+					"I want to be instantiated by a widget_listview.");
+		}
+
+		WidgetSettingsFragment widgetSettingsFragment = WidgetSettingsFragment
+				.newInstance(hasMobileNetworks, appWidgetId);
+		getFragmentManager().beginTransaction()
+				.add(R.id.settings_container, widgetSettingsFragment).commit();
+	}
 }

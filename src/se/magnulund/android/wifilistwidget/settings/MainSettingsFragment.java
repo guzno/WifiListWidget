@@ -3,6 +3,7 @@ package se.magnulund.android.wifilistwidget.settings;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 import se.magnulund.android.wifilistwidget.R;
 
 /**
@@ -12,7 +13,7 @@ import se.magnulund.android.wifilistwidget.R;
  * Time: 23:19
  * To change this template use File | Settings | File Templates.
  */
-public class SettingsFragment extends PreferenceFragment {
+public class MainSettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +27,13 @@ public class SettingsFragment extends PreferenceFragment {
 
     }
 
-    public static SettingsFragment newInstance(Boolean hasMobileNetworks) {
-        SettingsFragment settingsFragment = new SettingsFragment();
+    public static MainSettingsFragment newInstance(Boolean hasMobileNetworks) {
+        Log.e("TJOSAN:", "mobilenet"+hasMobileNetworks);
+        MainSettingsFragment mainSettingsFragment = new MainSettingsFragment();
         Bundle args = new Bundle();
         args.putBoolean(Preferences.DEVICE_HAS_MOBILE_NETWORK, hasMobileNetworks);
-        settingsFragment.setArguments(args);
+        mainSettingsFragment.setArguments(args);
 
-        return settingsFragment;
+        return mainSettingsFragment;
     }
 }

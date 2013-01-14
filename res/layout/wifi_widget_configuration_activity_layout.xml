@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <TextView android:id="@+id/filter_title"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
+              android:layout_alignParentTop="true"
               android:text="Config ye wigdget heahr"/>
-
     <Button android:id="@+id/save_button"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
             android:hint="Saveh"/>
+    <RelativeLayout android:id="@+id/settings_container"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:layout_marginBottom="40dip"
+              android:layout_below="@id/filter_title">
+    </RelativeLayout>
 
-</LinearLayout>
+
+</RelativeLayout>

@@ -6,7 +6,12 @@
             android:summary="@string/merge_access_points_summary"
             android:defaultValue="false"/>
     <CheckBoxPreference
-            android:key="show_hotspot_toggle"
+            android:key="show_main_hotspot_toggle"
             android:title="@string/show_hotspot_toggle"
             android:defaultValue="true"/>
+    <ListPreference android:key="theme"
+                    android:title="Theme"
+                    android:entries="@array/theme_names"
+                    android:entryValues="@array/theme_values"
+                    android:defaultValue="1"/>
 </PreferenceScreen>
