@@ -112,7 +112,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 
 		Context appContext = context.getApplicationContext();
 
-		WifiManager wifiManager = (WifiManager) appContext
+		WifiManager wifiManager = (WifiManager) context
 				.getSystemService(Context.WIFI_SERVICE);
 		// Log.e(TAG, "Action: " + action);
 
@@ -152,7 +152,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 			wifiManager.setWifiEnabled(wifiEnabled);
 
 		} else if (action.equals(HOTSPOT_TOGGLE_ACTION)) {
-			WifiApManager wifiApManager = new WifiApManager(appContext);
+			WifiApManager wifiApManager = new WifiApManager(context);
 
 			mobileHotSpotActive = wifiApManager.isWifiApEnabled();
 
@@ -192,7 +192,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 	public static void updateWidgets(Context context, int updateType,
 			Integer updateInfo) {
 
-		// Log.e(TAG, "Update type: " + updateType);
+		Log.e(TAG, "Update type: " + updateType);
 
 		AppWidgetManager appWidgetManager = AppWidgetManager
 				.getInstance(context);
@@ -205,8 +205,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 		if (appWidgetIds.length > 0) {
 
 			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(context
-							.getApplicationContext());
+					.getDefaultSharedPreferences(context);
 			SharedPreferences.Editor editor;
 
 			// DO THINGS BEFORE UPDATING WIDGETS

@@ -16,9 +16,8 @@ public class WifiScanService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Context context = getApplicationContext();
-		ConnectivityChangeService.isWalledGardenConnection(context, null);
-		WifiWidgetProvider.updateWidgets(getApplicationContext(),
+		ConnectivityChangeService.isWalledGardenConnection(this, null);
+		WifiWidgetProvider.updateWidgets(this,
 				WifiWidgetProvider.UPDATE_WIFI_SCAN_RESULTS, null);
 	}
 }

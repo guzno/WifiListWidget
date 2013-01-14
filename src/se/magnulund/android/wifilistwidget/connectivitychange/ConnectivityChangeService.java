@@ -39,9 +39,9 @@ public class ConnectivityChangeService extends IntentService {
 				ConnectivityManager.EXTRA_NETWORK_TYPE, -1);
 
 		if (networkType == ConnectivityManager.TYPE_WIFI || firstRun) {
-			Context context = getApplicationContext();
+			Context context = this.getApplicationContext();
 
-			ConnectivityManager connectivityManager = (ConnectivityManager) context
+			ConnectivityManager connectivityManager = (ConnectivityManager) this
 					.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connectivityManager
 					.getActiveNetworkInfo();
@@ -54,15 +54,15 @@ public class ConnectivityChangeService extends IntentService {
 					ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) == true) {
 				editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, false);
 				editor.commit();
-				WifiWidgetProvider.updateWidgets(context,
+				WifiWidgetProvider.updateWidgets(this,
 						WifiWidgetProvider.UPDATE_CONNECTION_LOST, null);
 			} else if (networkInfo != null && networkInfo.isConnected()
 					&& networkInfo.isAvailable()) {
 
-				isWalledGardenConnection(context, preferences);
+				isWalledGardenConnection(this, preferences);
 				editor.putBoolean(Preferences.WALLED_GARDEN_CHECK_DONE, true);
 				editor.commit();
-				WifiWidgetProvider.updateWidgets(context,
+				WifiWidgetProvider.updateWidgets(this,
 						WifiWidgetProvider.UPDATE_CONNECTION_CHANGE, null);
 			}
 		}
