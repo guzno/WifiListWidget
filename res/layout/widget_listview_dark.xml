@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/APListTheme.widget.Dark">
+
+    <RelativeLayout
+        android:id="@+id/widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/APListTheme.widget.header.Dark">
+
+        <ImageButton
+            android:id="@+id/widget_wifi_toggle"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_signal_strength_best"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/widget_wifi_toggle" />
+
+        <ImageButton
+            android:id="@+id/widget_wifi_scan"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_wifi_scan_active"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/widget_wifi_scan" />
+
+        <ImageButton
+            android:id="@+id/widget_hotspot_toggle"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_menu_hotspot_inactive"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/widget_hotspot_toggle" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_below="@id/widget_header"
+        style="@style/APListTheme.widget.content.Dark">
+
+        <ListView
+            android:id="@+id/widget_listview"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/APListTheme.widget.content.list.Dark"/>
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/APListTheme.widget.content.emptyview.Dark" />
+    </RelativeLayout>
+</RelativeLayout>

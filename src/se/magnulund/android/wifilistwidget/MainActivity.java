@@ -229,15 +229,15 @@ public class MainActivity extends Activity {
         int theme;
         switch (widgetTheme) {
             case WidgetRemoteViews.WIDGET_THEME_DARK: {
-                theme = R.style.WidgetTheme_Dark;
+                theme = R.style.APListTheme_Dark;
                 break;
             }
             case WidgetRemoteViews.WIDGET_THEME_LIGHT: {
-                theme = R.style.WidgetTheme_Light;
+                theme = R.style.APListTheme_Light;
                 break;
             }
             default: {
-                theme = R.style.WidgetTheme_Dark;
+                theme = R.style.APListTheme_Dark;
                 break;
             }
         }

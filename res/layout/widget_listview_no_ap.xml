@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/WidgetTheme.Dark"
+        style="@style/APListTheme.widget.Dark"
         android:background="@drawable/widget_background"
         android:layout_marginTop="@dimen/widget_margin_top"
         android:layout_marginBottom="@dimen/widget_margin_bottom"
@@ -12,13 +12,13 @@
         android:layout_marginRight="@dimen/widget_margin_right">
     <RelativeLayout
             android:id="@+id/widget_header"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/widget_heading_background_dark">
         <ImageButton
                 android:id="@+id/widget_wifi_toggle"
-                style="@style/WidgetTheme.Dark"
+                style="@style/APListTheme.widget.Dark"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="centerInside"
@@ -27,7 +27,7 @@
                 android:layout_alignParentLeft="true"
                 android:contentDescription="@string/widget_wifi_toggle"/>
         <ImageButton android:id="@+id/widget_wifi_scan"
-                     style="@style/WidgetTheme.Dark"
+                     style="@style/APListTheme.widget.Dark"
                      android:layout_width="48dp"
                      android:layout_height="48dp"
                      android:src="@drawable/ic_wifi_scan_active"
@@ -39,18 +39,18 @@
     </RelativeLayout>
     <RelativeLayout
             android:layout_height="match_parent"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="match_parent"
             android:layout_below="@id/widget_header"
             android:background="@drawable/widget_list_background_dark"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp">
         <ListView android:id="@+id/widget_listview"
-                  style="@style/WidgetTheme.Dark"
+                  style="@style/APListTheme.widget.Dark"
                   android:layout_height="match_parent"
                   android:layout_width="match_parent"/>
         <TextView android:id="@+id/empty_view"
-                  style="@style/WidgetTheme.Dark"
+                  style="@style/APListTheme.widget.Dark"
                   android:layout_height="match_parent"
                   android:layout_width="match_parent"
                   android:gravity="center"

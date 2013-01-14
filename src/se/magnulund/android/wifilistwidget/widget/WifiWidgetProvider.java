@@ -71,7 +71,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 		Intent intent = new Intent(context, WifiStateService.class);
 		context.startService(intent);
         Log.e(TAG, "start theme: "+context.getTheme().toString());
-        context.setTheme(R.style.WidgetTheme_Dark);
+        context.setTheme(R.style.APListTheme_widget_Dark);
         Log.e(TAG, "end theme: "+context.getTheme().toString());
 		setWidgetActive(context, true);
 	}

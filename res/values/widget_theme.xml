@@ -1,8 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources
-        >
+<resources>
+    <!-- Main Theme -->
+    <style name="APListTheme" parent="android:Theme" />
 
-    <style name="WidgetTheme.Dark" parent="android:Theme.Holo">
+    <style name="APListTheme.widget" parent="APListTheme">
+        <item name="android:layout_marginTop">@dimen/widget_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/widget_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/widget_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/widget_margin_right</item>
+    </style>
+
+    <style name="APListTheme.widget.header" parent="APListTheme">
+
+    </style>
+
+    <style name="APListTheme.widget.header.icon" parent="APListTheme.widget.header">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="APListTheme.widget.content" parent="APListTheme">
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list" parent="APListTheme">
+    </style>
+
+    <style name="APListTheme.widget.content.emptyview" parent="APListTheme">
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">@dimen/text_x_large</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item" parent="APListTheme">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.ssid" parent="APListTheme">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:text">@string/wifi_list_item_ssid</item>
+    </style>
+    
+    <style name="APListTheme.widget.content.list.item.signalicon" parent="APListTheme">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:contentDescription">@string/wifi_list_item_signal_strength_desc</item>
+    </style>
+    
+    <style name="APListTheme.widget.content.list.item.bssid" parent="APListTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:text">@string/wifi_list_item_bssid</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signallabel" parent="APListTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:text">@string/wifi_list_item_level_label</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signallevel" parent="APListTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:text">@string/wifi_list_item_level</item>
+    </style>
+
+    <!-- /end Main Theme -->
+
+
+    <!--  Dark Theme -->
+    <style name="APListTheme.Dark" parent="android:Theme.Holo">
         <item name="APLwidgetBackground">@drawable/widget_background</item>
         <item name="APLwidgetHeaderBackground">@drawable/widget_heading_background_dark</item>
         <item name="APLwidgetContentBackground">@drawable/widget_list_background_dark</item>
@@ -11,7 +89,56 @@
         <item name="android:textColorSecondary">@color/list_item_sub_heading_dark</item>
     </style>
 
-    <style name="WidgetTheme.Light" parent="android:Theme.Holo.Light">
+    <style name="APListTheme.widget.Dark" parent="APListTheme.widget">
+        <item name="android:background">@drawable/widget_background</item>
+    </style>
+
+    <style name="APListTheme.widget.header.Dark" parent="APListTheme.widget.header">
+        <item name="android:background">@drawable/widget_heading_background_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.header.icon.Dark" parent="APListTheme.widget.header.icon">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="APListTheme.widget.content.Dark" parent="APListTheme.widget.content">
+        <item name="android:background">@drawable/widget_list_background_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.emptyview.Dark" parent="APListTheme.widget.content.emptyview">
+        <item name="android:textColor">@color/list_item_sub_heading_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.Dark" parent="APListTheme.widget.content.list">
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.Dark" parent="APListTheme.widget.content.list.item">
+        <item name="android:background">@drawable/widget_list_item_background_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.ssid.Dark" parent="APListTheme.widget.content.list.item.ssid">
+        <item name="android:textColor">@color/list_item_heading_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signalicon.Dark" parent="APListTheme.widget.content.list.item.signalicon">
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.bssid.Dark" parent="APListTheme.widget.content.list.item.bssid">
+        <item name="android:textColor">@color/list_item_sub_heading_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signallabel.Dark" parent="APListTheme.widget.content.list.item.signallabel">
+        <item name="android:textColor">@color/list_item_heading_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signallevel.Dark" parent="APListTheme.widget.content.list.item.signallevel">
+        <item name="android:textColor">@color/list_item_heading_dark</item>
+    </style>
+
+    <!-- /end Dark Theme -->
+
+    <!-- Light Theme -->
+    <style name="APListTheme.Light" parent="android:Theme.Holo.Light">
         <item name="APLwidgetBackground">@drawable/widget_background</item>
         <item name="APLwidgetHeaderBackground">@drawable/widget_heading_background_light</item>
         <item name="APLwidgetContentBackground">@drawable/widget_list_background_light</item>
@@ -19,4 +146,53 @@
         <item name="android:textColorPrimary">@color/list_item_heading_light</item>
         <item name="android:textColorSecondary">@color/list_item_sub_heading_light</item>
     </style>
+
+    <style name="APListTheme.widget.Light" parent="APListTheme.widget">
+        <item name="android:background">@drawable/widget_background</item>
+    </style>
+
+    <style name="APListTheme.widget.header.Light" parent="APListTheme.widget.header">
+        <item name="android:background">@drawable/widget_heading_background_light</item>
+    </style>
+
+    <style name="APListTheme.widget.header.icon.Light" parent="APListTheme.widget.header.icon">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="APListTheme.widget.content.Light" parent="APListTheme.widget.content">
+        <item name="android:background">@drawable/widget_list_background_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.emptyview.Light" parent="APListTheme.widget.content.emptyview">
+        <item name="android:textColor">@color/list_item_sub_heading_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.Light" parent="APListTheme.widget.content.list">
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.Light" parent="APListTheme.widget.content.list.item">
+        <item name="android:background">@drawable/widget_list_item_background_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.ssid.Light" parent="APListTheme.widget.content.list.item.ssid">
+        <item name="android:textColor">@color/list_item_heading_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signalicon.Light" parent="APListTheme.widget.content.list.item.signalicon">
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.bssid.Light" parent="APListTheme.widget.content.list.item.bssid">
+        <item name="android:textColor">@color/list_item_sub_heading_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signallabel.Light" parent="APListTheme.widget.content.list.item.signallabel">
+        <item name="android:textColor">@color/list_item_heading_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.signallevel.Light" parent="APListTheme.widget.content.list.item.signallevel">
+        <item name="android:textColor">@color/list_item_heading_light</item>
+    </style>
+
+    <!-- /end Light Theme -->
+
 </resources>

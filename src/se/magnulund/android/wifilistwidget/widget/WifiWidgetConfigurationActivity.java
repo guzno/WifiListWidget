@@ -26,16 +26,16 @@ public class WifiWidgetConfigurationActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Context context = getApplicationContext();
+		//Context context = getApplicationContext();
 
-		PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
 		setResult(RESULT_CANCELED);
 
 		setContentView(R.layout.wifi_widget_configuration_activity_layout);
 
 		boolean hasMobileNetworks = MainActivity
-				.deviceHasMobileNetwork(context);
+				.deviceHasMobileNetwork(this);
 
 		findViewById(R.id.save_button).setOnClickListener(
 				new View.OnClickListener() {

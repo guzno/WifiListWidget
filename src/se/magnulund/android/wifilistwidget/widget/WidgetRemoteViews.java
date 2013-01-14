@@ -77,7 +77,8 @@ public class WidgetRemoteViews {
 
     public void getPreferences() {
         widgetTheme = Integer.parseInt(preferences.getString(Preferences.THEME_
-                + appWidgetID, "1"));
+                + appWidgetID, "-1"));
+        Log.e(TAG, "WT: "+widgetTheme);
         showAP = (preferences.getBoolean(Preferences.SHOW_AP_BUTTON_
                 + appWidgetID, true) && preferences.getBoolean(
                 Preferences.DEVICE_HAS_MOBILE_NETWORK, true));
@@ -90,7 +91,7 @@ public class WidgetRemoteViews {
 
         getWidgetType();
 
-        getWidgetTheme();
+        //getWidgetTheme();
 
         getWidgetLayout();
 
@@ -104,7 +105,6 @@ public class WidgetRemoteViews {
     public RemoteViews createRemoteViews() {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(),
                 widgetLayout);
-        Log.e(TAG, "Creating remote views: " + (rv != null));
         // Set resources and bind intents to header of widget
         if (showAP) {
             rv.setImageViewResource(R.id.widget_hotspot_toggle, headerApImg);
@@ -259,17 +259,17 @@ public class WidgetRemoteViews {
     public void getWidgetTheme() {
         switch (widgetTheme) {
             case WIDGET_THEME_DARK: {
-                mContext.setTheme(R.style.WidgetTheme_Dark);
+                mContext.setTheme(R.style.APListTheme_widget_Dark);
                 Log.e(TAG, "widget theme dark"+mContext.getTheme());
                 break;
             }
             case WIDGET_THEME_LIGHT: {
-                mContext.setTheme(R.style.WidgetTheme_Light);
+                mContext.setTheme(R.style.APListTheme_widget_Light);
                 Log.e(TAG, "widget theme light"+mContext.getTheme());
                 break;
             }
             default: {
-                mContext.setTheme(R.style.WidgetTheme_Dark);
+                mContext.setTheme(R.style.APListTheme_widget_Dark);
                 Log.e(TAG, "widget theme dark (default)"+mContext.getTheme());
                 break;
             }
@@ -279,45 +279,91 @@ public class WidgetRemoteViews {
     public void getWidgetLayout() {
 
         int widgetLayout;
-
-        // CHECK WHICH LAYOUT TO USE
-        if (showAP) {
-            switch (widgetType) {
-                case WIDGET_TYPE_LISTVIEW: {
-                    widgetLayout = R.layout.widget_listview;
-                    break;
+        switch (widgetTheme) {
+            case WIDGET_THEME_LIGHT: {
+                if (showAP) {
+                    switch (widgetType) {
+                        case WIDGET_TYPE_LISTVIEW: {
+                            widgetLayout = R.layout.widget_listview_light;
+                            break;
+                        }
+                        case WIDGET_TYPE_TOGGLE: {
+                            widgetLayout = R.layout.widget_toggle;
+                            break;
+                        }
+                        case WIDGET_TYPE_PENDING: {
+                            widgetLayout = R.layout.widget_pending;
+                            break;
+                        }
+                        default:
+                            widgetLayout = R.layout.widget_pending;
+                            break;
+                    }
+                } else {
+                    switch (widgetType) {
+                        case WIDGET_TYPE_LISTVIEW: {
+                            widgetLayout = R.layout.widget_listview_no_ap;
+                            break;
+                        }
+                        case WIDGET_TYPE_TOGGLE: {
+                            widgetLayout = R.layout.widget_toggle_no_ap;
+                            break;
+                        }
+                        case WIDGET_TYPE_PENDING: {
+                            widgetLayout = R.layout.widget_pending_no_ap;
+                            break;
+                        }
+                        default:
+                            widgetLayout = R.layout.widget_pending_no_ap;
+                            break;
+                    }
                 }
-                case WIDGET_TYPE_TOGGLE: {
-                    widgetLayout = R.layout.widget_toggle;
-                    break;
-                }
-                case WIDGET_TYPE_PENDING: {
-                    widgetLayout = R.layout.widget_pending;
-                    break;
-                }
-                default:
-                    widgetLayout = R.layout.widget_pending;
-                    break;
+                break;
             }
-        } else {
-            switch (widgetType) {
-                case WIDGET_TYPE_LISTVIEW: {
-                    widgetLayout = R.layout.widget_listview_no_ap;
-                    break;
+            case WIDGET_THEME_DARK:
+            default: {
+                if (showAP) {
+                    switch (widgetType) {
+                        case WIDGET_TYPE_LISTVIEW: {
+                            widgetLayout = R.layout.widget_listview_dark;
+                            break;
+                        }
+                        case WIDGET_TYPE_TOGGLE: {
+                            widgetLayout = R.layout.widget_toggle;
+                            break;
+                        }
+                        case WIDGET_TYPE_PENDING: {
+                            widgetLayout = R.layout.widget_pending;
+                            break;
+                        }
+                        default:
+                            widgetLayout = R.layout.widget_pending;
+                            break;
+                    }
+                } else {
+                    switch (widgetType) {
+                        case WIDGET_TYPE_LISTVIEW: {
+                            widgetLayout = R.layout.widget_listview_no_ap;
+                            break;
+                        }
+                        case WIDGET_TYPE_TOGGLE: {
+                            widgetLayout = R.layout.widget_toggle_no_ap;
+                            break;
+                        }
+                        case WIDGET_TYPE_PENDING: {
+                            widgetLayout = R.layout.widget_pending_no_ap;
+                            break;
+                        }
+                        default:
+                            widgetLayout = R.layout.widget_pending_no_ap;
+                            break;
+                    }
                 }
-                case WIDGET_TYPE_TOGGLE: {
-                    widgetLayout = R.layout.widget_toggle_no_ap;
-                    break;
-                }
-                case WIDGET_TYPE_PENDING: {
-                    widgetLayout = R.layout.widget_pending_no_ap;
-                    break;
-                }
-                default:
-                    widgetLayout = R.layout.widget_pending_no_ap;
-                    break;
+
+                break;
             }
         }
+        // CHECK WHICH LAYOUT TO USE
         this.widgetLayout = widgetLayout;
     }
 

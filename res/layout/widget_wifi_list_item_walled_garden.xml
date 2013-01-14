@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/widget_item"
-                style="@style/WidgetTheme.Dark"
+                style="@style/APListTheme.widget.Dark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
@@ -11,7 +11,7 @@
                 android:paddingBottom="4dp"
                 android:background="@drawable/widget_list_item_background_dark">
     <TextView android:id="@+id/walled_garden"
-              style="@style/WidgetTheme.Dark"
+              style="@style/APListTheme.widget.Dark"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_alignParentTop="true"
@@ -21,7 +21,7 @@
               android:text="@string/walled_garden"/>
     <TextView
             android:id="@+id/widget_ssid"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/walled_garden"
@@ -32,7 +32,7 @@
             />
     <ImageView
             android:id="@+id/widget_signal_strength"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_below="@id/walled_garden"
@@ -41,7 +41,7 @@
             android:contentDescription="@string/wifi_list_item_signal_strength_desc"/>
     <TextView
             android:id="@+id/widget_bssid"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_ssid"
@@ -52,7 +52,7 @@
             android:text="@string/wifi_list_item_bssid"/>
     <TextView
             android:id="@+id/widget_level_label"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_signal_strength"
@@ -62,7 +62,7 @@
             android:textColor="?android:attr/textColorPrimary"/>
     <TextView
             android:id="@+id/widget_level"
-            style="@style/WidgetTheme.Dark"
+            style="@style/APListTheme.widget.Dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_signal_strength"

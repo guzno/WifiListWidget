@@ -25,7 +25,7 @@ public class WifiFilteredScanResultsAdapter extends BaseAdapter {
 
 	public WifiFilteredScanResultsAdapter(Context context) {
 		this.context = context;
-		filterScanResults = FilteredScanResult.getFilteredScanResults(context);
+		filterScanResults = FilteredScanResult.getFilteredScanResults(context, null);
 	}
 
 	@Override
