@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     style="@style/APListTheme.widget.Light">
 
     <RelativeLayout
         android:id="@+id/widget_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         style="@style/APListTheme.widget.header.Light">
 
         <ImageButton
@@ -33,21 +29,15 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
         android:layout_below="@id/widget_header"
         style="@style/APListTheme.widget.content.Light">
 
         <ListView
             android:id="@+id/widget_listview"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
             style="@style/APListTheme.widget.content.list.Light"/>
 
         <TextView
             android:id="@+id/empty_view"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
             style="@style/APListTheme.widget.content.emptyview.Light" />
     </RelativeLayout>
 </RelativeLayout>

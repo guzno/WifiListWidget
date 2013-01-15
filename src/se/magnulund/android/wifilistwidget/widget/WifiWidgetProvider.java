@@ -110,7 +110,7 @@ public class WifiWidgetProvider extends AppWidgetProvider {
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
 
-		Context appContext = context.getApplicationContext();
+		Context appContext = context.getApplicationContext(); // not used
 
 		WifiManager wifiManager = (WifiManager) context
 				.getSystemService(Context.WIFI_SERVICE);

@@ -288,7 +288,7 @@ public class WidgetRemoteViews {
                             break;
                         }
                         case WIDGET_TYPE_TOGGLE: {
-                            widgetLayout = R.layout.widget_toggle;
+                            widgetLayout = R.layout.widget_toggle_light;
                             break;
                         }
                         case WIDGET_TYPE_PENDING: {
@@ -329,7 +329,7 @@ public class WidgetRemoteViews {
                             break;
                         }
                         case WIDGET_TYPE_TOGGLE: {
-                            widgetLayout = R.layout.widget_toggle;
+                            widgetLayout = R.layout.widget_toggle_dark;
                             break;
                         }
                         case WIDGET_TYPE_PENDING: {

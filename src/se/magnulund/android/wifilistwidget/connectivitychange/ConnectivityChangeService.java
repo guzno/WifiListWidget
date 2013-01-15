@@ -39,7 +39,7 @@ public class ConnectivityChangeService extends IntentService {
 				ConnectivityManager.EXTRA_NETWORK_TYPE, -1);
 
 		if (networkType == ConnectivityManager.TYPE_WIFI || firstRun) {
-			Context context = this.getApplicationContext();
+			Context context = this.getApplicationContext(); // not used
 
 			ConnectivityManager connectivityManager = (ConnectivityManager) this
 					.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -47,7 +47,7 @@ public class ConnectivityChangeService extends IntentService {
 					.getActiveNetworkInfo();
 
 			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(context);
+					.getDefaultSharedPreferences(this);
 			SharedPreferences.Editor editor = preferences.edit();
 
 			if (intent.getBooleanExtra(

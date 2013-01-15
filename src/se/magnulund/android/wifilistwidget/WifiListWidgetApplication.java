@@ -16,7 +16,7 @@ public class WifiListWidgetApplication extends Application {
 		super.onCreate();
 		Log.e(TAG, "application created");
 
-		Crittercism.init(getApplicationContext(), "50c084317e69a33c53000002");
+		Crittercism.init(this, "50c084317e69a33c53000002");
 	}
 
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/APListTheme.widget.Dark">
 
@@ -29,15 +30,18 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_below="@id/widget_header"
-        style="@style/APListTheme.widget.content.Dark">
-
-        <ListView
-            android:id="@+id/widget_listview"
-            style="@style/APListTheme.widget.content.list.Dark"/>
+        style="@style/APListTheme.widget.content.Dark"
+        android:layout_below="@id/widget_header">
 
         <TextView
-            android:id="@+id/empty_view"
-            style="@style/APListTheme.widget.content.emptyview.Dark" />
+            android:id="@+id/widget_main_toggle_text"
+            style="@style/APListTheme.widget.content.toggletext.Dark"
+            android:text="@string/widget_toggle_msg_wifi" />
+
+        <ImageButton
+            android:id="@+id/widget_main_toggle"
+            style="@style/APListTheme.widget.content.toggleimg.Dark"
+            android:src="@drawable/ic_widget_wifi_toggle"
+            android:contentDescription="@string/widget_wifi_toggle" />
     </RelativeLayout>
 </RelativeLayout>

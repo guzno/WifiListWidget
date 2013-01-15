@@ -4,7 +4,7 @@
     <color name="list_item_sub_heading_dark">#808080</color>
     <color name="list_background_dark">#AA000000</color>
 
-    <color name="list_item_background_light">#DDFFFFFF</color>
+    <color name="list_item_background_light">#AAFFFFFF</color>
     <color name="list_item_heading_light">#0F0F0F</color>
     <color name="list_item_sub_heading_light">#808080</color>
     <color name="list_background_light">#33FFFFFF</color>

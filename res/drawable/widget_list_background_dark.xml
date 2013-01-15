@@ -9,6 +9,9 @@
         android:color="@color/list_background_dark"/>
 
     <corners
-            android:radius="0dp"/>
+        android:bottomLeftRadius="5dp"
+        android:bottomRightRadius="5dp"
+        android:topLeftRadius="0dp"
+        android:topRightRadius="0dp"/>
 
 </shape>

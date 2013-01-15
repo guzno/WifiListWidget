@@ -8,10 +8,13 @@
         <item name="android:layout_marginBottom">@dimen/widget_margin_bottom</item>
         <item name="android:layout_marginLeft">@dimen/widget_margin_left</item>
         <item name="android:layout_marginRight">@dimen/widget_margin_right</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="APListTheme.widget.header" parent="APListTheme">
-
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="APListTheme.widget.header.icon" parent="APListTheme.widget.header">
@@ -21,17 +24,23 @@
     </style>
 
     <style name="APListTheme.widget.content" parent="APListTheme">
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginLeft">6dp</item>
+        <item name="android:layout_marginRight">6dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="APListTheme.widget.content.list" parent="APListTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginBottom">5dp</item>
     </style>
 
     <style name="APListTheme.widget.content.emptyview" parent="APListTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
         <item name="android:visibility">gone</item>
-        <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">@dimen/text_x_large</item>
     </style>
 
@@ -74,6 +83,25 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/text_small</item>
         <item name="android:text">@string/wifi_list_item_level</item>
+    </style>
+    
+    <style name="APListTheme.widget.content.toggletext" parent="APListTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginBottom">18dp</item>
+    </style>
+    
+    <style name="APListTheme.widget.content.toggleimg" parent="APListTheme">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:layout_marginRight">50dp</item>
+        <item name="android:layout_marginBottom">30dp</item>
     </style>
 
     <!-- /end Main Theme -->
@@ -135,6 +163,14 @@
         <item name="android:textColor">@color/list_item_heading_dark</item>
     </style>
 
+    <style name="APListTheme.widget.content.toggletext.Dark" parent="APListTheme.widget.content.toggletext">
+        <item name="android:textColor">@color/list_item_heading_dark</item>
+    </style>
+
+    <style name="APListTheme.widget.content.toggleimg.Dark" parent="APListTheme.widget.content.toggleimg">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <!-- /end Dark Theme -->
 
     <!-- Light Theme -->
@@ -192,6 +228,15 @@
     <style name="APListTheme.widget.content.list.item.signallevel.Light" parent="APListTheme.widget.content.list.item.signallevel">
         <item name="android:textColor">@color/list_item_heading_light</item>
     </style>
+
+    <style name="APListTheme.widget.content.toggletext.Light" parent="APListTheme.widget.content.toggletext">
+        <item name="android:textColor">@color/list_item_heading_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.toggleimg.Light" parent="APListTheme.widget.content.toggleimg">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 
     <!-- /end Light Theme -->
 

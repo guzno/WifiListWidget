@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/APListTheme.widget.Dark">
+    style="@style/APListTheme.widget.Light">
 
     <RelativeLayout
         android:id="@+id/widget_header"
-        style="@style/APListTheme.widget.header.Dark">
+        style="@style/APListTheme.widget.header.Light">
 
         <ImageButton
             android:id="@+id/widget_wifi_toggle"
-            style="@style/APListTheme.widget.header.icon.Dark"
+            style="@style/APListTheme.widget.header.icon.Light"
             android:src="@drawable/ic_signal_strength_best"
             android:layout_alignParentLeft="true"
             android:contentDescription="@string/widget_wifi_toggle" />
 
         <ImageButton
             android:id="@+id/widget_wifi_scan"
-            style="@style/APListTheme.widget.header.icon.Dark"
+            style="@style/APListTheme.widget.header.icon.Light"
             android:src="@drawable/ic_wifi_scan_active"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/widget_wifi_scan" />
 
         <ImageButton
             android:id="@+id/widget_hotspot_toggle"
-            style="@style/APListTheme.widget.header.icon.Dark"
+            style="@style/APListTheme.widget.header.icon.Light"
             android:src="@drawable/ic_menu_hotspot_inactive"
             android:layout_alignParentRight="true"
             android:contentDescription="@string/widget_hotspot_toggle" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_below="@id/widget_header"
-        style="@style/APListTheme.widget.content.Dark">
-
-        <ListView
-            android:id="@+id/widget_listview"
-            style="@style/APListTheme.widget.content.list.Dark"/>
+        style="@style/APListTheme.widget.content.Light"
+        android:layout_below="@id/widget_header">
 
         <TextView
-            android:id="@+id/empty_view"
-            style="@style/APListTheme.widget.content.emptyview.Dark" />
+            android:id="@+id/widget_main_toggle_text"
+            style="@style/APListTheme.widget.content.toggletext.Light"
+            android:text="@string/widget_toggle_msg_wifi" />
+
+        <ImageButton
+            android:id="@+id/widget_main_toggle"
+            style="@style/APListTheme.widget.content.toggleimg.Light"
+            android:src="@drawable/ic_widget_wifi_toggle"
+            android:contentDescription="@string/widget_wifi_toggle" />
     </RelativeLayout>
 </RelativeLayout>

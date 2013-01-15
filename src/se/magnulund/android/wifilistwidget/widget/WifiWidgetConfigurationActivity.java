@@ -26,7 +26,7 @@ public class WifiWidgetConfigurationActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//Context context = getApplicationContext();
+		Context context = getApplicationContext(); // not used
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 

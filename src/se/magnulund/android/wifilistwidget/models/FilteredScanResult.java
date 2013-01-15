@@ -89,6 +89,7 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
 
     public static ArrayList<FilteredScanResult> getFilteredScanResults(
             Context context, Integer appWidgetId) {
+
         WifiManager wifiManager = (WifiManager) context
                 .getSystemService(Context.WIFI_SERVICE);
 
@@ -116,7 +117,7 @@ public class FilteredScanResult implements Comparable<FilteredScanResult> {
                     Preferences.MERGE_ACCESS_POINTS, false);
             Integer widgetTheme = null;
             if (appWidgetId != null) {
-                widgetTheme = Integer.parseInt(preferences.getString(Preferences.THEME_ + appWidgetId, "1"));
+                widgetTheme = Integer.parseInt(preferences.getString(Preferences.THEME_ + appWidgetId, "-1"));
                 Log.e(TAG, "Theme: "+widgetTheme);
                 Log.e(TAG, "Widget: "+appWidgetId);
             }

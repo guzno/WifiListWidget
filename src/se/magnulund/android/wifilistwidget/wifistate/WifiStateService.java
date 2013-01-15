@@ -24,7 +24,7 @@ public class WifiStateService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Context context = getApplicationContext();
+		Context context = getApplicationContext(); // not used
 
 		if (intent.getBooleanExtra("stop_services", false)) {
 			ComponentManager.disableComponent(this, WifiStateReceiver.class);
