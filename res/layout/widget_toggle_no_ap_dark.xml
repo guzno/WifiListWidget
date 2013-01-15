@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/APListTheme.widget.Dark">
+
+    <RelativeLayout
+        android:id="@+id/widget_header"
+        style="@style/APListTheme.widget.header.Dark">
+
+        <ImageButton
+            android:id="@+id/widget_wifi_toggle"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_signal_strength_best"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/widget_wifi_toggle"/>
+
+        <ImageButton
+            android:id="@+id/widget_wifi_scan"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_wifi_scan_active"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/widget_wifi_scan"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/APListTheme.widget.content.Dark"
+        android:layout_below="@id/widget_header">
+
+        <TextView
+            android:id="@+id/widget_main_toggle_text"
+            style="@style/APListTheme.widget.content.toggletext.Dark"
+            android:text="@string/widget_toggle_msg_wifi" />
+
+        <ImageButton
+            android:id="@+id/widget_main_toggle"
+            style="@style/APListTheme.widget.content.toggleimg.Dark"
+            android:src="@drawable/ic_widget_wifi_toggle"
+            android:contentDescription="@string/widget_wifi_toggle" />
+    </RelativeLayout>
+</RelativeLayout>

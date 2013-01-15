@@ -292,11 +292,11 @@ public class WidgetRemoteViews {
                             break;
                         }
                         case WIDGET_TYPE_PENDING: {
-                            widgetLayout = R.layout.widget_pending;
+                            widgetLayout = R.layout.widget_pending_light;
                             break;
                         }
                         default:
-                            widgetLayout = R.layout.widget_pending;
+                            widgetLayout = R.layout.widget_pending_light;
                             break;
                     }
                 } else {
@@ -306,15 +306,15 @@ public class WidgetRemoteViews {
                             break;
                         }
                         case WIDGET_TYPE_TOGGLE: {
-                            widgetLayout = R.layout.widget_toggle_no_ap;
+                            widgetLayout = R.layout.widget_toggle_no_ap_light;
                             break;
                         }
                         case WIDGET_TYPE_PENDING: {
-                            widgetLayout = R.layout.widget_pending_no_ap;
+                            widgetLayout = R.layout.widget_pending_no_ap_light;
                             break;
                         }
                         default:
-                            widgetLayout = R.layout.widget_pending_no_ap;
+                            widgetLayout = R.layout.widget_pending_no_ap_light;
                             break;
                     }
                 }
@@ -333,11 +333,11 @@ public class WidgetRemoteViews {
                             break;
                         }
                         case WIDGET_TYPE_PENDING: {
-                            widgetLayout = R.layout.widget_pending;
+                            widgetLayout = R.layout.widget_pending_dark;
                             break;
                         }
                         default:
-                            widgetLayout = R.layout.widget_pending;
+                            widgetLayout = R.layout.widget_pending_dark;
                             break;
                     }
                 } else {
@@ -347,15 +347,15 @@ public class WidgetRemoteViews {
                             break;
                         }
                         case WIDGET_TYPE_TOGGLE: {
-                            widgetLayout = R.layout.widget_toggle_no_ap;
+                            widgetLayout = R.layout.widget_toggle_no_ap_dark;
                             break;
                         }
                         case WIDGET_TYPE_PENDING: {
-                            widgetLayout = R.layout.widget_pending_no_ap;
+                            widgetLayout = R.layout.widget_pending_no_ap_dark;
                             break;
                         }
                         default:
-                            widgetLayout = R.layout.widget_pending_no_ap;
+                            widgetLayout = R.layout.widget_pending_no_ap_dark;
                             break;
                     }
                 }
