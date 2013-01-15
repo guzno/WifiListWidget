@@ -123,7 +123,7 @@ public class WifiWidgetRemoteViewsFactory implements
         switch (widgetTheme) {
             case WidgetRemoteViews.WIDGET_THEME_LIGHT: {
                 if (useWalledGarden) {
-                    layout = R.layout.widget_wifi_list_item_walled_garden;
+                    layout = R.layout.widget_wifi_list_item_walled_garden_light;
                 } else {
 
                     layout = R.layout.widget_wifi_list_item_light;
@@ -133,7 +133,7 @@ public class WifiWidgetRemoteViewsFactory implements
             case WidgetRemoteViews.WIDGET_THEME_DARK:
             default: {
                 if (useWalledGarden) {
-                    layout = R.layout.widget_wifi_list_item_walled_garden;
+                    layout = R.layout.widget_wifi_list_item_walled_garden_dark;
                 } else {
 
                     layout = R.layout.widget_wifi_list_item_dark;

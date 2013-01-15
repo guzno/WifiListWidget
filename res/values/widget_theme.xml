@@ -85,6 +85,14 @@
         <item name="android:text">@string/wifi_list_item_level</item>
     </style>
     
+    <style name="APListTheme.widget.content.list.item.walledgarden" parent="APListTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:text">@string/walled_garden</item>
+    </style>
+    
     <style name="APListTheme.widget.content.toggletext" parent="APListTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -163,6 +171,10 @@
         <item name="android:textColor">@color/list_item_heading_dark</item>
     </style>
 
+    <style name="APListTheme.widget.content.list.item.walledgarden.Dark" parent="APListTheme.widget.content.list.item.walledgarden">
+        <item name="android:textColor">@color/list_item_sub_heading_dark</item>
+    </style>
+
     <style name="APListTheme.widget.content.toggletext.Dark" parent="APListTheme.widget.content.toggletext">
         <item name="android:textColor">@color/list_item_heading_dark</item>
     </style>
@@ -227,6 +239,10 @@
 
     <style name="APListTheme.widget.content.list.item.signallevel.Light" parent="APListTheme.widget.content.list.item.signallevel">
         <item name="android:textColor">@color/list_item_heading_light</item>
+    </style>
+
+    <style name="APListTheme.widget.content.list.item.walledgarden.Light" parent="APListTheme.widget.content.list.item.walledgarden">
+        <item name="android:textColor">@color/list_item_sub_heading_light</item>
     </style>
 
     <style name="APListTheme.widget.content.toggletext.Light" parent="APListTheme.widget.content.toggletext">

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_item"
+    style="@style/APListTheme.widget.content.list.item.Dark">
+
+    <TextView
+        android:id="@+id/walled_garden"
+        style="@style/APListTheme.widget.content.list.item.walledgarden.Dark"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/widget_ssid"
+        style="@style/APListTheme.widget.content.list.item.ssid.Dark"
+        android:layout_below="@id/walled_garden" />
+
+    <ImageView
+        android:id="@+id/widget_signal_strength"
+        style="@style/APListTheme.widget.content.list.item.signalicon.Dark"
+        android:layout_below="@id/walled_garden"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_signal_strength_ok" />
+
+    <TextView
+        android:id="@+id/widget_bssid"
+        style="@style/APListTheme.widget.content.list.item.bssid.Dark"
+        android:layout_below="@id/widget_ssid"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/widget_level_label"
+        style="@style/APListTheme.widget.content.list.item.signallabel.Dark"
+        android:layout_below="@id/widget_signal_strength"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/widget_level"
+        style="@style/APListTheme.widget.content.list.item.signallevel.Dark"
+        android:layout_below="@id/widget_signal_strength"
+        android:layout_toLeftOf="@id/widget_level_label" />
+</RelativeLayout>

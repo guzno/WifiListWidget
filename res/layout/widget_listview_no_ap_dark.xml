@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/APListTheme.widget.Dark">
+
+    <RelativeLayout
+        android:id="@+id/widget_header"
+        style="@style/APListTheme.widget.header.Dark">
+
+        <ImageButton
+            android:id="@+id/widget_wifi_toggle"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_signal_strength_best"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/widget_wifi_toggle" />
+
+        <ImageButton
+            android:id="@+id/widget_wifi_scan"
+            style="@style/APListTheme.widget.header.icon.Dark"
+            android:src="@drawable/ic_wifi_scan_active"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/widget_wifi_scan" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/widget_header"
+        style="@style/APListTheme.widget.content.Dark">
+
+        <ListView
+            android:id="@+id/widget_listview"
+            style="@style/APListTheme.widget.content.list.Dark" />
+
+        <TextView
+            android:id="@+id/empty_view"
+            style="@style/APListTheme.widget.content.emptyview.Dark" />
+    </RelativeLayout>
+</RelativeLayout>

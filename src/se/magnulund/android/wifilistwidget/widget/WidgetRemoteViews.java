@@ -302,7 +302,7 @@ public class WidgetRemoteViews {
                 } else {
                     switch (widgetType) {
                         case WIDGET_TYPE_LISTVIEW: {
-                            widgetLayout = R.layout.widget_listview_no_ap;
+                            widgetLayout = R.layout.widget_listview_no_ap_light;
                             break;
                         }
                         case WIDGET_TYPE_TOGGLE: {
@@ -343,7 +343,7 @@ public class WidgetRemoteViews {
                 } else {
                     switch (widgetType) {
                         case WIDGET_TYPE_LISTVIEW: {
-                            widgetLayout = R.layout.widget_listview_no_ap;
+                            widgetLayout = R.layout.widget_listview_no_ap_dark;
                             break;
                         }
                         case WIDGET_TYPE_TOGGLE: {
