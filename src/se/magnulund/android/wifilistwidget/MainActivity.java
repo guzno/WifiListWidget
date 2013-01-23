@@ -153,6 +153,7 @@ public class MainActivity extends Activity {
 
     }
 
+
     @Override
     public void onNewIntent(Intent intent) {
         Log.e("Foreground dispatch", "Discovered tag with intent: " + intent);
