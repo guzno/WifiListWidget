@@ -100,27 +100,17 @@ public class MainActivity extends Activity {
 
         wifiList.setAdapter(wifiAdapter);
 
-        wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view,
-                                    int i, long l) {
-                Toast.makeText(MainActivity.this,
-                        "Clicks need to be reimplemented.. *<|:(",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-             /*
+
         mAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (mAdapter != null) { // this device has nfc
-            // push
 
-            wifiList.setOnLongClickListener(new View.OnLongClickListener() {
+            // fetch
+            wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    // Create an NDEF message a URL
+                public void onItemClick(AdapterView<?> adapterView, View view,
+                                        int i, long l) {
 
                     mMessage = new NdefMessage(NdefRecord.createUri("http://www.android.com"));
                     mAdapter.setNdefPushMessage(mMessage, MainActivity.this);
@@ -138,13 +128,9 @@ public class MainActivity extends Activity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
 
-                    return false;
                 }
             });
 
-
-
-            // fetch
 
             // Create a generic PendingIntent that will be deliver to this activity. The NFC stack
             // will fill in the intent with the details of the discovered tag before delivering to
@@ -154,7 +140,7 @@ public class MainActivity extends Activity {
             // Setup an intent filter for all MIME based dispatches
             IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
             try {
-                ndef.addDataType("* /*");
+                ndef.addDataType("*/*");
             } catch (IntentFilter.MalformedMimeTypeException e) {
                 throw new RuntimeException("fail", e);
             }
@@ -164,15 +150,13 @@ public class MainActivity extends Activity {
             mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
 
         }
-        */
+
     }
 
     @Override
     public void onNewIntent(Intent intent) {
-        Log.i("Foreground dispatch", "Discovered tag with intent: " + intent);
+        Log.e("Foreground dispatch", "Discovered tag with intent: " + intent);
     }
-
-
 
     @Override
     protected void onResume() {
@@ -182,11 +166,10 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(this, WifiStateService.class);
             startService(intent);
         }
-        /*
+
         if (mAdapter != null) {
             mAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
         }
-        */
     }
 
     @Override
