@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.json.JSONObject;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
@@ -31,6 +32,9 @@ import se.magnulund.android.wifilistwidget.widget.WidgetRemoteViews;
 import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
+
+import java.nio.charset.Charset;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
 
@@ -109,16 +113,16 @@ public class MainActivity extends Activity {
             // fetch
             wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view,
-                                        int i, long l) {
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    mMessage = new NdefMessage(NdefRecord.createUri("http://www.android.com"));
+                    NdefRecord ndefRecord = createTextRecord("lol", Locale.getDefault(), true);
+                    mMessage = new NdefMessage(ndefRecord);
                     mAdapter.setNdefPushMessage(mMessage, MainActivity.this);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage("Beam that sheed");
                     builder.setCancelable(true);
-                    builder.setPositiveButton("Naep", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("Yap", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mAdapter.setNdefPushMessage(null, MainActivity.this);
@@ -137,10 +141,17 @@ public class MainActivity extends Activity {
             // this activity.
             mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
+            /*
+            <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <data android:mimeType="text/plain" />
+            */
+
             // Setup an intent filter for all MIME based dispatches
             IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            ndef.addCategory("android.intent.category.DEFAULT");
             try {
-                ndef.addDataType("*/*");
+                ndef.addDataType("text/plain");
             } catch (IntentFilter.MalformedMimeTypeException e) {
                 throw new RuntimeException("fail", e);
             }
@@ -148,11 +159,27 @@ public class MainActivity extends Activity {
 
             // Setup a tech list for all NfcF tags
             mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
-
         }
-
     }
 
+    public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
+        byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
+        Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
+        byte[] textBytes = payload.getBytes(utfEncoding);
+        int utfBit = encodeInUtf8 ? 0 : (1 << 7);
+        char status = (char) (utfBit + langBytes.length);
+        byte[] data = new byte[1 + langBytes.length + textBytes.length];
+        data[0] = (byte) status;
+        System.arraycopy(langBytes, 0, data, 1, langBytes.length);
+        System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
+        NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
+        return record;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public void onNewIntent(Intent intent) {
