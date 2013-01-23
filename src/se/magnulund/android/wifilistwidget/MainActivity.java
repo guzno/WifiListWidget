@@ -164,7 +164,9 @@ public class MainActivity extends Activity {
             mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
 
         }
+        */
     }
+
 
     @Override
     public void onNewIntent(Intent intent) {
