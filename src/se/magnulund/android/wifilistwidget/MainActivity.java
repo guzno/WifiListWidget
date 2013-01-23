@@ -114,6 +114,8 @@ public class MainActivity extends Activity {
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
 
+        // NFC ----------- //
+
         mAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (mAdapter != null) { // this device has nfc
@@ -142,6 +144,8 @@ public class MainActivity extends Activity {
             // Setup a tech list for all NfcF tags
             mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
         }
+
+        // NFC ----------- //
     }
 
     @Override
