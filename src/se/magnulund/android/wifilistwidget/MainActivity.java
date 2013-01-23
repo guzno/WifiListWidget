@@ -1,11 +1,9 @@
 package se.magnulund.android.wifilistwidget;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -111,16 +109,39 @@ public class MainActivity extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-
-
+             /*
         mAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (mAdapter != null) { // this device has nfc
             // push
-            // Create an NDEF message a URL
-            mMessage = new NdefMessage(NdefRecord.createUri("http://www.android.com"));
-            mAdapter.setNdefPushMessage(mMessage, this);
+
+            wifiList.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // Create an NDEF message a URL
+
+                    mMessage = new NdefMessage(NdefRecord.createUri("http://www.android.com"));
+                    mAdapter.setNdefPushMessage(mMessage, MainActivity.this);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Beam that sheed");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("Naep", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAdapter.setNdefPushMessage(null, MainActivity.this);
+                            return;
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    return false;
+                }
+            });
+
 
 
             // fetch
@@ -133,7 +154,7 @@ public class MainActivity extends Activity {
             // Setup an intent filter for all MIME based dispatches
             IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
             try {
-                ndef.addDataType("*/*");
+                ndef.addDataType("* /*");
             } catch (IntentFilter.MalformedMimeTypeException e) {
                 throw new RuntimeException("fail", e);
             }
@@ -141,7 +162,9 @@ public class MainActivity extends Activity {
 
             // Setup a tech list for all NfcF tags
             mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+
         }
+        */
     }
 
     @Override
@@ -149,18 +172,7 @@ public class MainActivity extends Activity {
         Log.i("Foreground dispatch", "Discovered tag with intent: " + intent);
     }
 
-    public static boolean deviceHasMobileNetwork(Context context) {
-        boolean mobileNetwork = false;
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        for (NetworkInfo networkInfo : connectivityManager.getAllNetworkInfo()) {
-            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                mobileNetwork = true;
-                break;
-            }
-        }
-        return mobileNetwork;
-    }
+
 
     @Override
     protected void onResume() {
@@ -170,11 +182,11 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(this, WifiStateService.class);
             startService(intent);
         }
-
+        /*
         if (mAdapter != null) {
-            mAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters,
-                    mTechLists);
+            mAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
         }
+        */
     }
 
     @Override
@@ -196,6 +208,19 @@ public class MainActivity extends Activity {
         if (mAdapter != null) {
             mAdapter.disableForegroundDispatch(this);
         }
+    }
+
+    public static boolean deviceHasMobileNetwork(Context context) {
+        boolean mobileNetwork = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        for (NetworkInfo networkInfo : connectivityManager.getAllNetworkInfo()) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                mobileNetwork = true;
+                break;
+            }
+        }
+        return mobileNetwork;
     }
 
     @Override
