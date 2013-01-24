@@ -139,7 +139,9 @@ public class MainActivity extends Activity {
 
                         JSONArray wepkeys = new JSONArray();
                         for (String wepKey : wifiConfiguration.wepKeys) {
-                            wepkeys.put(wepKey);
+                            if (wepKey != null) {
+                                wepkeys.put(wepKey);
+                            }
                         }
 
                         netConfiguration.put("wepKeys", wepkeys);
@@ -263,7 +265,8 @@ public class MainActivity extends Activity {
                         }
                         wifiConfiguration.SSID = jsonNetConfiguration.getString("SSID");
                         wifiConfiguration.hiddenSSID = jsonNetConfiguration.getBoolean("hiddenSSID");
-                        wifiConfiguration.preSharedKey = "LeUgMaIs"; //jsonNetConfiguration.getString("preSharedKey");
+                        wifiConfiguration.preSharedKey = "\"LeUgMaIs\""; //jsonNetConfiguration.getString("preSharedKey");
+                        wifiConfiguration.status = WifiConfiguration.Status.ENABLED;
 
                         wifiConfiguration.allowedAuthAlgorithms = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedAuthAlgorithms"));
                         wifiConfiguration.allowedGroupCiphers = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedGroupCiphers"));
@@ -279,7 +282,13 @@ public class MainActivity extends Activity {
 
                         wifiConfiguration.wepTxKeyIndex = jsonNetConfiguration.getInt("wepTxKeyIndex");
 
-                        wifiManager.addNetwork(wifiConfiguration);
+
+                        int res = wifiManager.addNetwork(wifiConfiguration);
+                        Log.d("WifiPreference", "add Network returned " + res );
+                        boolean b = wifiManager.enableNetwork(res, true);
+                        Log.d("WifiPreference", "enableNetwork returned " + b );
+
+                        wifiManager.saveConfiguration();
 
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
