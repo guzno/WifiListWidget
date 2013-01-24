@@ -18,81 +18,81 @@ import java.util.ArrayList;
  * change this template use File | Settings | File Templates.
  */
 public class WifiFilteredScanResultsAdapter extends BaseAdapter {
-	private static final String TAG = "WifiFilteredScanResultsAdapter";
-	private ArrayList<FilteredScanResult> filterScanResults;
+    private static final String TAG = "WifiFilteredScanResultsAdapter";
+    private ArrayList<FilteredScanResult> filterScanResults;
 
-	private Context context;
+    private Context context;
 
-	public WifiFilteredScanResultsAdapter(Context context) {
-		this.context = context;
-		filterScanResults = FilteredScanResult.getFilteredScanResults(context, null);
-	}
+    public WifiFilteredScanResultsAdapter(Context context) {
+        this.context = context;
+        filterScanResults = FilteredScanResult.getFilteredScanResults(context, null);
+    }
 
-	@Override
-	public int getCount() {
-		return filterScanResults.size();
-	}
+    @Override
+    public int getCount() {
+        return filterScanResults.size();
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return filterScanResults.get(position);
-	}
+    @Override
+    public Object getItem(int position) {
+        return filterScanResults.get(position - 1);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View filterScanResultView;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View filterScanResultView;
 
-		FilteredScanResult filteredScanResult = (FilteredScanResult) getItem(position);
+        FilteredScanResult filteredScanResult = (FilteredScanResult) getItem(position);
 
-		ScanResult scanResult = filteredScanResult.getScanResult();
+        ScanResult scanResult = filteredScanResult.getScanResult();
 
-		if (convertView == null) {
-			LayoutInflater inflater = LayoutInflater.from(context);
-			filterScanResultView = inflater.inflate(R.layout.wifi_list_item,
-					parent, false);
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            filterScanResultView = inflater.inflate(R.layout.wifi_list_item,
+                    parent, false);
 
-			WifiFilteredScanResultsViewHolder holder = new WifiFilteredScanResultsViewHolder();
-			holder.ssid = (TextView) filterScanResultView
-					.findViewById(R.id.ssid);
-			holder.bssid = (TextView) filterScanResultView
-					.findViewById(R.id.bssid);
-			holder.level = (TextView) filterScanResultView
-					.findViewById(R.id.level);
-			holder.signalStrength = (ImageView) filterScanResultView
-					.findViewById(R.id.signal_strength);
+            WifiFilteredScanResultsViewHolder holder = new WifiFilteredScanResultsViewHolder();
+            holder.ssid = (TextView) filterScanResultView
+                    .findViewById(R.id.ssid);
+            holder.bssid = (TextView) filterScanResultView
+                    .findViewById(R.id.bssid);
+            holder.level = (TextView) filterScanResultView
+                    .findViewById(R.id.level);
+            holder.signalStrength = (ImageView) filterScanResultView
+                    .findViewById(R.id.signal_strength);
 
-			filterScanResultView.setTag(R.id.holder_tag, holder);
+            filterScanResultView.setTag(R.id.holder_tag, holder);
 
-		} else {
-			filterScanResultView = convertView;
+        } else {
+            filterScanResultView = convertView;
 
-		}
+        }
 
-		WifiFilteredScanResultsViewHolder holder = (WifiFilteredScanResultsViewHolder) filterScanResultView
-				.getTag(R.id.holder_tag);
+        WifiFilteredScanResultsViewHolder holder = (WifiFilteredScanResultsViewHolder) filterScanResultView
+                .getTag(R.id.holder_tag);
 
-		holder.ssid.setText(scanResult.SSID);
+        holder.ssid.setText(scanResult.SSID);
 
-		holder.bssid.setText(scanResult.BSSID);
+        holder.bssid.setText(scanResult.BSSID);
 
-		holder.level.setText(scanResult.level + "");
+        holder.level.setText(scanResult.level + "");
 
-		holder.signalStrength.setImageResource(MyUtil.getSignalStrengthIcon(
-				MyUtil.getSignalStrength(scanResult.level),
-				filteredScanResult.isCurrentConnection()));
+        holder.signalStrength.setImageResource(MyUtil.getSignalStrengthIcon(
+                MyUtil.getSignalStrength(scanResult.level),
+                filteredScanResult.isCurrentConnection()));
 
-		return filterScanResultView;
-	}
+        return filterScanResultView;
+    }
 
-	class WifiFilteredScanResultsViewHolder {
-		TextView ssid;
-		TextView bssid;
-		TextView level;
-		ImageView signalStrength;
-	}
+    class WifiFilteredScanResultsViewHolder {
+        TextView ssid;
+        TextView bssid;
+        TextView level;
+        ImageView signalStrength;
+    }
 }

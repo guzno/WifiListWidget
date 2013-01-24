@@ -41,7 +41,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
 
@@ -122,7 +121,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                    FilteredScanResult filteredScanResult = (FilteredScanResult)wifiAdapter.getItem(position);
+                    FilteredScanResult filteredScanResult = (FilteredScanResult) wifiAdapter.getItem(position);
 
                     JSONObject netConfiguration = new JSONObject();
                     try {
@@ -275,7 +274,7 @@ public class MainActivity extends Activity {
                         for (int key = 0; key < jsonNetConfiguration.getJSONArray("wepKeys").length(); key++) {
                             wepKeys.add(jsonNetConfiguration.getJSONArray("wepKeys").getString(i));
                         }
-                        wifiConfiguration.wepKeys = (String[])wepKeys.toArray();
+                        wifiConfiguration.wepKeys = (String[]) wepKeys.toArray();
 
                         wifiConfiguration.wepTxKeyIndex = jsonNetConfiguration.getInt("wepTxKeyIndex");
 
