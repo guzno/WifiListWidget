@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -23,6 +24,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import se.magnulund.android.wifilistwidget.models.FilteredScanResult;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
@@ -33,7 +38,10 @@ import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
 
@@ -112,9 +120,36 @@ public class MainActivity extends Activity {
             // fetch
             wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                    NdefRecord ndefRecord = createTextRecord("lol", Locale.getDefault(), true);
+                    FilteredScanResult filteredScanResult = (FilteredScanResult)wifiAdapter.getItem(position);
+
+                    JSONObject netConfiguration = new JSONObject();
+                    try {
+                        WifiConfiguration wifiConfiguration = filteredScanResult.getWifiConfiguration();
+                        netConfiguration.put("BSSID", wifiConfiguration.BSSID);
+                        netConfiguration.put("SSID", wifiConfiguration.SSID);
+                        netConfiguration.put("hiddenSSID", wifiConfiguration.hiddenSSID);
+                        netConfiguration.put("preSharedKey", wifiConfiguration.preSharedKey);
+
+                        netConfiguration.put("allowedAuthAlgorithms", jsonArrayFromBitSet(wifiConfiguration.allowedAuthAlgorithms));
+                        netConfiguration.put("allowedGroupCiphers", jsonArrayFromBitSet(wifiConfiguration.allowedGroupCiphers));
+                        netConfiguration.put("allowedKeyManagement", jsonArrayFromBitSet(wifiConfiguration.allowedKeyManagement));
+                        netConfiguration.put("allowedPairwiseCiphers", jsonArrayFromBitSet(wifiConfiguration.allowedPairwiseCiphers));
+                        netConfiguration.put("allowedProtocols", jsonArrayFromBitSet(wifiConfiguration.allowedProtocols));
+
+                        JSONArray wepkeys = new JSONArray();
+                        for (String wepKey : wifiConfiguration.wepKeys) {
+                            wepkeys.put(wepKey);
+                        }
+
+                        netConfiguration.put("wepKeys", wepkeys);
+                        netConfiguration.put("wepTxKeyIndex", wifiConfiguration.wepTxKeyIndex);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    NdefRecord ndefRecord = createTextRecord(netConfiguration.toString(), Locale.getDefault(), true);
                     mMessage = new NdefMessage(ndefRecord);
                     mAdapter.setNdefPushMessage(mMessage, MainActivity.this);
 
@@ -163,20 +198,23 @@ public class MainActivity extends Activity {
         }
     }
 
+    private BitSet bitSetFromJsonArray(JSONArray jsonArray) throws JSONException {
+        BitSet bitSet = new BitSet();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            bitSet.set(i, jsonArray.getBoolean(i));
+        }
+        return bitSet;
+    }
+
+    private JSONArray jsonArrayFromBitSet(BitSet bitSet) {
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < bitSet.size(); i++) {
+            jsonArray.put(bitSet.get(i));
+        }
+        return jsonArray;
+    }
+
     public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
-        /*
-        byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
-        Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
-        byte[] textBytes = payload.getBytes(utfEncoding);
-        int utfBit = encodeInUtf8 ? 0 : (1 << 7);
-        char status = (char) (utfBit + langBytes.length);
-        byte[] data = new byte[1 + langBytes.length + textBytes.length];
-        data[0] = (byte) status;
-        System.arraycopy(langBytes, 0, data, 1, langBytes.length);
-        System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
-        NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
-        return record;
-        */
         Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
         byte[] textBytes = payload.getBytes(utfEncoding);
         byte[] data = new byte[textBytes.length];
@@ -217,9 +255,33 @@ public class MainActivity extends Activity {
                 for (int i = 0; i < rawMsgs.length; i++) {
                     NdefMessage ndefMessage = (NdefMessage) rawMsgs[i];
                     try {
-                        String lol = new String(ndefMessage.toByteArray(), "UTF8");
-                        Log.e(TAG, "lol? >> " + lol);
+                        String netConfiguration = new String(ndefMessage.getRecords()[0].getPayload(), "UTF8");
+                        JSONObject jsonNetConfiguration = new JSONObject(netConfiguration);
+
+                        WifiConfiguration wifiConfiguration = new WifiConfiguration();
+                        wifiConfiguration.BSSID = jsonNetConfiguration.getString("BSSID");
+                        wifiConfiguration.SSID = jsonNetConfiguration.getString("SSID");
+                        wifiConfiguration.hiddenSSID = jsonNetConfiguration.getBoolean("hiddenSSID");
+                        wifiConfiguration.preSharedKey = jsonNetConfiguration.getString("preSharedKey");
+
+
+                        wifiConfiguration.allowedAuthAlgorithms = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedAuthAlgorithms"));
+                        wifiConfiguration.allowedGroupCiphers = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedGroupCiphers"));
+                        wifiConfiguration.allowedKeyManagement = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedKeyManagement"));
+                        wifiConfiguration.allowedPairwiseCiphers = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedPairwiseCiphers"));
+                        wifiConfiguration.allowedProtocols = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedProtocols"));
+
+                        ArrayList<String> wepKeys = new ArrayList<String>();
+                        for (int key = 0; key < jsonNetConfiguration.getJSONArray("wepKeys").length(); key++) {
+                            wepKeys.add(jsonNetConfiguration.getJSONArray("wepKeys").getString(i));
+                        }
+                        wifiConfiguration.wepKeys = (String[])wepKeys.toArray();
+
+                        wifiConfiguration.wepTxKeyIndex = jsonNetConfiguration.getInt("wepTxKeyIndex");
+
                     } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     msgs[i] = ndefMessage;
