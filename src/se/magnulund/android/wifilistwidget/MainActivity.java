@@ -279,6 +279,8 @@ public class MainActivity extends Activity {
 
                         wifiConfiguration.wepTxKeyIndex = jsonNetConfiguration.getInt("wepTxKeyIndex");
 
+                        wifiManager.addNetwork(wifiConfiguration);
+
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
