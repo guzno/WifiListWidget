@@ -10,7 +10,6 @@ import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
-import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -24,8 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import org.json.JSONObject;
 import se.magnulund.android.wifilistwidget.settings.Preferences;
 import se.magnulund.android.wifilistwidget.settings.SettingsActivity;
 import se.magnulund.android.wifilistwidget.utils.NetworkUtils;
@@ -34,6 +31,7 @@ import se.magnulund.android.wifilistwidget.widget.WifiWidgetProvider;
 import se.magnulund.android.wifilistwidget.wifiap.WifiApManager;
 import se.magnulund.android.wifilistwidget.wifistate.WifiStateService;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
@@ -148,6 +146,7 @@ public class MainActivity extends Activity {
             <data android:mimeType="text/plain" />
             */
 
+            /*
             // Setup an intent filter for all MIME based dispatches
             IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
             ndef.addCategory("android.intent.category.DEFAULT");
@@ -160,10 +159,12 @@ public class MainActivity extends Activity {
 
             // Setup a tech list for all NfcF tags
             mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+            */
         }
     }
 
     public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
+        /*
         byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
         Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
         byte[] textBytes = payload.getBytes(utfEncoding);
@@ -173,6 +174,13 @@ public class MainActivity extends Activity {
         data[0] = (byte) status;
         System.arraycopy(langBytes, 0, data, 1, langBytes.length);
         System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
+        NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
+        return record;
+        */
+        Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
+        byte[] textBytes = payload.getBytes(utfEncoding);
+        byte[] data = new byte[textBytes.length];
+        System.arraycopy(textBytes, 0, data, 0, textBytes.length);
         NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
         return record;
     }
@@ -196,16 +204,27 @@ public class MainActivity extends Activity {
             startService(intent);
         }
 
+        /*
         if (mAdapter != null) {
             mAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
         }
+        */
 
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             Parcelable[] rawMsgs = getIntent().getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             if (rawMsgs != null) {
                 NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
                 for (int i = 0; i < rawMsgs.length; i++) {
-                    msgs[i] = (NdefMessage) rawMsgs[i];
+                    NdefMessage ndefMessage = (NdefMessage) rawMsgs[i];
+                    try {
+                        String lol = new String(ndefMessage.toByteArray(), "UTF8");
+                        Log.e(TAG, "lol? >> " + lol);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    msgs[i] = ndefMessage;
+
+
                 }
             }
         }
@@ -228,9 +247,11 @@ public class MainActivity extends Activity {
             startService(intent);
         }
 
+        /*
         if (mAdapter != null) {
             mAdapter.disableForegroundDispatch(this);
         }
+        */
     }
 
     public static boolean deviceHasMobileNetwork(Context context) {
