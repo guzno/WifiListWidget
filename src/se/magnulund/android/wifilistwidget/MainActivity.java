@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                    FilteredScanResult filteredScanResult = (FilteredScanResult) wifiAdapter.getItem(position);
+                    FilteredScanResult filteredScanResult = (FilteredScanResult) wifiAdapter.getItem(position - 1);
 
                     JSONObject netConfiguration = new JSONObject();
                     try {

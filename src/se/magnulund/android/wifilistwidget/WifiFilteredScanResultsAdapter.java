@@ -35,7 +35,7 @@ public class WifiFilteredScanResultsAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return filterScanResults.get(position - 1);
+        return filterScanResults.get(position);
     }
 
     @Override
