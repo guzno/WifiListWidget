@@ -287,12 +287,9 @@ public class MainActivity extends Activity {
                         e.printStackTrace();
                     }
                     msgs[i] = ndefMessage;
-
-
                 }
             }
         }
-        int i = 0;
     }
 
     @Override
