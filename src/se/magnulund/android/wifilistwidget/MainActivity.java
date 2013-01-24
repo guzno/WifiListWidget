@@ -131,6 +131,7 @@ public class MainActivity extends Activity {
                         netConfiguration.put("hiddenSSID", wifiConfiguration.hiddenSSID);
                         netConfiguration.put("preSharedKey", wifiConfiguration.preSharedKey);
 
+                        JSONArray jsonArray = jsonArrayFromBitSet(wifiConfiguration.allowedAuthAlgorithms);
                         netConfiguration.put("allowedAuthAlgorithms", jsonArrayFromBitSet(wifiConfiguration.allowedAuthAlgorithms));
                         netConfiguration.put("allowedGroupCiphers", jsonArrayFromBitSet(wifiConfiguration.allowedGroupCiphers));
                         netConfiguration.put("allowedKeyManagement", jsonArrayFromBitSet(wifiConfiguration.allowedKeyManagement));
@@ -202,7 +203,9 @@ public class MainActivity extends Activity {
     private BitSet bitSetFromJsonArray(JSONArray jsonArray) throws JSONException {
         BitSet bitSet = new BitSet();
         for (int i = 0; i < jsonArray.length(); i++) {
-            bitSet.set(i, jsonArray.getBoolean(i));
+            if (jsonArray.getBoolean(i)) {
+                bitSet.set(i);
+            }
         }
         return bitSet;
     }
