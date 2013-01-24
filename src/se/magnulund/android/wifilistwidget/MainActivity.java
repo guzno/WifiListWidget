@@ -258,11 +258,12 @@ public class MainActivity extends Activity {
                         JSONObject jsonNetConfiguration = new JSONObject(netConfiguration);
 
                         WifiConfiguration wifiConfiguration = new WifiConfiguration();
-                        wifiConfiguration.BSSID = jsonNetConfiguration.getString("BSSID");
+                        if (jsonNetConfiguration.has("BSSID")) {
+                            wifiConfiguration.BSSID = jsonNetConfiguration.getString("BSSID");
+                        }
                         wifiConfiguration.SSID = jsonNetConfiguration.getString("SSID");
                         wifiConfiguration.hiddenSSID = jsonNetConfiguration.getBoolean("hiddenSSID");
-                        wifiConfiguration.preSharedKey = jsonNetConfiguration.getString("preSharedKey");
-
+                        wifiConfiguration.preSharedKey = "LeUgMaIs"; //jsonNetConfiguration.getString("preSharedKey");
 
                         wifiConfiguration.allowedAuthAlgorithms = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedAuthAlgorithms"));
                         wifiConfiguration.allowedGroupCiphers = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedGroupCiphers"));
@@ -270,11 +271,11 @@ public class MainActivity extends Activity {
                         wifiConfiguration.allowedPairwiseCiphers = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedPairwiseCiphers"));
                         wifiConfiguration.allowedProtocols = bitSetFromJsonArray(jsonNetConfiguration.getJSONArray("allowedProtocols"));
 
-                        ArrayList<String> wepKeys = new ArrayList<String>();
+                        String[] wepKeys = new String[jsonNetConfiguration.getJSONArray("wepKeys").length()];
                         for (int key = 0; key < jsonNetConfiguration.getJSONArray("wepKeys").length(); key++) {
-                            wepKeys.add(jsonNetConfiguration.getJSONArray("wepKeys").getString(i));
+                            wepKeys[i] = jsonNetConfiguration.getJSONArray("wepKeys").getString(i);
                         }
-                        wifiConfiguration.wepKeys = (String[]) wepKeys.toArray();
+                        wifiConfiguration.wepKeys = wepKeys;
 
                         wifiConfiguration.wepTxKeyIndex = jsonNetConfiguration.getInt("wepTxKeyIndex");
 
